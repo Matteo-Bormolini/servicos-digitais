@@ -1,0 +1,94 @@
+{% extends 'estrutura/base.html' %}
+
+{% block body %}
+
+<!-- =========================================================
+     PÁGINA SUPORTE
+========================================================= -->
+<main class="center-column">
+    <div class="content">
+
+        <!-- =====================================================
+             HEADER DA PÁGINA
+        ====================================================== -->
+        <header>
+            <h2>Central de Suporte</h2>
+            <p>Se tiver dúvidas, erros ou problemas na plataforma, entre em contato por um dos canais abaixo:</p>
+        </header>
+
+        <!-- =====================================================
+             GRID PRINCIPAL - 2 COLUNAS
+        ====================================================== -->
+        <section class="suporte-grid">
+
+            <!-- ===========================
+                 COLUNA ESQUERDA
+                 (3 ITENS)
+            ============================ -->
+            <aside class="col-esquerda">
+
+                <!-- ===== Emails ===== -->
+                <article class="mini-box box-border">
+                    <h5>📧 E-mails disponíveis:</h5>
+                    <ul>
+                        <li><a href="">emailum@enderco.com</a></li>
+                        <li><a href="">emaildois@enderco.com</a></li>
+                        <li><a href="">emailtres@enderco.com</a></li>
+                    </ul>
+                </article>
+
+                <!-- ===== Telefones ===== -->
+                <article class="mini-box box-border">
+                    <h5>📞 Telefones de Contato:</h5>
+                    <ul>
+                        <li><a href="">(19) 9 8265-6051</a> - Matteo Bormolini</li>
+                        <li><a href="">(19) 9 9797-5917</a> - Victório Bormolini</li>
+                        <li><a href="">(19) 9 8163-2233</a> - Tatiana Bormolini</li>
+                    </ul>
+                </article>
+
+                <!-- ===== WhatsApp ===== -->
+                <article class="mini-box box-border">
+                    <h5>💬 WhatsApp disponíveis:</h5>
+                    <ul>
+                        <li><a href="">(19) 9 8265-6051</a> - Matteo Bormolini</li>
+                        <li><a href="">(19) 9 9797-5917</a> - Victório Bormolini</li>
+                        <li><a href="">(19) 9 8163-2233</a> - Tatiana Bormolini</li>
+                    </ul>
+                </article>
+
+            </aside>
+
+            <!-- ===========================
+                 COLUNA DIREITA
+                 (2 ITENS)
+            ============================ -->
+            <section class="col-direita">
+
+                <!-- ===== Formulário ===== -->
+                <article class="box-border suporte-form">
+                    <h5>📝 Coloque seu Ocorrido aqui!</h5>
+                    <p>Com isso, estará anotado em nossos sistemas e logo responderemos.</p>
+
+                    <form>
+                        <textarea class="form-control" rows="6" placeholder="Digite sua ocorrência..."></textarea>
+                        <div style="height:12px;"></div>
+                        <button type="submit" class="btn btn-success">Enviar</button>
+                    </form>
+                </article>
+
+                <!-- ===== Chatbot ===== -->
+                <article class="mini-box box-border sugestao-chat">
+                    <h5>🤖 Chat-bot</h5>
+                    <p>Precisa de resposta rápida? Pode tentar nosso assistente virtual!</p>
+                    <a href="#" class="btn btn-primary btn-chat">Abrir Chat</a>
+                </article>
+
+            </section>
+
+        </section> <!-- /suporte-grid -->
+
+    </div>
+</main>
+
+{% endblock %}

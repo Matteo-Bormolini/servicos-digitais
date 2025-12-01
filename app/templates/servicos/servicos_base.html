@@ -1,0 +1,41 @@
+<!--Página servico_base.html-->
+{% extends "estrutura/base.html" %}
+
+{# ==========================================================
+   servicos_base.html
+   Layout principal do módulo "Serviços" com 3 colunas fixas:
+   [ Coluna 1 - 20% ] [ Coluna 2 - 20% ] [ Coluna 3 - 60% ]
+   As páginas-filhas (lista_servicos, lista_prestadores,
+   lista_detalhe_prestador) preenchem os blocks abaixo.
+   =========================================================== #}
+
+{% block body %}
+<div class="row">
+
+    {# COLUNA 1: Lista de serviços (20%) #}
+    <div class="servicos-col-20 sidebar-box">
+        {% block sidebar_1 %}
+        <!-- preenchido por lista_servicos.html -->
+        {% endblock %}
+    </div>
+
+    {# COLUNA 2: Lista de prestadores (20%) #}
+    <div class="servicos-col-20 sidebar-box">
+        {% block sidebar_2 %}
+        <!-- preenchido por lista_prestadores.html -->
+        {% endblock %}
+    </div>
+
+    {# COLUNA 3: Detalhes / Conteúdo principal (60%) #}
+    <div class="servicos-col-60">
+        {% block sidebar_3 %}
+        <!-- preenchido por lista_detalhe_prestador.html -->
+        {% endblock %}
+
+        {% block conteudo %}
+        <!-- Conteúdo principal (caso precise) -->
+        {% endblock %}
+    </div>
+
+</div>
+{% endblock %}
