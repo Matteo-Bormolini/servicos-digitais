@@ -58,43 +58,16 @@ O projeto está em desenvolvimento ativo, focado em estabelecer o núcleo de aut
 
 ---
 
-### 💻 Como Rodar o Projeto (Localmente)
+### 💻 Como Executar o Projeto Localmente
 
-Como o projeto está rodando na máquina fisíca do usuário (eu), é essencial que qualquer recrutador saiba como instalá-lo em ambiente local para teste.
+Para que o projeto funcione em seu ambiente local, ele deve ser configurado a partir do terminal. O sistema foi desenvolvido para utilizar um banco de dados SQLite para persistência inicial.
 
-1.  **Clone o Repositório:**
-    ```bash
-    git clone [COLE O SEU LINK AQUI]
-    ```
+| Passo | Comando | Descrição |
+| :--- | :--- | :--- |
+| **1. Clone o Repositório** | git clone https://github.com/Matteo-Bormolini/servicos-digitais | Baixa o código-fonte para sua máquina. |
+| **2. (Opcional) Ambiente Virtual** | python -m venv venv | É altamente recomendado criar um ambiente virtual. |
+| **3. Instale as Dependências** | pip install -r requirements.txt | "Instala todas as bibliotecas necessárias (`Flask`, `SQLAlchemy`, `WTForms`, etc.)." |
+| **4. Execute a Aplicação** | python app.py | Inicia o servidor local do `Flask`. |
 
-2.  **Instale as Dependências:**
-    ```bash
-    pip install -r requirements.txt
-    ```
-    *(Você deve criar este arquivo. Veja as instruções abaixo.)*
-
-3.  **Execute a Aplicação:**
-    ```bash
-    python app.py
-    # Ou o comando que você usa para iniciar o Flask
-    ```
-    *O sistema usará o banco de dados SQLite localmente.*
-
+Após a execução, o servidor estará acessível em http://127.0.0.1:5000/ (ou endereço similar).
 ---
-
-## 3. Essenciais do GitHub e `requirements.txt`
-
-### 3.1. O que mais colocar no GitHub?
-
-Além de seus arquivos `.py`, `.html`, `.css` e do **README.md**, você deve incluir:
-
-1.  **`requirements.txt` (Obrigatório!):** Lista todas as bibliotecas que o seu código usa (Flask, SQLAlchemy, WTForms, etc.). Sem este arquivo, ninguém consegue rodar seu projeto.
-2.  **Screenshot/Imagens (.png ou .jpg):** Coloque uma imagem da sua página inicial do site! Isso deixa o `README` muito mais atraente e prova que o código gera uma interface. (Você pode colocar essa imagem no topo do README).
-3.  **Licença (Opcional, mas profissional):** Arquivo `LICENSE` que define se as pessoas podem usar seu código. Para projetos pessoais, o MIT License é o mais comum. O GitHub tem uma ferramenta que cria isso para você.
-
-### 3.2. Como criar o `requirements.txt`
-
-Este é o comando que você precisa rodar no seu terminal (aquele mesmo do VS Code) para criar o arquivo que lista todas as dependências que você citou:
-
-```bash
-pip freeze > requirements.txt
