@@ -1,0 +1,47 @@
+Estrutura:
+SITE_SERVICO/
+├── instance                    -> Banco de Dados
+├── servicosdigitais            -> Nome do site/app
+|   └── __pycache__             -> Sei lá o que é
+|   └── app.py (ou routes.py)
+│       ├── __pycache__         -> Sei lá o que é
+│       ├── static              -> Beleza da página
+│       ├── templates/ 
+│           └── cadastros/ 
+│               └── cadastrocnpj.html
+│               └── cadastrocpf.html
+│               └── cadastroprestador.html
+│           └── estrutura/ 
+│               └── base.html
+│               └── navbar.html
+│           └── criarposts.html
+│           ├── editarperfil.html 
+│           ├── home.html 
+│           ├── login.html 
+│           ├── perfil.html 
+│           ├── servicos.html 
+│           ├── suporte.html 
+│           ├── usuarios.html 
+│           ├── __init__.py
+│           ├── classes.py
+│           ├── forms.py
+│           ├── models.py
+│           └── routes.py
+
+
+Páginas Principais:
+├── home.html 
+├── login.html 
+├── suporte.html 
+├── usuários.html               --> Preciso Alterar um Montão
+├── usuários.html               --> Preciso Alterar um Montão
+└── criarconta.html
+
+
+Páginas Importantes:
+├── Perfil.html 
+├── EditarPerfil.html 
+├── cadastrocnpj.html 
+├── cadastrocpf.html 
+└── cadastroprestador.html 
+
