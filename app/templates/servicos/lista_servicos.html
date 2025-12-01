@@ -1,0 +1,46 @@
+<!-- Página Lista-Serviços -->
+ <!-- FALTA O BOTÃO VOLTAR AO MENU -->
+{% extends "servicos/servicos_base.html" %}
+
+{# ==========================================================
+   LISTA DE SERVIÇOS - preenche COLUNA 1 + (conteúdo na direita)
+   A mensagem ficará em uma caixinha cinza pequena acima das opções.
+========================================================== #}
+
+{% block sidebar_1 %}
+    <!-- Caixa com mensagem pequena -->
+    <div class="card-cinza">
+        <strong><i>Serviços disponíveis</i></strong><br>
+        <small><i>Selecione um serviço para ver os prestadores.</i></small>
+    </div>
+
+    {% if servicos|length == 0 %}
+        <p>Nenhum serviço disponível ainda.</p>
+    {% else %}
+    <ul class="list-unstyled">
+        {% for nome_servico in servicos %}
+        <li class="mb-1">
+            <a href="{{ url_for('servicos.listar_prestadores', especialidade=nome_servico) }}">
+                {{ nome_servico }}
+            </a>
+        </li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+{% endblock %}
+
+{% block conteudo %}
+
+<div class="d-flex justify-content-end mb-2">
+    <a href="{{ url_for('home') }}"
+    class="btn btn-voltar">
+        Voltar ao Menu
+    </a>
+</div>
+
+<div class="card-cinza w-100 mb-3">
+    <h5 class="text-muted">Informações rápidas</h5>
+    <p class="small text-muted">Ao clicar em um serviço, a lista de prestadores aparecerá na coluna do meio.</p>
+</div>
+
+{% endblock %}
