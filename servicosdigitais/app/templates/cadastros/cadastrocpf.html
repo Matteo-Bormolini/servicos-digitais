@@ -1,0 +1,143 @@
+{% extends 'estrutura/base.html' %}
+
+{% block body %}
+<div class="container d-flex flex-column align-items-center justify-content-center" style="min-height: 80vh;">
+    <form method="POST" action="{{ url_for('cadastrar_cpf') }}" class="form-borda-preta p-4"
+        enctype="multipart/form-data"
+        style="max-width: 500px; width: 100%;">
+        {{ form.csrf_token }}
+
+        <legend class="text-center mb-3" style="font-size: 1.2rem;">CRIAR CONTA - CPF</legend>
+
+        <!-- Foto de Perfil (Opcional) -->
+        <div class="mb-3">
+            <label class="form-control-label">
+                {{ form.foto_perfil.label }} <small class="text-muted">(opcional)</small>
+            </label>
+            {% if form.foto_perfil.errors %}
+                {{ form.foto_perfil(class="form-control is-invalid") }}
+                <div class="invalid-feedback">
+                    {% for erro in form.foto_perfil.errors %}{{ erro }}{% endfor %}
+                </div>
+            {% else %}
+                {{ form.foto_perfil(class="form-control") }}
+                <small class="form-text text-muted">jpg, png ou webp. Pode adicionar depois no editar perfil.</small>
+            {% endif %}
+        </div>
+
+        <!-- Nome (Obrigatório) -->
+        <div class="mb-3">
+            <label class="form-control-label">
+                {{ form.username.label }} <span class="text-danger">*</span>
+            </label>
+            {% if form.username.errors %}
+                {{ form.username(class="form-control is-invalid", placeholder="Ex: João") }}
+                <div class="invalid-feedback">
+                    {% for erro in form.username.errors %}{{ erro }}{% endfor %}
+                </div>
+            {% else %}
+                {{ form.username(class="form-control", placeholder="Ex: João") }}
+            {% endif %}
+            <small class="form-text text-muted">Nome — (obrigatório).</small>
+        </div>
+
+        <!-- Sobrenome (Opcional) -->
+        <div class="mb-3">
+            <label class="form-control-label">
+                {{ form.sobrenome.label }} <small class="text-muted">Sobrenome (opcional)</small>
+            </label>
+            {% if form.sobrenome.errors %}
+                {{ form.sobrenome(class="form-control is-invalid", placeholder="Ex: Silva") }}
+                <div class="invalid-feedback">
+                    {% for erro in form.sobrenome.errors %}{{ erro }}{% endfor %}
+                </div>
+            {% else %}
+                {{ form.sobrenome(class="form-control", placeholder="Ex: Silva") }}
+            {% endif %}
+        </div>
+
+        <!-- Telefone (Opcional) -->
+        <div class="mb-3">
+            <label class="form-control-label">
+                {{ form.telefone.label }} <small class="text-muted">Telefone(opcional)</small>
+            </label>
+            {% if form.telefone.errors %}
+                {{ form.telefone(class="form-control is-invalid", placeholder="(11) 99999-9999") }}
+                <div class="invalid-feedback">
+                    {% for erro in form.telefone.errors %}{{ erro }}{% endfor %}
+                </div>
+            {% else %}
+                {{ form.telefone(class="form-control", placeholder="(11) 99999-9999") }}
+            {% endif %}
+            <small class="form-text text-muted">Opcional — facilita contato com você.</small>
+        </div>
+
+        <!-- CPF (Obrigatório) -->
+        <div class="mb-3">
+            <label class="form-control-label">
+                {{ form.cpf.label }} <span class="text-danger">*</span>
+            </label>
+            {% if form.cpf.errors %}
+                {{ form.cpf(class="form-control is-invalid", placeholder="000.000.000-00") }}
+                <div class="invalid-feedback">
+                    {% for erro in form.cpf.errors %}{{ erro }}{% endfor %}
+                </div>
+            {% else %}
+                {{ form.cpf(class="form-control", placeholder="000.000.000-00 (aceita pontuação)") }}
+            {% endif %}
+            <small class="form-text text-muted">Salvo sem pontuação; pode digitar com ou sem pontos/traço.</small>
+        </div>
+
+        <!-- Email (Obrigatório) -->
+        <div class="mb-3">
+            <label class="form-control-label">
+                {{ form.email.label }} <span class="text-danger">*</span>
+            </label>
+            {% if form.email.errors %}
+                {{ form.email(class="form-control is-invalid", placeholder="seu@email.com") }}
+                <div class="invalid-feedback">
+                    {% for erro in form.email.errors %}{{ erro }}{% endfor %}
+                </div>
+            {% else %}
+                {{ form.email(class="form-control", placeholder="seu@email.com") }}
+            {% endif %}
+        </div>
+
+        <!-- Senha (Obrigatório) -->
+        <div class="mb-3">
+            <label class="form-control-label">
+                {{ form.senha.label }} <span class="text-danger">*</span>
+            </label>
+            {% if form.senha.errors %}
+                {{ form.senha(class="form-control is-invalid", placeholder="Mínimo 6 caracteres") }}
+                <div class="invalid-feedback">
+                    {% for erro in form.senha.errors %}{{ erro }}{% endfor %}
+                </div>
+            {% else %}
+                {{ form.senha(class="form-control", placeholder="Mínimo 6 caracteres") }}
+            {% endif %}
+            <small class="form-text text-muted">Recomenda-se usar letras, números e caracteres especiais.</small>
+        </div>
+
+        <!-- Confirmação de Senha (Obrigatório) -->
+        <div class="mb-3">
+            <label class="form-control-label">
+                {{ form.confirmacao_senha.label }} <span class="text-danger">*</span>
+            </label>
+            {% if form.confirmacao_senha.errors %}
+                {{ form.confirmacao_senha(class="form-control is-invalid", placeholder="Repita a senha") }}
+                <div class="invalid-feedback">
+                    {% for erro in form.confirmacao_senha.errors %}{{ erro }}{% endfor %}
+                </div>
+            {% else %}
+                {{ form.confirmacao_senha(class="form-control", placeholder="Repita a senha") }}
+            {% endif %}
+        </div>
+
+        <!-- Botão Submit -->
+        <div class="text-center">
+            {{ form.botao_submit(class="btn btn-primary btn-login mt-2") }}
+        </div>
+    </form>
+</div>
+{% endblock %}

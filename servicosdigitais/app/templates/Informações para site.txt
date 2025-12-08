@@ -1,0 +1,79 @@
+<div class="container">
+  <div class="header">...</div>
+  <div class="content main">...</div>
+  <div class="footer">...</div>
+</div>
+
+class="container" → centraliza e dá margens/padding ao conteúdo
+.header → geralmente usada para o topo do site (logo, menu, etc.)
+.content e .main → conteúdo principal
+.footer → rodapé (informações finais, redes sociais etc.)
+
+
+                CLASSES COMUNS
+| Classe      | Significado comum              |
+| ----------- | ------------------------------ |
+| "header"    | Cabeçalho/topo do site         |
+| "footer"    | Rodapé                         |
+| "container" | Container geral                |
+| "content"   | Conteúdo principal             |
+| "main"      | Parte central                  |
+| "card"      | Caixa com info (estilo cartão) |
+| "title"     | Título                         |
+| "subtitle"  | Subtítulo                      |
+| "btn"       | Botão                          |
+| "form"      | Formulário                     |
+| "input"     | Campo de entrada               |
+| "img-box"   | Estilizar imagem               |
+
+
+                ESTRUTURAS E LEYOUTS
+| Classe                   | Função                   |
+| ------------------------ | ------------------------ |
+| "container"              | Centraliza conteúdo      |
+| "row"                    | Cria linha para colunas  |
+| "col" / "col-6"          | Colunas responsivas      |
+| "d-flex"                 | Ativa flexbox            |
+| "justify-content-center" | Centraliza conteúdo flex |
+| "align-items-center"     | Alinha verticalmente     |
+
+
+                ESTILIZAÇÃO
+| Classe        | Função                    |
+| ------------- | ------------------------- |
+| "bg-primary"  | Fundo azul (cor primária) |
+| "text-white"  | Texto branco              |
+| "border"      | Borda simples             |
+| "rounded"     | Cantos arredondados       |
+| "shadow"      | Sombra                    |
+| "text-center" | Centraliza texto          |
+| "m-3" / "p-4" | Margin e padding          |
+🔹 m = margin
+🔸 p = padding
+    Números de 0 a 5 indicam o tamanho (0 = nada, 5 = muito)
+
+
+                BOTÕES
+| Classe        | Resultado             |
+| ------------- | --------------------- |
+| "btn"         | Ativa estilo de botão |
+| "btn-primary" | Botão azul            |
+| "btn-danger"  | Botão vermelho        |
+| "btn-success" | Botão verde           |
+
+
+                FORMULÁRIOS
+| Classe         | Uso                            |
+| -------------- | ------------------------------ |
+| "form-control" | Campo de input estilizado      |
+| "form-group"   | Agrupa campos/form labels      |
+| "input-group"  | Agrupa input com botões/ícones |
+
+
+                IMÁGENS
+| Classe          | Efeito             |
+| --------------- | ------------------ |
+| "img-fluid"     | Imagem responsiva  |
+| "rounded"       | Canto arredondado  |
+| "img-thumbnail" | Borda tipo moldura |
+
