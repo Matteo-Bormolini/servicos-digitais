@@ -1,0 +1,115 @@
+<!-- Página Lista-Detalhes-Prestador -->
+<!-- ==========================================================
+Página: Detalhes completos do Prestador
+Extende o layout de 3 colunas (servicos_base.html)
+
+• Coluna 1 → Lista de serviços
+• Coluna 2 → Prestadores da mesma especialidade
+• Coluna 3 → Informações resumidas
+• Área central → Card cinza no topo + detalhes completos
+========================================================== -->
+
+<!-- Página Detalhes do Prestador -->
+{% extends "servicos/servicos_base.html" %}
+
+{# ==========================================================
+   COLUNA 1 — Lista de Serviços (20%)
+   ========================================================== #}
+{% block sidebar_1 %}
+<h3>Serviços</h3>
+
+{% if lista_servicos|length == 0 %}
+<p class="text-muted">Nenhum serviço cadastrado.</p>
+{% else %}
+<ul class="sidebar-list">
+    {% for nome_servico in lista_servicos %}
+    <li>
+        <a href="{{ url_for('servicos.listar_prestadores', especialidade=nome_servico) }}">
+            {{ nome_servico }}
+        </a>
+    </li>
+    {% endfor %}
+</ul>
+{% endif %}
+{% endblock %}
+
+
+{# ==========================================================
+   COLUNA 2 — Prestadores da mesma especialidade (20%)
+   ========================================================== #}
+{% block sidebar_2 %}
+<h3>Prestadores de {{ registro_servico.especialidade }}</h3>
+
+{% if prestadores_mesma_especialidade|length == 0 %}
+<p class="text-muted">Nenhum outro prestador faz este serviço.</p>
+{% else %}
+<ul class="sidebar-list">
+    {% for p in prestadores_mesma_especialidade %}
+    <li>
+        <a href="{{ url_for('prestadores.detalhes_prestador', prestador_id=p.usuario_id) }}">
+            {{ p.nome }}
+        </a>
+    </li>
+    {% endfor %}
+</ul>
+{% endif %}
+{% endblock %}
+
+
+{# ==========================================================
+   COLUNA 3 — Detalhes completos (60%)
+   ========================================================== #}
+{% block conteudo %}
+
+<!-- Botão Voltar -->
+<div class="d-flex justify-content-end mb-2">
+    <a href="{{ url_for('servicos.listar_prestadores', especialidade=registro_servico.especialidade) }}"
+       class="btn btn-voltar">
+        Voltar
+    </a>
+</div>
+
+<!-- Card topo -->
+<div class="card-cinza w-100 mb-3">
+    <strong>{{ prestador.nome }}</strong>
+    &nbsp;&middot;&nbsp;
+    <small><i>Informações completas do prestador.</i></small>
+</div>
+
+<!-- DADOS BÁSICOS DO PRESTADOR -->
+<div class="mb-3">
+
+    {# Foto do prestador — futura alteração aqui #}
+    {% if prestador.foto_perfil %}
+        <img src="{{ url_for('static', filename='uploads/' ~ prestador.foto_perfil) }}"
+             alt="Foto do prestador" class="img-thumbnail mb-3" style="max-width: 180px;">
+    {% endif %}
+
+    <p><strong>Nome / Empresa:</strong> {{ prestador.nome }}</p>
+
+    {# Especialidade principal — pode mudar futuramente #}
+    <p><strong>Especialidade principal:</strong> {{ registro_servico.especialidade }}</p>
+
+    <p><strong>Email:</strong> {{ prestador.email }}</p>
+    <p><strong>Telefone:</strong> {{ prestador.telefone }}</p>
+    <p><strong>CNPJ:</strong> {{ prestador.cnpj or '—' }}</p>
+</div>
+
+<hr>
+
+<!-- LISTA DE SERVIÇOS EXTRAS -->
+<h4>Serviços Extras</h4>
+
+{% if servicos_extras|length == 0 %}
+    <p class="text-muted">Este prestador não cadastrou serviços extras.</p>
+{% else %}
+    {% for s in servicos_extras %}
+        <div class="card mb-2 p-2">
+            <strong>{{ s.nome_servico }}</strong><br>
+            <span>Preço: R$ {{ "%.2f"|format(s.preco_servico) }}</span><br>
+            <small class="text-muted">{{ s.descricao }}</small>
+        </div>
+    {% endfor %}
+{% endif %}
+
+{% endblock %}

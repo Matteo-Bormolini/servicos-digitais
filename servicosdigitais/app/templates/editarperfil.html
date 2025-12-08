@@ -1,0 +1,221 @@
+{% extends 'perfil.html' %}
+
+{% block form_editar_perfil %}
+<section class="container mt-4">
+    <hr>
+
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-6">
+
+            {# Formulário: multipart para upload de imagem #}
+            <form method="POST"
+                  enctype="multipart/form-data"
+                  class="border rounded p-4 shadow-sm bg-white">
+
+                {{ form.csrf_token }}
+
+                <h3 class="mb-3">Editar Perfil</h3>
+
+                <p class="small text-muted mb-3">
+                    Não é preciso preencher tudo — deixe em branco os campos que não deseja alterar.
+                    Campos sensíveis (CPF/CNPJ) não podem ser alterados aqui.
+                </p>
+
+                <fieldset>
+                    {# NOME (vários nomes possíveis no form: nome, username, nome_empresa) #}
+                    {% if form.nome is defined %}
+                    <div class="form-group mb-3">
+                        {{ form.nome.label(class="form-label") }}
+                        {% if form.nome.errors %}
+                            {{ form.nome(class="form-control is-invalid", placeholder="Seu nome") }}
+                            <div class="invalid-feedback">
+                                {% for erro in form.nome.errors %}{{ erro }}{% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.nome(class="form-control", placeholder="Seu nome") }}
+                        {% endif %}
+                    </div>
+                    {% elif form.username is defined %}
+                    <div class="form-group mb-3">
+                        {{ form.username.label(class="form-label") }}
+                        {% if form.username.errors %}
+                            {{ form.username(class="form-control is-invalid", placeholder="Seu nome") }}
+                            <div class="invalid-feedback">
+                                {% for erro in form.username.errors %}{{ erro }}{% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.username(class="form-control", placeholder="Seu nome") }}
+                        {% endif %}
+                    </div>
+                    {% elif form.nome_empresa is defined %}
+                    <div class="form-group mb-3">
+                        {{ form.nome_empresa.label(class="form-label") }}
+                        {% if form.nome_empresa.errors %}
+                            {{ form.nome_empresa(class="form-control is-invalid", placeholder="Nome ou fantasia da empresa") }}
+                            <div class="invalid-feedback">
+                                {% for erro in form.nome_empresa.errors %}{{ erro }}{% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.nome_empresa(class="form-control", placeholder="Nome ou fantasia da empresa") }}
+                        {% endif %}
+                    </div>
+                    {% endif %}
+
+                    {# SOBRENOME (apenas se existir no form) #}
+                    {% if form.sobrenome is defined %}
+                    <div class="form-group mb-3">
+                        {{ form.sobrenome.label(class="form-label") }}
+                        {% if form.sobrenome.errors %}
+                            {{ form.sobrenome(class="form-control is-invalid", placeholder="Seu sobrenome") }}
+                            <div class="invalid-feedback">
+                                {% for erro in form.sobrenome.errors %}{{ erro }}{% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.sobrenome(class="form-control", placeholder="Seu sobrenome") }}
+                        {% endif %}
+                    </div>
+                    {% endif %}
+
+                    {# RAZÃO SOCIAL (CNPJ) #}
+                    {% if form.razao_social is defined %}
+                    <div class="form-group mb-3">
+                        {{ form.razao_social.label(class="form-label") }}
+                        {% if form.razao_social.errors %}
+                            {{ form.razao_social(class="form-control is-invalid", placeholder="Razão social") }}
+                            <div class="invalid-feedback">
+                                {% for erro in form.razao_social.errors %}{{ erro }}{% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.razao_social(class="form-control", placeholder="Razão social") }}
+                        {% endif %}
+                    </div>
+                    {% endif %}
+
+                    {# TELEFONE (opcional) #}
+                    {% if form.telefone is defined %}
+                    <div class="form-group mb-3">
+                        {{ form.telefone.label(class="form-label") }}
+                        {% if form.telefone.errors %}
+                            {{ form.telefone(class="form-control is-invalid", placeholder="(DD) 9 9999-9999") }}
+                            <div class="invalid-feedback">
+                                {% for erro in form.telefone.errors %}{{ erro }}{% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.telefone(class="form-control", placeholder="(DD) 9 9999-9999") }}
+                        {% endif %}
+                        <small class="form-text text-muted">Opcional — pode deixar em branco.</small>
+                    </div>
+                    {% endif %}
+
+                    {# DESCRIÇÃO (prestador) #}
+                    {% if form.descricao is defined %}
+                    <div class="form-group mb-3">
+                        {{ form.descricao.label(class="form-label") }}
+                        {% if form.descricao.errors %}
+                            {{ form.descricao(class="form-control is-invalid", placeholder="Breve descrição (até 600 caracteres)", rows="3") }}
+                            <div class="invalid-feedback">
+                                {% for erro in form.descricao.errors %}{{ erro }}{% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.descricao(class="form-control", placeholder="Breve descrição (até 600 caracteres)", rows="3") }}
+                        {% endif %}
+                        <small class="form-text text-muted">Aparece no perfil público.</small>
+                    </div>
+                    {% endif %}
+
+                    {# EMAIL (com validação) #}
+                    {% if form.email is defined %}
+                    <div class="form-group mb-3">
+                        {{ form.email.label(class="form-label") }}
+                        {% if form.email.errors %}
+                            {{ form.email(class="form-control is-invalid", placeholder="seu@exemplo.com") }}
+                            <div class="invalid-feedback">
+                                {% for erro in form.email.errors %}{{ erro }}{% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.email(class="form-control", placeholder="seu@exemplo.com") }}
+                        {% endif %}
+                    </div>
+                    {% endif %}
+
+                    {# FOTO DE PERFIL (opcional) #}
+                    {% if form.foto_perfil is defined %}
+                    <div class="form-group mb-3">
+                        {{ form.foto_perfil.label(class="form-label") }}
+                        {{ form.foto_perfil(class="form-control") }}
+                        {% if form.foto_perfil.errors %}
+                            <div class="text-danger small mt-1">
+                                {% for erro in form.foto_perfil.errors %}{{ erro }}{% endfor %}
+                            </div>
+                        {% else %}
+                            <small class="form-text text-muted">Formatos aceitos: jpg, png, webp. Opcional.</small>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+
+                    {# ALTERAR SENHA: senha atual + nova + confirmação (mostra apenas se o form tiver esses campos) #}
+                    {% if form.senha_atual is defined or form.senha_nova is defined or form.confirmacao_senha is defined %}
+                    <hr>
+                    <h6 class="mb-2">Alterar senha (opcional)</h6>
+
+                    {% if form.senha_atual is defined %}
+                    <div class="form-group mb-3">
+                        {{ form.senha_atual.label(class="form-label") }}
+                        {% if form.senha_atual.errors %}
+                            {{ form.senha_atual(class="form-control is-invalid", placeholder="Senha atual") }}
+                            <div class="invalid-feedback">
+                                {% for erro in form.senha_atual.errors %}{{ erro }}{% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.senha_atual(class="form-control", placeholder="Senha atual") }}
+                        {% endif %}
+                    </div>
+                    {% endif %}
+
+                    {% if form.senha_nova is defined %}
+                    <div class="form-group mb-3">
+                        {{ form.senha_nova.label(class="form-label") }}
+                        {% if form.senha_nova.errors %}
+                            {{ form.senha_nova(class="form-control is-invalid", placeholder="Nova senha") }}
+                            <div class="invalid-feedback">
+                                {% for erro in form.senha_nova.errors %}{{ erro }}{% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.senha_nova(class="form-control", placeholder="Nova senha (mín. 6 caracteres)") }}
+                        {% endif %}
+                    </div>
+                    {% endif %}
+
+                    {% if form.confirmacao_senha is defined %}
+                    <div class="form-group mb-3">
+                        {{ form.confirmacao_senha.label(class="form-label") }}
+                        {% if form.confirmacao_senha.errors %}
+                            {{ form.confirmacao_senha(class="form-control is-invalid", placeholder="Confirme a nova senha") }}
+                            <div class="invalid-feedback">
+                                {% for erro in form.confirmacao_senha.errors %}{{ erro }}{% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.confirmacao_senha(class="form-control", placeholder="Confirme a nova senha") }}
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                    {% endif %}
+
+                </fieldset>
+
+                {# BOTÃO SUBMIT - tenta usar nome padronizado, senão renderiza qualquer submit presente #}
+                <div class="mt-3">
+                    {% if form.botao_submit is defined %}
+                        {{ form.botao_submit(class="btn btn-primary mt-1 w-100") }}
+                    {% else %}
+                        <button type="submit" class="btn btn-primary mt-1 w-100">Salvar</button>
+                    {% endif %}
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
+</section>
+{% endblock %}

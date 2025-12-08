@@ -1,0 +1,51 @@
+<!-- Página Detalhes-dos-Usuários -->
+{% extends "estrutura/base.html" %}
+
+{% block body %}
+
+<!-- ==========================================================
+     BOTÃO VOLTAR (padrão universal do sistema)
+     - Fica no canto superior direito
+     - Usa o estilo btn-voltar já presente no CSS
+========================================================== -->
+<div class="d-flex justify-content-end mb-3">
+    <a href="{{ url_for('listar_usuarios') }}" class="btn btn-voltar">
+        Voltar
+    </a>
+</div>
+
+<!-- ==========================================================
+     TÍTULO DA PÁGINA
+========================================================== -->
+<h2 class="mb-3">Detalhes do Usuário</h2>
+
+<!-- ==========================================================
+     INFORMAÇÕES DO USUÁRIO
+========================================================== -->
+<p><strong>Nome:</strong> {{ usuario.nome }}</p>
+
+<p><strong>Email:</strong> {{ usuario.email }}</p>
+
+<p><strong>Tipo:</strong> {{ usuario.tipo }}</p>
+
+<p>
+    <strong>Status:</strong>
+    <span class="{{ 'status-ativo' if usuario.ativo else 'status-inativo' }}">
+        {{ 'Ativo' if usuario.ativo else 'Inativo' }}
+    </span>
+</p>
+
+<p><strong>Data de criação:</strong> {{ usuario.created_at }}</p>
+
+<!-- ==========================================================
+     FOTO DE PERFIL (se existir)
+========================================================== -->
+{% if usuario.foto_perfil %}
+    <p><strong>Foto de perfil:</strong></p>
+    <img src="{{ url_for('static', filename='fotos_perfil/' ~ usuario.foto_perfil) }}"
+     width="180"
+     class="rounded shadow-sm">
+
+{% endif %}
+
+{% endblock %}

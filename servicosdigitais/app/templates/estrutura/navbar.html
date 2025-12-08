@@ -1,0 +1,127 @@
+<nav class="navbar navbar-expand-lg navbar-custom">
+    <!-- Container principal da barra -->
+    <div class="container">
+
+        <!-- Logo e link para a página inicial -->
+        <a class="navbar-brand" href="{{ url_for('home') }}">
+            <img src="{{ url_for('static', filename='logo.png') }}" 
+                 alt="Serviços Digitais"
+                 style="
+                     width: 80px;
+                     height: 80px;
+                     object-fit: cover;
+                     border-radius: 50%;
+                     background-color: white;
+                     padding: 2px;
+                 ">
+        </a>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+
+                <li class="nav-item">
+                    <a class="nav-link nav-item-block" href="{{ url_for('home') }}">
+                        Início
+                    </a>
+                </li>
+
+                {% if current_user.is_authenticated and current_user.is_admin %}
+                    <li class="nav-item">
+                        <a class="nav-link nav-item-block" href="{{ url_for('listar_usuarios') }}">
+                            Usuários
+                        </a>
+                    </li>
+                {% endif %}
+
+                {% if not current_user.is_authenticated or current_user.is_admin or current_user.tipo != 'prestador' %}
+                <li class="nav-item">
+                    <a class="nav-link nav-item-block" href="{{ url_for('servicos.listar_servicos') }}">
+                        Serviços
+                    </a>
+                </li>
+                {% endif %}
+
+                {% if current_user.is_authenticated and (current_user.tipo not in ['cpf', 'cnpj'] or current_user.is_admin) %}
+                <li class="nav-item">
+                    <a class="nav-link nav-item-block" href="{{ url_for('listar_clientes') }}">
+                        Clientes
+                    </a>
+                </li>
+                {% endif %}
+
+                <li class="nav-item">
+                    <a class="nav-link nav-item-block" href="{{ url_for('home') }}"> <!--ALTERAR NOVAMENTE DEPOIS-->
+                        Suporte
+                    </a>
+                </li>
+            </ul>
+
+            <!-- Perfil, Logout, Login, Criar Conta... -->
+            <ul class="navbar-nav d-flex">
+
+                {% if current_user.is_authenticated %}
+
+                    <li class="nav-item">
+                        <a class="nav-link nav-item-block" href="{{ url_for('criar_post') }}">
+                            Criar Post
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link nav-item-block" href="{{ url_for('perfil') }}">
+                            Perfil
+                        </a>
+                    </li>
+
+                    <!-- Botão de logout que abre a modal -->
+                    <div class="modal fade" id="confirmLogoutModal" tabindex="-1">
+                        <div class="modal-dialog">
+                          <div class="modal-content">
+                            
+                            <div class="modal-header">
+                              <h5 class="modal-title">Confirmar saída</h5>
+                              <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                      
+                            <div class="modal-body">
+                              Tem certeza que deseja sair?
+                            </div>
+                      
+                            <div class="modal-footer">
+                              <button class="btn btn-secondary" data-bs-dismiss="modal">
+                                Cancelar
+                              </button>
+                      
+                              <form action="{{ url_for('logout') }}" method="POST">
+                                <button type="submit" class="btn btn-danger">
+                                  Sair
+                                </button>
+                              </form>
+                      
+                            </div>
+                      
+                          </div>
+                        </div>
+                      </div>
+
+                {% else %}
+
+                    <li class="nav-item">
+                        <a class="nav-link nav-item-block" href="{{ url_for('login') }}">
+                            Login
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link nav-item-block" href="{{ url_for('login') }}">
+                            Criar Conta
+                        </a>
+                    </li>
+
+                {% endif %}
+            </ul>
+
+        </div>
+    </div>
+</nav>
