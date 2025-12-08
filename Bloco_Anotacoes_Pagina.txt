@@ -8,8 +8,8 @@ SITE_SERVICO/
 │       ├── static              -> Beleza da página
 │       ├── templates/ 
 │           └── cadastros/ 
-│               └── cadastrocnpj.html
-│               └── cadastrocpf.html
+│               └── cadastros/cadastrocnpj.html
+│               └── cadastros/cadastrocpf.html
 │               └── cadastroprestador.html
 │           └── estrutura/ 
 │               └── base.html
@@ -41,7 +41,7 @@ Páginas Principais:
 Páginas Importantes:
 ├── Perfil.html 
 ├── EditarPerfil.html 
-├── cadastrocnpj.html 
-├── cadastrocpf.html 
+├── cadastros/cadastrocnpj.html 
+├── cadastros/cadastrocpf.html 
 └── cadastroprestador.html 
 

@@ -1,1 +1,0 @@
-// Este arquivo contém o JavaScript personalizado para o site, que pode ser utilizado para adicionar interatividade aos componentes.
