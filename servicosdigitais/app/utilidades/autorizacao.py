@@ -26,7 +26,7 @@ def bloquear_tipos(*tipos_bloqueados, redirect_endpoint='home'):
             # 1) Não logado → bloquear e mandar para login
             if not current_user.is_authenticated:
                 flash("Acesso negado: você precisa fazer login para acessar esta página.", "danger")
-                return redirect(url_for('login'))
+                return redirect(url_for('autenticacao.login'))
 
             usuario = current_user  # agora garantido
 
@@ -56,11 +56,11 @@ def somente_admin(funcao):
     def wrapper(*args, **kwargs):
         if not current_user.is_authenticated:
             flash("Acesso negado: você precisa fazer login para acessar esta página.", "danger")
-            return redirect(url_for('login'))
+            return redirect(url_for('autenticacao.login'))
 
         if not getattr(current_user, "is_admin", False):
             flash("Acesso restrito: apenas administradores podem acessar.", "danger")
-            return redirect(url_for('home'))
+            return redirect(url_for('servicos.home'))
 
         return funcao(*args, **kwargs)
     return wrapper
@@ -77,7 +77,7 @@ def somente_prestador(funcao):
     def wrapper(*args, **kwargs):
         if not current_user.is_authenticated:
             flash("Acesso negado: você precisa fazer login para acessar esta página.", "danger")
-            return redirect(url_for('login'))
+            return redirect(url_for('autenticacao.login'))
 
         # Admin sempre tem acesso
         if getattr(current_user, "is_admin", False):
@@ -85,7 +85,7 @@ def somente_prestador(funcao):
 
         if getattr(current_user, "tipo", None) != "prestador":
             flash("Acesso negado: esta página é apenas para prestadores.", "danger")
-            return redirect(url_for('home'))
+            return redirect(url_for('servicos.home'))
 
         return funcao(*args, **kwargs)
     return wrapper
@@ -102,14 +102,14 @@ def somente_cpf(funcao):
     def wrapper(*args, **kwargs):
         if not current_user.is_authenticated:
             flash("Acesso negado: você precisa fazer login para acessar esta página.", "danger")
-            return redirect(url_for('login'))
+            return redirect(url_for('autenticacao.login'))
 
         if getattr(current_user, "is_admin", False):
             return funcao(*args, **kwargs)
 
         if getattr(current_user, "tipo", None) != "cpf":
             flash("Acesso negado: esta área é apenas para usuários CPF.", "danger")
-            return redirect(url_for('home'))
+            return redirect(url_for('servicos.home'))
 
         return funcao(*args, **kwargs)
     return wrapper
@@ -126,14 +126,14 @@ def somente_cnpj(funcao):
     def wrapper(*args, **kwargs):
         if not current_user.is_authenticated:
             flash("Acesso negado: você precisa fazer login para acessar esta página.", "danger")
-            return redirect(url_for('login'))
+            return redirect(url_for('autenticacao.login'))
 
         if getattr(current_user, "is_admin", False):
             return funcao(*args, **kwargs)
 
         if getattr(current_user, "tipo", None) != "cnpj":
             flash("Acesso negado: esta área é apenas para usuários CNPJ.", "danger")
-            return redirect(url_for('home'))
+            return redirect(url_for('servicos.home'))
 
         return funcao(*args, **kwargs)
     return wrapper

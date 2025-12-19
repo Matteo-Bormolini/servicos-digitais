@@ -11,9 +11,9 @@
 '''
 
 from flask import (
-    render_template, redirect, url_for, flash, current_app
+    Blueprint, render_template, current_app, redirect, url_for, flash
     )
-from servicosdigitais.app import app, bancodedados, bcrypt
+from servicosdigitais.app import bancodedados, bcrypt
 from servicosdigitais.app.models.usuario import Usuario
 from servicosdigitais.app.models.clientes import ClienteCPF, ClienteCNPJ
 from servicosdigitais.app.models.prestador import PrestadorServico
@@ -28,8 +28,14 @@ from servicosdigitais.app.utilidades.upload_imagem import (
     )
 
 
+cadastros_bp = Blueprint(
+    "cadastros",
+    __name__,
+    template_folder="templates"
+)
+
 # Cadastro de Cliente (CPF)
-@app.route('/cadastrar_cpf', methods=['GET', 'POST'])
+@cadastros_bp.route('/cadastrar_cpf', methods=['GET', 'POST'])
 def cadastrar_cpf():
     form = FormCadastroCPF()
     if form.validate_on_submit():
@@ -37,15 +43,15 @@ def cadastrar_cpf():
         cpf_digits = apenas_numeros(form.cpf.data)
 
         # validação opcional de CNPJ (controlado por config)
-        if app.config.get('VALIDAR_CPF', True):
+        if current_app.config.get('VALIDAR_CPF', True):
             if detectar_tipo_por_numeros(cpf_digits) != 'cpf' or not validar_cpf(cpf_digits):
                 flash('CPF inválido. Verifique os números e tente novamente.', 'alert-danger')
-                return redirect(url_for('rota_cadastrar_cpf'))
+                return redirect(url_for('cadastros.cadastrar_cpf'))
 
         # Evitar duplicidade
         if Usuario.query.filter_by(email=email).first() or ClienteCPF.query.filter_by(cpf=cpf_digits).first():
             flash("Já existe conta com esse e-mail ou CPF.", "alert-warning")
-            return redirect(url_for('login'))
+            return redirect(url_for('autenticacao.login'))
 
         senha_hash = bcrypt.generate_password_hash(form.senha.data).decode('utf-8')
 
@@ -86,7 +92,7 @@ def cadastrar_cpf():
                     current_app.logger.exception("Falha ao apagar imagem após erro no commit")
             current_app.logger.exception("Erro ao criar conta CPF - Salvamento falhou")
             flash("Erro interno ao criar conta. Tente novamente mais tarde.", "alert-danger")
-            return redirect(url_for('rota_cadastrar_cpf'))
+            return redirect(url_for('cadastros.cadastrar_cpf'))
 
         # Se deu certo:
         return redirect(url_for('login', show_edit_prompt=1))
@@ -95,7 +101,7 @@ def cadastrar_cpf():
 
 
 # Cadastro de Cliente (CNPJ)
-@app.route('/cadastrar_cnpj', methods=['GET', 'POST'])
+@cadastros_bp.route('/cadastrar_cnpj', methods=['GET', 'POST'])
 def cadastrar_cnpj():
     """
     Rota para cadastro de clientes pessoa jurídica (CNPJ).
@@ -115,15 +121,15 @@ def cadastrar_cnpj():
             tipo = detectar_tipo_por_numeros(cnpj_digits)
             if tipo != 'cnpj':
                 flash("CNPJ inválido ou formato incorreto. Verifique e tente novamente.", "alert-danger")
-                return redirect(url_for('cadastro_cnpj'))
+                return redirect(url_for('cadastros.cadastrar_cnpj'))
             if 'validar_cnpj' in globals() and not validar_cnpj(cnpj_digits):
                 flash("CNPJ inválido (dígitos verificadores).", "alert-danger")
-                return redirect(url_for('cadastro_cnpj'))
+                return redirect(url_for('cadastros.cadastrar_cnpj'))
             
         # Checagem de duplicidade (e-mail ou cnpj já cadastrados)
         if Usuario.query.filter_by(email=email).first() or ClienteCNPJ.query.filter_by(cnpj=cnpj_digits).first():
             flash("Já existe conta com esse e-mail ou CNPJ.", "alert-warning")
-            return redirect(url_for('login'))
+            return redirect(url_for('autenticacao.login'))
 
         # Senha
         senha_hash = bcrypt.generate_password_hash(form_cnpj.senha.data).decode('utf-8')
@@ -169,7 +175,7 @@ def cadastrar_cnpj():
             bancodedados.session.rollback()
             current_app.logger.exception("Erro ao criar conta CNPJ - commit do bancodedados falhou")
             flash("Erro interno ao criar conta. Tente novamente mais tarde.", "alert-danger")
-            return redirect(url_for('cadastro_cnpj'))
+            return redirect(url_for('cadastros.cadastrar_cnpj'))
 
         # Se deu certo:
         flash("Conta empresarial criada. Faça login.", "alert-success")
@@ -178,7 +184,7 @@ def cadastrar_cnpj():
 
 
 # Cadastro Prestador (versão padronizada, similar ao cadastro CNPJ)
-@app.route('/cadastrar_prestador', methods=['GET', 'POST'])
+@cadastros_bp.route('/cadastrar_prestador', methods=['GET', 'POST'])
 def cadastrar_prestador():
     """
     - Form parecido com CNPJ.
@@ -201,10 +207,10 @@ def cadastrar_prestador():
             tipo = detectar_tipo_por_numeros(cnpj_digits)
             if tipo != 'cnpj':
                 flash("CNPJ inválido ou formato incorreto. Verifique e tente novamente.", "alert-danger")
-                return redirect(url_for('cadastrar_prestador'))
+                return redirect(url_for('cadastros.cadastrar_prestador'))
             if 'validar_cnpj' in globals() and not validar_cnpj(cnpj_digits):
                 flash("CNPJ inválido (dígitos verificadores).", "alert-danger")
-                return redirect(url_for('cadastrar_prestador'))
+                return redirect(url_for('cadastros.cadastrar_prestador'))
 
         # Checagem de duplicidade (e-mail ou cnpj já cadastrados)
         existe_email = Usuario.query.filter_by(email=email).first()
@@ -213,7 +219,7 @@ def cadastrar_prestador():
 
         if existe_email or existe_cnpj_cliente or existe_cnpj_prest:
             flash("Já existe conta com esse e-mail ou CNPJ.", "alert-warning")
-            return redirect(url_for('login'))
+            return redirect(url_for('autenticacao.login'))
 
         # gerar senha
         senha_hash = bcrypt.generate_password_hash(form .senha.data).decode('utf-8')
@@ -265,5 +271,5 @@ def cadastrar_prestador():
 
         # Se deu certo:
         flash("Cadastro enviado. Aguardando aprovação do administrador.", "alert-info")
-        return redirect(url_for('home'))
+        return redirect(url_for('servicos.home'))
     return render_template('cadastros/cadastroprestador.html', form=form )

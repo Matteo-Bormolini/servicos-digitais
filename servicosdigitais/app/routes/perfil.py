@@ -16,9 +16,10 @@
 
 from flask_login import current_user, login_required
 from flask import (
-    render_template, request, redirect, url_for, flash, current_app
+    Blueprint, render_template, request, redirect, url_for, flash, current_app
     )
-from servicosdigitais.app import app, bancodedados, bcrypt
+
+from servicosdigitais.app import bancodedados, bcrypt
 from servicosdigitais.app.models.usuario import Usuario
 from servicosdigitais.app.forms.perfil_forms import (
     FormEditarCPF, FormEditarCNPJ, FormEditarPrestador
@@ -26,7 +27,14 @@ from servicosdigitais.app.forms.perfil_forms import (
 from servicosdigitais.app.utilidades.upload_imagem import trocar_imagem_usuario
 from servicosdigitais.app.utilidades.validadores import email_existe
 
-@app.route('/perfil/<int:user_id>')
+
+perfil_bp = Blueprint(
+    "perfil",
+    __name__,
+    template_folder="templates"
+)
+
+@perfil_bp.route('/perfil/<int:user_id>')
 def perfil(user_id):
     """
     Exibe perfil público do usuário.
@@ -95,7 +103,7 @@ def perfil(user_id):
     return render_template('perfil.html', **contexto)
 
 # ===== BLUR ======
-@app.route('/perfil/<int:user_id>/toggle_ocultar', methods=['POST'])
+@perfil_bp.route('/perfil/<int:user_id>/toggle_ocultar', methods=['POST'])
 @login_required
 def toggle_ocultar(user_id):
     usuario = Usuario.query.get_or_404(user_id)
@@ -119,7 +127,7 @@ def toggle_ocultar(user_id):
     return redirect(url_for('perfil', user_id=user_id))
 
 
-@app.route('/editar_perfil', methods=['GET', 'POST'])
+@perfil_bp.route('/editar_perfil', methods=['GET', 'POST'])
 @login_required
 def editar_perfil():
     """

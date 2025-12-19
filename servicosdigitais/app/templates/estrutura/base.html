@@ -107,7 +107,7 @@
                     </button>
 
                     <!-- Form que envia POST para /logout -->
-                    <form action="{{ url_for('logout') }}" 
+                    <form action="{{ url_for('autenticacao.logout') }}" 
                           method="post" class="d-inline">
                         <!-- Se estiver usando Flask-WTF -->
                         <!-- {{ csrf_token() }} -->
@@ -132,7 +132,7 @@
                     Sua conta foi criada com sucesso. Complete seu perfil para aumentar credibilidade e facilitar contatos.
                 </div>
                 <div class="modal-footer">
-                    <a class="btn btn-primary" href="{{ url_for('editar_perfil') }}">Editar Perfil Agora</a>
+                    <a class="btn btn-primary" href="{{ url_for('perfil.editar_perfil') }}">Editar Perfil Agora</a>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Depois</button>
                 </div>
             </div>

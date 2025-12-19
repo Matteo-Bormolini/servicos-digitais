@@ -12,7 +12,7 @@ from flask_login import current_user, login_required, login_user
 from flask import render_template, request, redirect, url_for, flash
 from sqlalchemy import or_, and_
 
-from servicosdigitais.app import app, bcrypt
+from servicosdigitais.app import bcrypt
 from servicosdigitais.app.models.usuario import Usuario
 from servicosdigitais.app.forms.login_forms import FormLogin
 from servicosdigitais.app.utilidades.validadores import (
@@ -34,7 +34,7 @@ autenticacao_bp = Blueprint(
 # -------------------------
 # Autenticação: login / logout
 # -------------------------
-@app.route('/login', methods=['GET', 'POST'])
+@autenticacao_bp.route('/login', methods=['GET', 'POST'])
 def login():
     form = FormLogin()
 
@@ -119,7 +119,7 @@ def login():
             # Conta ativa?
             if hasattr(usuario, 'ativo') and not esta_ativo(usuario.ativo):
                 flash("Conta desativada ou pendente de ativação.", "alert-warning")
-                return redirect(url_for('home'))
+                return redirect(url_for('servicos.home'))
 
             # Resetar tentativas
             registrar_sucesso(usuario)
@@ -140,7 +140,7 @@ def login():
             flash("Login realizado com sucesso.", "alert-success")
 
             destino = request.args.get('next')
-            return redirect(destino) if destino else redirect(url_for('home'))
+            return redirect(destino) if destino else redirect(url_for('servicos.home'))
 
         # ==========================
         # FALHA NO LOGIN
@@ -157,7 +157,7 @@ def login():
     return render_template('login.html', form=form)
 
 
-@app.route('/logout', methods=['POST'])
+@autenticacao_bp.route('/logout', methods=['POST'])
 @login_required
 def logout():
     nome = (
@@ -176,6 +176,6 @@ def logout():
 
     flash(f"{nome}, você foi desconectado com sucesso.", "alert-info")
 
-    return redirect(url_for('home'))
+    return redirect(url_for('servicos.home'))
 
 # Falta: Recuperar senha

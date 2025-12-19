@@ -29,9 +29,9 @@
                 <p>Veja como é prático nossos serviços.</p>
 
                 <div class="d-flex justify-content-center gap-2 mt-2">
-                    <a href="{{ url_for('cadastrar_cpf') }}" class="btn btn-cadastro btn-sm">CPF</a>
-                    <a href="{{ url_for('cadastrar_prestador') }}" class="btn btn-cadastro btn-sm">Prestador</a>
-                    <a href="{{ url_for('cadastrar_cnpj') }}" class="btn btn-cadastro btn-sm">CNPJ</a>
+                    <a href="{{ url_for('cadastros.cadastrar_cpf') }}" class="btn btn-cadastro btn-sm">CPF</a>
+                    <a href="{{ url_for('cadastros.cadastrar_prestador') }}" class="btn btn-cadastro btn-sm">Prestador</a>
+                    <a href="{{ url_for('cadastros.cadastrar_cnpj') }}" class="btn btn-cadastro btn-sm">CNPJ</a>
                 </div>
             </aside>
             {% endif %}

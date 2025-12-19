@@ -16,7 +16,8 @@ from flask import (
 from servicosdigitais.app.utilidades.seguranca import (
     gerar_senha_hash, verificar_senha_hash
     )
-from servicosdigitais.app.utilidades.autenticacao import verifica_inatividade
+
+from servicosdigitais.app.utilidades.autenticacao import verifica_inatividade, get_caminho_log
 from servicosdigitais.app.utilidades.autorizacao import somente_admin
 from servicosdigitais.app.utilidades.validadores import apenas_numeros
 from servicosdigitais.app.extensoes import bancodedados, bcrypt
@@ -320,23 +321,26 @@ def alterar_senha_admin():
     return render_template('admin/alterar_senha.html')
 
 
-# ROTA: /admin/logs (mantida conforme você gostou)
+# ROTA: /admin/logs
 @admin_bp.route('/logs', methods=['GET', 'POST'])
 @login_required
 @somente_admin
 @verifica_inatividade
 def visualizar_logs():
     """
-    Visualização dos logs. Mantive como antes (read-only / limpar / download).
+    Visualização dos logs. Mantida como read-only / limpar / download.
     """
-    # IMPLEMENTAÇÃO: assume CAMINHO_ARQUIVO_LOG definido em app.config ou default
-    caminho_log = current_app.config.get('CAMINHO_LOG', 'instance/erros.log')
+
+    caminho_log = get_caminho_log()
+
     if request.method == 'POST':
         acao = request.form.get('acao')
+
         if acao == 'limpar':
             open(caminho_log, 'w').close()
             flash('Logs limpos.', 'sucesso')
             return redirect(url_for('admin.visualizar_logs'))
+
         if acao == 'download':
             if os.path.exists(caminho_log):
                 return send_file(caminho_log, as_attachment=True, download_name='erros.log')
@@ -347,9 +351,10 @@ def visualizar_logs():
     conteudo = ''
     if os.path.exists(caminho_log):
         with open(caminho_log, 'r', encoding='utf-8', errors='ignore') as f:
-            conteudo = f.read()[-20000:]  # pegando último bloco (ajustável)
+            conteudo = f.read()[-20000:]  # pega último bloco (ajustável)
     else:
         conteudo = 'Arquivo de log não encontrado.'
+
     return render_template('admin/logs.html', logs=conteudo)
 
 

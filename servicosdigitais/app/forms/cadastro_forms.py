@@ -11,7 +11,7 @@ from wtforms import (
 from wtforms.validators import (
     DataRequired, Length, Email, EqualTo, Optional, ValidationError
     )
-from servicosdigitais.app.utilidades.seguranca import email_existe, senha_segura #!!!!
+from servicosdigitais.app.utilidades.validadores import email_existe
 
 # ========================
 # Formulário de CPF

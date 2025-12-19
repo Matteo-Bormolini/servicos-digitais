@@ -7,14 +7,14 @@ e manter a organização do sistema.
 
 from .usuario import Usuario
 from .clientes import ClienteCPF, ClienteCNPJ
-from .prestador import PrestadorServico, Servico
+from .prestador import PrestadorServico, ServicoPrestado
 from .midia import FotoPerfil
 from .conteudo import TextosEntrada, ImagensSite
 from .suporte import SupportTicket
 
 
 
-''' Não irei usar ainda no banco de dados:
+''' Não irei usar ainda no banco de dados:  
 # ================================
 # Tabela Fornecedor - Subclasse de Usuario
 # ================================

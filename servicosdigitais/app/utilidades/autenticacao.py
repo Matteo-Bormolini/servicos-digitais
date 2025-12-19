@@ -24,7 +24,9 @@ MAX_TENTATIVAS = 5
 TEMPO_BLOQUEIO_MIN = 15
 RESET_TENTATIVAS_MIN = 30
 
-CAMINHO_ARQUIVO_LOG = current_app.config.get('CAMINHO_LOG', 'instance/erros.log')
+def get_caminho_log():
+    from flask import current_app
+    return current_app.config.get('CAMINHO_LOG', 'instance/erros.log')
 
 def atualiza_atividade():
     """Grava timestamp ISO na sessão quando há atividade do usuário."""
@@ -52,7 +54,7 @@ def verifica_inatividade(func):
             logout_user()
             session.pop('ultima_atividade', None)
             flash(f'Logout automático por inatividade ({_TEMPO_INATIVIDADE_MIN} minutos).', 'alert-warning')
-            return redirect(url_for('login'))  # ajuste se sua rota de login tiver outro nome
+            return redirect(url_for('autenticacao.login'))  # ajuste se sua rota de login tiver outro nome
         # se ainda válido, atualiza o timestamp e segue
         session['ultima_atividade'] = agora.isoformat()
         return func(*args, **kwargs)

@@ -14,17 +14,24 @@
 '''
 
 from flask import (
-    render_template, flash, redirect, url_for, current_app, session
+    Blueprint ,render_template, flash, redirect, url_for, current_app, session
     )
 from flask_login import current_user
 from datetime import datetime, timezone
 import os
-from servicosdigitais.app import app, bancodedados
+from servicosdigitais.app import  bancodedados
 from servicosdigitais.app.utilidades.notificacoes import enviar_email_smtp
 from servicosdigitais.app.forms.suporte_forms import FormSuporte
 
 
-@app.route('/suporte', methods=['GET', 'POST'])
+# Criação do Blueprint
+suporte_bp = Blueprint(
+    "suporte",
+    __name__,
+    template_folder="templates"
+)
+
+@suporte_bp.route('/suporte', methods=['GET', 'POST'])
 def suporte():
     form = FormSuporte()
     try:

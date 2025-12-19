@@ -2,7 +2,7 @@
 
 {% block body %}
 <div class="container d-flex flex-column align-items-center justify-content-center" style="min-height: 80vh;">
-    <form method="POST" action="{{ url_for('cadastrar_cpf') }}" class="form-borda-preta p-4"
+    <form method="POST" action="{{ url_for('cadastros.cadastrar_cpf') }}" class="form-borda-preta p-4"
         enctype="multipart/form-data"
         style="max-width: 500px; width: 100%;">
         {{ form.csrf_token }}

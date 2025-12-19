@@ -27,14 +27,14 @@ def somente_fornecedor(funcao):
     def wrapper(*args, **kwargs):
         if not current_user.is_authenticated:
             flash("Acesso negado: você precisa fazer login para acessar esta página.", "danger")
-            return redirect(url_for('login'))
+            return redirect(url_for('autenticacao.login'))
 
         if getattr(current_user, "is_admin", False):
             return funcao(*args, **kwargs)
 
         if getattr(current_user, "tipo", None) != "fornecedor":
             flash("Acesso negado: esta página é apenas para fornecedores.", "danger")
-            return redirect(url_for('home'))
+            return redirect(url_for('servicos.home'))
 
         return funcao(*args, **kwargs)
     return wrapper

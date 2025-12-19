@@ -48,11 +48,15 @@ def criar_app():
     # Registrar blueprints
     # ===========================
     from servicosdigitais.app.routes import (
-        servicos_bp, admin_bp, autenticacao_bp
+        servicos_bp, admin_bp, autenticacao_bp,
+        perfil_bp, suporte_bp, cadastros_bp
         )
-    app.register_blueprint(servicos_bp)
-    app.register_blueprint(admin_bp)
     app.register_blueprint(autenticacao_bp)
+    app.register_blueprint(cadastros_bp)
+    app.register_blueprint(perfil_bp)
+    app.register_blueprint(servicos_bp)
+    app.register_blueprint(suporte_bp)
+    app.register_blueprint(admin_bp)
 
     return app
 
