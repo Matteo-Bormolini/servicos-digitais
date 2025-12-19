@@ -1,4 +1,6 @@
-from servicosdigitais.app import app
+from servicosdigitais.app import criar_app
+
+app = criar_app()
 
 if __name__ == "__main__":
     app.run(debug=True)

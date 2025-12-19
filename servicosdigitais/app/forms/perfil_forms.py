@@ -1,0 +1,53 @@
+# ========================
+# Formulário de Perfil
+# ========================
+from flask_wtf import FlaskForm
+from flask_wtf.file import (
+    FileField, FileAllowed
+    )
+from wtforms import (
+    StringField, PasswordField, SubmitField, TextAreaField
+    )
+from wtforms.validators import (
+    DataRequired, Length, Email, EqualTo, Optional
+    )
+
+# ================================
+# Formulário de Editar Perfil
+# ================================
+class _BaseEditarPerfil(FlaskForm):
+    foto_perfil = FileField('Foto/Logo (opcional)', validators=[Optional(), FileAllowed(['jpg','jpeg','png','webp'])])
+    email = StringField('E-mail', validators=[DataRequired(), Email()])
+    telefone = StringField('Telefone', validators=[Optional(), Length(min=8, max=20)])
+    senha_atual = PasswordField('Senha atual (necessária para alterar senha)', validators=[Optional()])
+    senha_nova = PasswordField('Nova senha', validators=[Optional(), Length(min=6, max=64)])
+    confirmacao_senha = PasswordField('Confirmar nova senha', validators=[Optional(), EqualTo('senha_nova', message='As senhas devem coincidir')])
+    botao_submit = SubmitField('Salvar alterações')
+
+
+# Editar perfil para CPF
+class FormEditarCPF(_BaseEditarPerfil):
+    nome = StringField('Nome', validators=[DataRequired(), Length(max=100)])
+    sobrenome = StringField('Sobrenome', validators=[Optional(), Length(max=100)])
+
+
+# Editar perfil para CNPJ
+class FormEditarCNPJ(_BaseEditarPerfil):
+    razao_social = StringField('Razão Social', validators=[DataRequired(), Length(max=200)])
+
+
+# Editar perfil para Prestador
+class FormEditarPrestador(_BaseEditarPerfil):
+    nome_empresa = StringField('Nome / Fantasia', validators=[DataRequired(), Length(max=150)])
+    descricao = TextAreaField('Descrição curta', validators=[Optional(), Length(max=600)])
+    # para gerenciar serviços recomendamos rota separada /meus_servicos
+
+
+'''
+Mas futuramente pode entrar aqui:
+
+trocar senha
+alterar e-mail
+upload de foto (se não estiver em outro form)
+excluir conta (form simples de confirmação)
+'''

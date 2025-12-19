@@ -1,70 +1,92 @@
-"""
-__init__.py -> Inicialização do programa
-Este arquivo roda automaticamente quando a aplicação é iniciada.
-
-Aqui são configuradas:
-- Extensões instaladas
-- Configurações do app e banco de dados
-- Importações dos módulos de forms, models e routes
-"""
-
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
-from flask_bcrypt import Bcrypt
-from flask_login import LoginManager
-from flask_wtf import CSRFProtect
 
-# ===========================
-# Instância principal do Flask
-# ===========================
-app = Flask(__name__)
+from servicosdigitais.app.config import ConfigPadrao
+from servicosdigitais.app.extensoes import (
+    bancodedados,
+    bcrypt,
+    login_manager,
+    csrf
+)
 
-# ===========================
-# Configurações gerais
-# ===========================
-app.config['SECRET_KEY'] = 'a55ae4f347ea5ced4862634a56f527e9daad'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///bdservicosdigitais.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-# ===========================
-# Proteção CSRF
-# ===========================
-csrf = CSRFProtect(app)
+def criar_app():
+    """
+    Fábrica da aplicação Flask.
 
-# ===========================
-# Proteção Testes
-# ===========================
-app.config['VALIDAR_CPF'] = False
-app.config['VALIDAR_CNPJ'] = False
-app.config['VALIDAR_PRESTADOR'] = False
-app.config['MAIL_SERVER'] = 'smtp.gmail.com'
-app.config['MAIL_PORT'] = 587
-app.config['MAIL_USE_TLS'] = True
-app.config['MAIL_USERNAME'] = 'suporteservicosdigitais@gmail.com'   # sua conta
-app.config['MAIL_PASSWORD'] = 'SUA_SENHA_APP_OU_SENHA' # use App Password Gmail
-app.config['MAIL_DEFAULT_SENDER'] = ('Suporte Serviços Digitais', 'suporteservicosdigitais@gmail.com')
+    Responsável por:
+    - Criar o app
+    - Carregar configurações
+    - Inicializar extensões
+    - Registrar user_loader
+    - Registrar blueprints
+    """
 
-# ===========================
-# Banco de dados
-# ===========================
-bancodedados = SQLAlchemy(app)
+    # ===========================
+    # Criar aplicação
+    # ===========================
+    app = Flask(__name__)
 
-# ===========================
-# Criptografia de senhas
-# ===========================
-bcrypt = Bcrypt(app)  # Apenas o site consegue descriptografar
+    # ===========================
+    # Configurações
+    # ===========================
+    app.config.from_object(ConfigPadrao)
 
-# ===========================
-# Gerenciamento de login
-# ===========================
-login_manager = LoginManager(app)
-login_manager.login_view = 'login'  # Redireciona para login caso não autenticado
-login_manager.login_message_category = 'alert-info'  # Categoria de flash padrão
+    # ===========================
+    # Inicializar extensões
+    # ===========================
+    bancodedados.init_app(app)
+    bcrypt.init_app(app)
+    login_manager.init_app(app)
+    csrf.init_app(app)
 
-# ===========================
-# Importações dos módulos
-# ===========================
-from servicosdigitais.app import forms, models
-from servicosdigitais.app.routes import bp
-app.register_blueprint(bp)
+    # ===========================
+    # Registrar user_loader
+    # ===========================
+    registrar_user_loader()
 
+    # ===========================
+    # Registrar blueprints
+    # ===========================
+    from servicosdigitais.app.routes import (
+        servicos_bp, admin_bp, autenticacao_bp
+        )
+    app.register_blueprint(servicos_bp)
+    app.register_blueprint(admin_bp)
+    app.register_blueprint(autenticacao_bp)
+
+    return app
+
+
+def registrar_user_loader():
+    """
+    Registra o carregador de usuários do Flask-Login.
+    """
+
+    from servicosdigitais.app.models import (
+        Usuario,
+        ClienteCPF,
+        ClienteCNPJ,
+        PrestadorServico
+    )
+
+    @login_manager.user_loader
+    def load_usuario(data):
+        if not data:
+            return None
+
+        try:
+            tipo, usuario_id = data.split(":")
+            usuario_id = int(usuario_id)
+        except ValueError:
+            return None
+
+        if tipo == "usuario":
+            return Usuario.query.get(usuario_id)
+        if tipo == "cpf":
+            return ClienteCPF.query.get(usuario_id)
+        if tipo == "cnpj":
+            return ClienteCNPJ.query.get(usuario_id)
+        if tipo == "prestador":
+            return PrestadorServico.query.get(usuario_id)
+
+        return None
