@@ -553,53 +553,170 @@ label.form-control-label {
        clip: rect(0, 0, 0, 0);
        border: 0;  }
 
-           /* =========================================================
-       LAYOUT DE SERVIÇOS — 3 COLUNAS (SERVIÇOS / PRESTADORES / DETALHES)
-       Não Usado Mais
-       ========================================================= */
-    
-           /* Contêiner geral da área de serviços */
-           /* .servicos-container {
-        display: flex;
-        width: 100%;
-        gap: 22px;
-        margin-top: 20px;
-    } */
-    
-           /* Cada coluna da área de serviços */
-           /* .coluna-servicos,
-    .coluna-prestadores,
-    .coluna-detalhes {
-        background: #f9f9f9;
-        border: 1px solid #222;
-        border-radius: 8px;
-        padding: 18px 16px;
-        min-height: 80vh;
-        overflow-y: auto;
-    } */
-    
-           /* Largura padrão das colunas */
-           /* .coluna-servicos {
-        width: 20%;
-    }
-    
-    .coluna-prestadores {
-        width: 20%;
-    }
-    
-    .coluna-detalhes {
-        width: 60%;
-    } */
-    
-           /* ------- LISTAS ------- */
-           /* .lista-link {
-        padding: 8px 6px;
-        border-bottom: 1px solid #ddd;
-        font-weight: 500;
-        cursor: pointer;
-        transition: background .18s ease;
-    } */
-    
-           /* .lista-link:hover {
-        background: #ececec;
-    } */
+
+/* ===============================
+BOTÃO SECUNDÁRIO - CRIAR CONTA
+=============================== */
+
+.btn-criar-conta {
+    width: 100%;
+    max-width: 320px;
+    background-color: #d1d1d1;
+    /* cinza neutro */
+    color: #333333;
+    border: none;
+    padding: 10px;
+    border-radius: 6px;
+    font-weight: 500;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.btn-criar-conta:hover {
+    background-color: #7b1e1e;
+    /* vermelho vinho (mesmo do login) */
+    color: #ffffff;
+}
+
+
+/* ===============================
+SELETOR DE TIPO DE CADASTRO
+=============================== */
+
+.seletor-cadastro {
+    display: flex;
+    gap: 8px;
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto 20px auto;
+}
+
+.btn-seletor {
+    flex: 1;
+    padding: 10px 0;
+    font-weight: 500;
+    background-color: #e0e0e0;
+    color: #333333;
+    border: 1px solid #cccccc;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* Hover */
+.btn-seletor:hover {
+    background-color: var(--vinho-principal);
+    color: #ffffff;
+}
+
+/* Botão ativo */
+.btn-seletor.ativo {
+    background-color: var(--vinho-principal);
+    color: #ffffff;
+    border-color: var(--vinho-principal);
+}
+
+
+/* ===============================
+   BOTÃO VOLTAR PARA LOGIN
+   =============================== */
+
+   .botao-voltar-login {
+       position: absolute;
+       top: 20px;
+       right: 20px;
+
+       width: 38px;
+       height: 38px;
+
+       display: flex;
+       align-items: center;
+       justify-content: center;
+
+       border-radius: 50%;
+
+       background-color: #e0e0e0;
+       color: #555555;
+
+       text-decoration: none;
+
+       z-index: 1050;
+
+       transition: background-color 0.2s ease, color 0.2s ease;
+   }
+
+   .botao-voltar-login:hover,
+   .botao-voltar-login:focus {
+       background-color: #7b1e3a !important;
+       /* vinho forçado */
+       color: #ffffff !important;
+   }
+
+   .btn-seletor.ativo {
+       background-color: #7b1e3a;
+       color: #ffffff;
+       border-color: #7b1e3a;
+   }
+
+
+   /* =========================================================
+   BOTÃO DE VISUALIZAÇÃO DE SENHA (OLHO)
+   ========================================================= */
+
+.btn-olho-senha {
+    border: 1px solid #ced4da;          /* igual input */
+    background-color: #f8f9fa;          /* cinza claro */
+    color: #6c757d;                     /* cinza ícone */
+    transition: all 0.2s ease-in-out;
+}
+
+/* Hover */
+.btn-olho-senha:hover {
+    background-color: var(--vinho);     /* seu vermelho vinho */
+    border-color: var(--vinho);
+    color: #ffffff;
+}
+
+/* Estado ativo (quando senha visível) */
+.btn-olho-senha.ativo {
+    background-color: var(--vinho);
+    border-color: var(--vinho);
+    color: #ffffff;
+}
+
+/* Remove foco azul padrão Bootstrap */
+.btn-olho-senha:focus {
+    box-shadow: none;
+}
+
+
+/* =========================================================
+   BOTÃO DE VISUALIZAÇÃO DE SENHA (OLHO)
+   ========================================================= */
+
+.btn-olho-senha {
+    border: 1px solid #ced4da;
+    /* igual input */
+    background-color: #f8f9fa;
+    /* cinza claro */
+    color: #6c757d;
+    /* cinza ícone */
+    transition: all 0.2s ease-in-out;
+}
+
+/* Hover */
+.btn-olho-senha:hover {
+    background-color: var(--vinho);
+    /* seu vermelho vinho */
+    border-color: var(--vinho);
+    color: #ffffff;
+}
+
+/* Estado ativo (quando senha visível) */
+.btn-olho-senha.ativo {
+    background-color: var(--vinho);
+    border-color: var(--vinho);
+    color: #ffffff;
+}
+
+/* Remove foco azul padrão Bootstrap */
+.btn-olho-senha:focus {
+    box-shadow: none;
+}

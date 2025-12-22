@@ -1,25 +1,25 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <!-- Metadados essenciais -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- Título da página (pode ser substituído pelos arquivos filhos futuramente) -->
     <title>{% block title %}Serviços Digitais{% endblock %}</title>
 
-    <!-- Bootstrap: estilos básicos -->
+    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
-    <!-- Arquivos CSS principais do projeto -->
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- CSS do projeto -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 
-    <!-- Espaço para estilos adicionais inseridos por páginas específicas -->
     {% block head %}{% endblock %}
 </head>
 
-<body>
+<body>  
 
     <!-- Navbar usada em todas as páginas -->
     {% include 'estrutura/navbar.html' %}
@@ -46,7 +46,7 @@
     </div>
 
     <!-- Container principal onde o conteúdo será exibido -->
-    <div class="container mt-4">
+    <div class="container mt-4 position-relative">
         {% block body %}{% endblock %}
     </div>
 
@@ -69,6 +69,7 @@
     </script>
 
     <!-- Espaço para scripts adicionais incluídos por páginas específicas -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
     {% block scripts %}{% endblock %}
 
 

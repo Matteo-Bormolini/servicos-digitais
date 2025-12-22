@@ -2,6 +2,9 @@
 
 {% block body %}
 <div class="container d-flex flex-column align-items-center justify-content-center" style="min-height: 80vh;">
+
+    {% include 'cadastros/_abas_criar_conta.html' %}
+
     {# enctype necessário para upload de arquivo (foto/logo) #}
     <form method="POST" action="{{ url_for('cadastros.cadastrar_prestador') }}" class="form-borda-preta p-4"
           enctype="multipart/form-data"
@@ -52,36 +55,58 @@
             <small class="form-text text-muted">Nome fantasia — Obrigatório.</small>
         </div>
 
-        <!-- CNPJ (Opcional/Obrigatório conforme seu form) -->
-        <div class="mb-3">
-            <label class="form-control-label">
-                {{ form.cnpj.label }} <small class="text-muted">(obrigatório)</small>
-            </label>
-            {% if form.cnpj.errors %}
-                {{ form.cnpj(class="form-control is-invalid", placeholder="00.000.000/0001-00") }}
-                <div class="invalid-feedback">
-                    {% for erro in form.cnpj.errors %}{{ erro }}{% endfor %}
-                </div>
-            {% else %}
-                {{ form.cnpj(class="form-control", placeholder="00.000.000/0001-00 (exemplo)") }}
-            {% endif %}
-            <small class="form-text text-muted">Salvo sem pontuação; pode digitar normalmente.</small>
-        </div>
-
-        <!-- Telefone (Opcional) -->
-        <div class="mb-3">
-            <label class="form-control-label">
-                {{ form.telefone.label }} <small class="text-muted">(opcional)</small>
-            </label>
-            {% if form.telefone.errors %}
-                {{ form.telefone(class="form-control is-invalid", placeholder="(11) 9 9999-9999") }}
-                <div class="invalid-feedback">
-                    {% for erro in form.telefone.errors %}{{ erro }}{% endfor %}
-                </div>
-            {% else %}
-                {{ form.telefone(class="form-control", placeholder="(11) 9 9999-9999") }}
-            {% endif %}
-            <small class="form-text text-muted">Opcional — será padronizado ao salvar.</small>
+        <div class="row">
+            <!-- CNPJ (Obrigatório / conforme regra do form) -->
+            <div class="col-md-6 mb-3">
+                <label class="form-control-label">
+                    {{ form.cnpj.label }} <span class="text-danger">*</span>
+                </label>
+        
+                {% if form.cnpj.errors %}
+                    {{ form.cnpj(
+                        class="form-control is-invalid",
+                        placeholder="00.000.000/0001-00"
+                    ) }}
+                    <div class="invalid-feedback">
+                        {% for erro in form.cnpj.errors %}{{ erro }}{% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.cnpj(
+                        class="form-control",
+                        placeholder="00.000.000/0001-00 (exemplo)"
+                    ) }}
+                {% endif %}
+        
+                <small class="form-text text-muted">
+                    Salvo sem pontuação;
+                </small>
+            </div>
+        
+            <!-- Telefone (Opcional) -->
+            <div class="col-md-6 mb-3">
+                <label class="form-control-label">
+                    {{ form.telefone.label }} <small class="text-muted">(opcional)</small>
+                </label>
+        
+                {% if form.telefone.errors %}
+                    {{ form.telefone(
+                        class="form-control is-invalid",
+                        placeholder="(11) 9 9999-9999"
+                    ) }}
+                    <div class="invalid-feedback">
+                        {% for erro in form.telefone.errors %}{{ erro }}{% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.telefone(
+                        class="form-control",
+                        placeholder="(11) 9 9999-9999"
+                    ) }}
+                {% endif %}
+        
+                <small class="form-text text-muted">
+                    Será padronizado ao salvar.
+                </small>
+            </div>
         </div>
 
         <!-- Especialidade (Obrigatório) -->
@@ -120,29 +145,72 @@
             <label class="form-control-label">
                 {{ form.senha.label }} <span class="text-danger">*</span>
             </label>
+        
+            <div class="input-group">
+                {% if form.senha.errors %}
+                    {{ form.senha(
+                        class="form-control is-invalid",
+                        placeholder="Mínimo 6 caracteres",
+                        type="password",
+                        id="senha_prestador"
+                    ) }}
+                {% else %}
+                    {{ form.senha(
+                        class="form-control",
+                        placeholder="Mínimo 6 caracteres",
+                        type="password",
+                        id="senha_prestador"
+                    ) }}
+                {% endif %}
+        
+                <button class="btn btn-olho-senha"
+                        type="button"
+                        onclick="alternarSenha('senha_prestador', this)">
+                    <i class="bi bi-eye"></i>
+                </button>
+            </div>
+        
             {% if form.senha.errors %}
-                {{ form.senha(class="form-control is-invalid", placeholder="Mínimo 6 caracteres") }}
-                <div class="invalid-feedback">
+                <div class="invalid-feedback d-block">
                     {% for erro in form.senha.errors %}{{ erro }}{% endfor %}
                 </div>
-            {% else %}
-                {{ form.senha(class="form-control", placeholder="Mínimo 6 caracteres") }}
             {% endif %}
-            <small class="form-text text-muted">Use uma senha segura — letras, números e caracteres especiais ajudam.</small>
         </div>
-
+        
         <!-- Confirmação de Senha (Obrigatório) -->
         <div class="mb-3">
             <label class="form-control-label">
                 {{ form.confirmacao_senha.label }} <span class="text-danger">*</span>
             </label>
+        
+            <div class="input-group">
+                {% if form.confirmacao_senha.errors %}
+                    {{ form.confirmacao_senha(
+                        class="form-control is-invalid",
+                        placeholder="Repita a senha",
+                        type="password",
+                        id="confirmacao_senha_prestador"
+                    ) }}
+                {% else %}
+                    {{ form.confirmacao_senha(
+                        class="form-control",
+                        placeholder="Repita a senha",
+                        type="password",
+                        id="confirmacao_senha_prestador"
+                    ) }}
+                {% endif %}
+        
+                <button class="btn btn-olho-senha"
+                        type="button"
+                        onclick="alternarSenha('confirmacao_senha_prestador', this)">
+                    <i class="bi bi-eye"></i>
+                </button>
+            </div>
+        
             {% if form.confirmacao_senha.errors %}
-                {{ form.confirmacao_senha(class="form-control is-invalid", placeholder="Repita a senha") }}
-                <div class="invalid-feedback">
+                <div class="invalid-feedback d-block">
                     {% for erro in form.confirmacao_senha.errors %}{{ erro }}{% endfor %}
                 </div>
-            {% else %}
-                {{ form.confirmacao_senha(class="form-control", placeholder="Repita a senha") }}
             {% endif %}
         </div>
 

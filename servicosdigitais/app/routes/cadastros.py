@@ -34,6 +34,20 @@ cadastros_bp = Blueprint(
     template_folder="templates"
 )
 
+
+# Página inicial - Criar Conta
+@cadastros_bp.route('/criar-conta', methods=['GET'])
+def criar_conta():
+    """
+    Página inicial de criação de conta.
+    Apenas exibe as opções:
+    - Cliente CPF
+    - Cliente CNPJ
+    - Prestador de Serviços
+    """
+    return render_template('cadastros/criar_conta.html')
+
+
 # Cadastro de Cliente (CPF)
 @cadastros_bp.route('/cadastrar_cpf', methods=['GET', 'POST'])
 def cadastrar_cpf():
@@ -95,9 +109,15 @@ def cadastrar_cpf():
             return redirect(url_for('cadastros.cadastrar_cpf'))
 
         # Se deu certo:
-        return redirect(url_for('login', show_edit_prompt=1))
+        return redirect(url_for('autenticacao.login'))
 
-    return render_template('cadastros/cadastrocpf.html', form=form)
+    return render_template(
+    'cadastros/cadastrocpf.html',
+    form=form,
+    aba_ativa='cpf',
+    tipo='cpf'
+    )
+
 
 
 # Cadastro de Cliente (CNPJ)
@@ -179,8 +199,14 @@ def cadastrar_cnpj():
 
         # Se deu certo:
         flash("Conta empresarial criada. Faça login.", "alert-success")
-        return redirect(url_for('login', show_edit_prompt=1))
-    return render_template('cadastros/cadastrocnpj.html', form_cnpj=form_cnpj)
+        return redirect(url_for('autenticacao.login'))
+    return render_template(
+    'cadastros/cadastrocnpj.html',
+    form_cnpj=form_cnpj,
+    aba_ativa='cnpj',
+    tipo='cnpj'
+    )
+
 
 
 # Cadastro Prestador (versão padronizada, similar ao cadastro CNPJ)
@@ -267,9 +293,14 @@ def cadastrar_prestador():
                     current_app.logger.exception("Falha ao apagar imagem após erro no commit (prestador)")
             current_app.logger.exception("Erro ao criar cadastro de prestador (commit falhou)")
             flash("Erro interno ao criar cadastro. Tente novamente mais tarde.", "alert-danger")
-            return redirect(url_for('cadastros/cadastroprestador.html'))
+            return redirect(url_for('cadastros.cadastrar_prestador'))
 
         # Se deu certo:
         flash("Cadastro enviado. Aguardando aprovação do administrador.", "alert-info")
         return redirect(url_for('servicos.home'))
-    return render_template('cadastros/cadastroprestador.html', form=form )
+    return render_template(
+    'cadastros/cadastroprestador.html',
+    form=form,
+    aba_ativa='prestador',
+    tipo='prestador'
+    )

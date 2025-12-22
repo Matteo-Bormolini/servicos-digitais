@@ -1,0 +1,25 @@
+<!-- Botão voltar para login -->
+<a href="{{ url_for('autenticacao.login') }}"
+   class="botao-voltar-login"
+   title="Voltar para o login">
+    <i class="bi bi-arrow-left"></i>
+</a>
+
+<div class="seletor-cadastro">
+
+    <a href="{{ url_for('cadastros.cadastrar_cpf') }}"
+       class="btn btn-seletor {% if tipo == 'cpf' %}ativo{% endif %}">
+        👤 CPF
+    </a>
+
+    <a href="{{ url_for('cadastros.cadastrar_cnpj') }}"
+       class="btn btn-seletor {% if tipo == 'cnpj' %}ativo{% endif %}">
+        🏢 CNPJ
+    </a>
+
+    <a href="{{ url_for('cadastros.cadastrar_prestador') }}"
+       class="btn btn-seletor {% if tipo == 'prestador' %}ativo{% endif %}">
+        🧰 Prestador
+    </a>
+
+</div>
