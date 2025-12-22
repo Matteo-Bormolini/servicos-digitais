@@ -1,15 +1,34 @@
-# Ignorar pasta de ambiente virtual
+# ==============================
+# Ambiente virtual Python
+# ==============================
 venv/
 env/
 .env
 
-# Ignorar arquivos temporários do Python
+
+# ==============================
+# Cache e arquivos temporários Python
+# ==============================
 __pycache__/
 *.pyc
+*.pyo
 
-# Ignorar banco de dados local (geralmente não subimos o banco)
+
+# ==============================
+# Banco de dados local (desenvolvimento)
+# ==============================
 *.db
 *.sqlite3
 
-# Ignorar configurações do VSCode
+
+# ==============================
+# Configurações do editor (VSCode)
+# ==============================
 .vscode/
+
+
+# ==============================
+# Arquivos do sistema operacional
+# ==============================
+.DS_Store
+Thumbs.db
