@@ -121,7 +121,7 @@ def suporte():
         if not current_app.config.get('VALIDAR_PRESTADOR', True) or not current_app.config.get('VALIDAR_CPF', True) or not current_app.config.get('VALIDAR_CNPJ', True):
             flash("MODO TESTE: operação registrada em ambiente de testes (não enviamos e-mails externos).", "alert-info")
 
-        return redirect(url_for('suporte'))
+        return redirect(url_for('suporte.suporte'))
 
     # GET -> renderiza. O template vai checar session['support_result'] para mostrar popup
     return render_template(

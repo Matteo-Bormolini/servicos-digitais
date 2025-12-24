@@ -1,6 +1,6 @@
-/* =========================================================
+/* ======================
    CONFIGURAÇÕES BÁSICAS
-   ========================================================= */
+   ====================== */
 * {
     margin: 0;
     padding: 0;
@@ -27,17 +27,17 @@ ul {
     margin-bottom: 10px;
 }
 
-/* =========================================================
+/* ==================
    VARIÁVEIS GLOBAIS
-   ========================================================= */
+   ================== */
 :root {
     --vinho: #680202;
     --vinho-hover: #520000;
 }
 
-/* =========================================================
+/* =======
    NAVBAR 
-   ========================================================= */
+   ======= */
 .navbar-custom {
     background-color: var(--vinho);
 }
@@ -79,9 +79,9 @@ ul {
     margin-right: auto;
 }
 
-/* =========================================================
+/* =====================
    FORMULÁRIOS E INPUTS
-   ========================================================= */
+   ===================== */
 form.border,
 .card.p-4,
 .form-card {
@@ -129,9 +129,9 @@ label.form-control-label {
     margin-top: 12px;
 }
 
-/* =========================================================
+/* ======================
    BOTÕES PADRÃO (VINHO)
-   ========================================================= */
+   ====================== */
 .btn-primary,
 .btn-login,
 .btn-cadastro {
@@ -168,9 +168,9 @@ label.form-control-label {
     padding: 12px 0;
 }
 
-/* =========================================================
+/* ================
    LAYOUT PRINCIPAL
-   ========================================================= */
+   ================ */
 .center-column {
     max-width: 1200px;
     margin: 20px auto 40px;
@@ -183,9 +183,9 @@ label.form-control-label {
     border-radius: 8px;
 }
 
-/* =========================================================
+/* ======================================
    HOME → Seção principal + painel lateral
-   ========================================================= */
+   ======================================= */
 .home-flex {
     display: grid;
     grid-template-columns: 1fr 420px;
@@ -207,9 +207,9 @@ label.form-control-label {
     justify-content: space-between;
 }
 
-/* =========================================================
+/* =========================================
    HOME → Grid inferior (Regiões e Serviços)
-   ========================================================= */
+   ========================================= */
 .home-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -229,9 +229,9 @@ label.form-control-label {
     padding: 18px 16px;
 }
 
-/* =========================================================
+/* ===========================
    STATUS - TABELA DE USUÁRIOS
-   ========================================================= */
+   =========================== */
 .status-ativo {
     color: green;
     font-weight: 600;
@@ -242,9 +242,9 @@ label.form-control-label {
     font-weight: 600;
 }
 
-/* =========================================================
+/* =============
    PÁGINA PERFIL
-   ========================================================= */
+   ============= */
 .perfil-container {
     max-width: 450px;
     width: 100%;
@@ -260,18 +260,18 @@ label.form-control-label {
     object-fit: cover;
 }
 
-/* =========================================================
+/* ==========================
    FORMULÁRIO COM BORDA PRETA
-   ========================================================= */
+   ========================== */
 .form-borda-preta {
     border: 2.5px solid #222;
     border-radius: 8px;
     background-color: #f8f9fa;
 }
 
-/* =========================================================
+/* ===============
    RESPONSIVIDADE
-   ========================================================= */
+   ============== */
 @media (max-width: 1000px) {
 
     .home-flex {
@@ -290,9 +290,9 @@ label.form-control-label {
     }
 }
 
-/* =========================================================
+/* ========================
    SUPORTE — GRID PRINCIPAL
-========================================================= */
+=========================== */
 
 .suporte-grid {
     display: grid;
@@ -319,9 +319,9 @@ label.form-control-label {
     min-height: 240px;
 }
 
-/* =========================================================
+/* =======================
    RESPONSIVIDADE (Mobile)
-   ========================================================= */
+   ======================= */
 @media (max-width: 900px) {
 
     .servicos-container {
@@ -336,11 +336,11 @@ label.form-control-label {
     }
 }
 
-/* ====================================================
+/* ==============================================
    Estilos específicos para o módulo SERVIÇOS
    - colunas 20% | 20% | 60% (com responsividade)
    - caixa cinza pequena para mensagem
-   ==================================================== */
+   ============================================== */
 
 /* Força colunas com porcentagens exatas (Bootstrap usa flex) */
 .servicos-col-20 {
@@ -381,9 +381,9 @@ label.form-control-label {
     }
 }
 
-   /* =========================
+/* ===================================
    Estilo padrão para módulo 'Serviços'
-   ========================= */
+   =================================== */
 
    /* Card cinza usado nas páginas de serviços / detalhes */
    .card-cinza {
@@ -435,9 +435,9 @@ label.form-control-label {
        margin-bottom: 0.75rem;
    }
 
-/* ====================================================
+/* ====================
    Geral - Botão Voltar
-   ==================================================== */
+   ==================== */
 
    /* Botão universal "Voltar" (usado em várias páginas) */
    .btn-voltar {
@@ -554,7 +554,7 @@ label.form-control-label {
        border: 0;  }
 
 
-/* ===============================
+/* ============================
 BOTÃO SECUNDÁRIO - CRIAR CONTA
 =============================== */
 
@@ -578,9 +578,9 @@ BOTÃO SECUNDÁRIO - CRIAR CONTA
 }
 
 
-/* ===============================
+/* ========================
 SELETOR DE TIPO DE CADASTRO
-=============================== */
+=========================== */
 
 .seletor-cadastro {
     display: flex;
@@ -614,9 +614,9 @@ SELETOR DE TIPO DE CADASTRO
 }
 
 
-/* ===============================
+/* =======================
    BOTÃO VOLTAR PARA LOGIN
-   =============================== */
+   ======================= */
 
    .botao-voltar-login {
        position: absolute;
@@ -656,9 +656,9 @@ SELETOR DE TIPO DE CADASTRO
    }
 
 
-   /* =========================================================
+   /* ==================================
    BOTÃO DE VISUALIZAÇÃO DE SENHA (OLHO)
-   ========================================================= */
+   ===================================== */
 
 .btn-olho-senha {
     border: 1px solid #ced4da;          /* igual input */
@@ -687,9 +687,9 @@ SELETOR DE TIPO DE CADASTRO
 }
 
 
-/* =========================================================
+/* =====================================
    BOTÃO DE VISUALIZAÇÃO DE SENHA (OLHO)
-   ========================================================= */
+   ===================================== */
 
 .btn-olho-senha {
     border: 1px solid #ced4da;
@@ -719,4 +719,141 @@ SELETOR DE TIPO DE CADASTRO
 /* Remove foco azul padrão Bootstrap */
 .btn-olho-senha:focus {
     box-shadow: none;
+}
+
+
+/* ==================
+   RODAPÉ DO SISTEMA
+   ================== */
+
+/*
+   Reaproveitamentos: Cor principal, Estrutura em grid,
+                      Colunas verticais, Logo, Faixa inferior
+*/
+
+.rodape-sistema {
+    background-color: var(--vinho);
+    /* mesma cor da navbar */
+    color: #f2f2f2;
+    margin-top: 60px;
+}
+
+.rodape-conteudo {
+    max-width: 1200px;
+    /* mesmo padrão do layout principal */
+    margin: 0 auto;
+    padding: 48px 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 40px;
+}
+
+.rodape-coluna {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.rodape-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 700;
+    font-size: 1.15rem;
+    color: #ffffff;
+}
+
+.rodape-logo-icone {
+    font-size: 1.4rem;
+}
+
+/* Texto secundário (sem chamar atenção demais) */
+.rodape-frase {
+    font-size: 0.9rem;
+    color: #f2dede;
+    max-width: 260px;
+}
+
+/* Títulos das colunas */
+.rodape-titulo {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+/* Listas sem marcadores (igual sidebar-list) */
+.rodape-lista {
+    list-style: none;
+    /* reaproveita conceito de .sidebar-list */
+    padding-left: 0;
+    margin: 0;
+    font-size: 0.9rem;
+}
+
+.rodape-lista li {
+    margin-bottom: 6px;
+}
+
+/* Links com hover suave (mesma lógica dos botões) */
+.rodape-lista a {
+    color: #f2dede;
+    transition: color 0.2s ease;
+}
+
+.rodape-lista a:hover {
+    color: #ffffff;
+}
+
+.rodape-inferior {
+    border-top: 1px solid rgba(255, 255, 255, 0.25);
+    text-align: center;
+    padding: 14px;
+    font-size: 0.8rem;
+    color: #e0caca;
+}
+
+/* ===============
+   LOGO DO RODAPÉ
+   =============== */
+/*
+   Reutiliza a logo do sistema
+*/
+
+.rodape-logo-imagem {
+    width: 56px;
+    height: 56px;
+    object-fit: cover;
+    border-radius: 50%;
+    background-color: #ffffff;
+    padding: 2px;
+}
+
+/* ============================================
+   IDENTIDADE DO RODAPÉ (LOGO + TEXTO + FRASE)
+   ============================================ */
+
+.rodape-identidade {
+    display: flex;
+    flex-direction: column;
+    /* Empilha logo e frase */
+    gap: 8px;
+    max-width: 320px;
+}
+
+.rodape-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.rodape-logo-texto {
+    font-weight: 700;
+    font-size: 1.15rem;
+    color: #ffffff;
+}
+
+.rodape-frase {
+    font-size: 0.95rem;
+    color: #e0e0e0;
+    margin: 0;
 }

@@ -1,6 +1,7 @@
-// Este arquivo contém o JavaScript personalizado para o site, que pode ser utilizado para adicionar interatividade aos componentes.
-
-// Controla a visualização da senha
+// =========================================================
+// CONTROLE DE VISUALIZAÇÃO DE SENHA
+// =========================================================
+// Alterna entre mostrar e esconder a senha do campo
 function alternarSenha(idCampo, botao) {
 
     const campo = document.getElementById(idCampo);
@@ -20,8 +21,26 @@ function alternarSenha(idCampo, botao) {
         icone.classList.add('bi-eye');
     }
 
-    // Aplica estilo ativo (vermelho vinho)
+    // Marca visualmente o botão como ativo
     botao.classList.toggle('ativo');
 }
+
+
+// =========================================================
+// FOCO AUTOMÁTICO NO PRIMEIRO ALERTA
+// =========================================================
+// Leva o foco para a primeira mensagem de alerta da página
+document.addEventListener('DOMContentLoaded', function () {
+
+    const primeiroAlerta = document.querySelector('.alert');
+
+    if (primeiroAlerta) {
+        setTimeout(function () {
+            primeiroAlerta.focus();
+        }, 100);
+    }
+
+});
+
 
 

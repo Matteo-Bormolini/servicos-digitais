@@ -1,0 +1,62 @@
+<!-- =============
+RODAPÉ DO SISTEMA
+================== -->
+<footer class="rodape-sistema">
+
+<div class="rodape-conteudo">
+
+   <!-- LOGO E FRASE DE EFEITO -->
+   <div class="rodape-identidade">
+
+        <div class="rodape-logo">
+            <img src="{{ url_for('static', filename='logo.png') }}"
+                alt="Serviços Digitais"
+                class="rodape-logo-imagem">
+
+            <span class="rodape-logo-texto">Serviços Digitais</span>
+        </div>
+
+        <p class="rodape-frase">
+            Conectando você aos melhores prestadores mais próximos.
+        </p>
+
+    </div>
+
+   <!-- LINKS RÁPIDOS -->
+   <div class="rodape-coluna">
+       <h4 class="rodape-titulo">Links Rápidos</h4>
+       <ul class="rodape-lista">
+           <li><a href="{{ url_for('servicos.home') }}">Home</a></li>
+           <li><a href="{{ url_for('suporte.suporte') }}">Suporte</a></li>
+           <li><a href="{{ url_for('autenticacao.login') }}">Login</a></li>
+       </ul>
+   </div>
+
+   <!-- CONTATO -->
+   <div class="rodape-coluna">
+       <h4 class="rodape-titulo">Contato</h4>
+       <ul class="rodape-lista">
+           <li>📧 contato@servicosdigitais.com</li>
+           <li>📞 (11) 99999-9999</li>
+           <li>📍 São Paulo - SP</li>
+       </ul>
+   </div>
+
+   <!-- ATENDIMENTO -->
+   <div class="rodape-coluna">
+       <h4 class="rodape-titulo">Atendimento e Suporte</h4>
+       <ul class="rodape-lista">
+           <li>Segunda a Sexta: 8h às 18h</li>
+           <li>Sábados: 8h às 12h</li>
+           <li>Prazo de resposta: até 48 horas</li>
+       </ul>
+   </div>
+
+</div>
+
+<!-- FAIXA INFERIOR -->
+<div class="rodape-inferior">
+   <p>© 2026 Serviços Digitais. Todos os direitos reservados.</p>
+</div>
+
+</footer>
