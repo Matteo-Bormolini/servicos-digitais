@@ -1,0 +1,47 @@
+{% extends "estrutura/base.html" %}
+{% block body %}
+
+<h1 class="mb-4">Gerenciamento de Usuários</h1>
+
+<!-- ======================================================
+     CONTAINER PRINCIPAL (3 COLUNAS FIXAS)
+====================================================== -->
+<div class="usuarios-container">
+
+    <!-- ==================================================
+         COLUNA 1 — TIPOS (10%)
+    ================================================== -->
+    <div class="usuarios-coluna usuarios-coluna-tipos">
+        <h5 class="mb-3">Tipos</h5>
+
+        {% for tipo in tipos %}
+            <a href="{{ url_for('admin.listar_usuarios', tipo=tipo) }}"
+               class="usuarios-tipo-link {% if tipo == tipo_selecionado %}ativo{% endif %}">
+                {{ tipo }}
+            </a>
+        {% endfor %}
+    </div>
+
+    <!-- ==================================================
+         COLUNA 2 — USUÁRIOS (20%)
+    ================================================== -->
+    <div class="usuarios-coluna usuarios-coluna-lista">
+        {% include "usuarios/lista_usuarios.html" %}
+    </div>
+
+    <!-- ==================================================
+         COLUNA 3 — DETALHES (70%)
+    ================================================== -->
+    <div class="usuarios-coluna usuarios-coluna-detalhes">
+        {% if usuario_detalhe %}
+            {% include "usuarios/detalhes_usuario.html" %}
+        {% else %}
+            <p class="text-muted">
+                Selecione um usuário para ver os detalhes.
+            </p>
+        {% endif %}
+    </div>
+
+</div>
+
+{% endblock %}

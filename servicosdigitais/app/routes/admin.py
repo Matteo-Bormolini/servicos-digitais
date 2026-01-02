@@ -7,6 +7,8 @@
 '''
 import os
 
+from sqlalchemy import func
+
 from flask_login import current_user, login_required
 from flask import current_app
 from flask import (
@@ -33,212 +35,277 @@ admin_bp = Blueprint(
     url_prefix="/admin"
 )
 
-
-@admin_bp.route('/', methods=['GET'])
+# ADMIN - painel principal
+@admin_bp.route('/')
 @login_required
 @somente_admin
 @verifica_inatividade
 def admin():
     """
-    Dashboard de quantos usuários possuem, dividos em 4 itens:
-    - Usuários Totais: | - CPF: | - CNPJ: | Prestadores: |
+    Painel inicial administrativo.
     """
-    qtd_cpf = Usuario.query.filter_by(tipo='CPF').count()
-    qtd_cnpj = Usuario.query.filter_by(tipo='CNPJ').count()
-    qtd_prestadores = Usuario.query.filter_by(tipo='Prestador').count()
-    qtd_usuarios = qtd_cpf + qtd_cnpj + qtd_prestadores
 
-    # passe ao template os dados para o resumo
-    return render_template('admin/index.html',
-                           qtd_usuarios=qtd_usuarios,
-                           qtd_cpf=qtd_cpf,
-                           qtd_cnpj=qtd_cnpj,
-                           qtd_prestadores=qtd_prestadores)
+    total_usuarios = Usuario.query.count()
+    usuarios_ativos = Usuario.query.filter_by(ativo=True).count()
+
+    return render_template(
+        'admin/painel.html',
+        total_usuarios=total_usuarios,
+        usuarios_ativos=usuarios_ativos
+    )
 
 
-# ROTA: /admin/usuarios  (lista em 3 colunas conforme solicitado)
+# LISTAR USUÁRIOS - Base do CRUD
 @admin_bp.route('/usuarios', methods=['GET'])
 @login_required
 @somente_admin
-@verifica_inatividade
 def listar_usuarios():
     """
-    Lista de usuários:
-    - tipos:['CPF','CNPJ','Prestador'] - (10%)
-    - nomes: todos os nomes do tipo selecionado para coluna 2 (20%)
-    - detalhe: se user_id for passado, carrega detalhe para coluna 3
+    Lista TODOS os usuários do sistema,
+    inclusive inativos e administradores.
     """
-    # Lista coluna 1 (apenas tipos)
+
     tipos = ['CPF', 'CNPJ', 'Prestador']
-    tipo_selecionado = request.args.get('tipo') or tipos[0]
-    usuarios_nomes = Usuario.query.filter_by(tipo=tipo_selecionado).order_by(Usuario.nome.asc()).all()
-    # Lista coluna 2 (apenas nomes)
-    lista_nomes = [{'id': u.id, 'nome': getattr(u, 'nome_fantasia', u.nome or u.username)} for u in usuarios_nomes] #!! Acho que está errado!
+    tipo_selecionado = request.args.get('tipo', 'CPF')
 
-    # detalhe (coluna 3)
-    user_id = request.args.get('user_id', type=int) #!! Acho que está errado!
-    usuario_detalhe = None
-    if user_id:
-        usuario_detalhe = Usuario.query.get(user_id)
+    usuarios = (
+        Usuario.query
+        .filter(func.upper(func.trim(Usuario.tipo)) == tipo_selecionado.upper())
+        .order_by(Usuario.nome.asc())
+        .all()
+    )
 
-    return render_template('admin/usuarios.html',
-                           tipos=tipos,
-                           tipo_selecionado=tipo_selecionado,
-                           lista_nomes=lista_nomes,
-                           usuario_detalhe=usuario_detalhe)
+    lista_nomes = [
+        {
+            'id': u.id,
+            'nome': u.nome or u.username or u.email
+        }
+        for u in usuarios
+    ]
+
+    user_id = request.args.get('user_id', type=int)
+    usuario_detalhe = Usuario.query.get(user_id) if user_id else None
+
+    return render_template(
+        'usuarios/usuarios.html',
+        tipos=tipos,
+        tipo_selecionado=tipo_selecionado,
+        lista_nomes=lista_nomes,
+        usuario_detalhe=usuario_detalhe
+    )
 
 
-# ROTA: /admin/usuario/<id> (detalhe + ações POST)
-@admin_bp.route('/usuario/<int:usuario_id>', methods=['GET', 'POST'])
+@admin_bp.route('/usuario/<int:usuario_id>', methods=['GET'])
 @login_required
 @somente_admin
 @verifica_inatividade
 def detalhe_usuario(usuario_id):
     """
-    Mostra e processa:
-    - editar_perfil_admin (form completo apropriado ao tipo)
-    - salvar_edicao
-    - toggle_ativo
-    - excluir_perfil
+    Exibe os detalhes do usuário (somente visualização).
+    As ações de CRUD ficam em rotas separadas.
     """
-    
-    # Obter usuário alvo
-    usuario = Usuario.query.get_or_404(usuario_id)
-    tipo = usuario.tipo  # 'cpf', 'cnpj', 'prestador', 'fornecedor'
 
-    if tipo == 'cpf':
-        form = FormEditarCPF()
-    elif tipo == 'cnpj':
-        form = FormEditarCNPJ()
-    elif tipo == 'prestador':
-        form = FormEditarPrestador()
-    # elif tipo == 'fornecedor':
-        #form = FormEditarFornecedor()
-    else:
-        flash("Tipo de usuário desconhecido.", "alert-danger")
+    usuario = Usuario.query.get_or_404(usuario_id)
+
+    return render_template(
+        'usuarios/detalhes_usuario.html',
+        usuario=usuario
+    )
+
+
+@admin_bp.route('/usuario/<int:usuario_id>/editar', methods=['POST'])
+@login_required
+@somente_admin
+@verifica_inatividade
+def editar_usuario(usuario_id):
+    """
+    Atualiza dados básicos do usuário.
+    """
+
+    usuario = Usuario.query.get_or_404(usuario_id)
+
+    email = (request.form.get('email') or '').strip().lower()
+    telefone = request.form.get('telefone')
+
+    # valida e-mail duplicado
+    if email and email != usuario.email:
+        existe = Usuario.query.filter(
+            Usuario.email == email,
+            Usuario.id != usuario.id
+        ).first()
+
+        if existe:
+            flash('Este e-mail já está em uso.', 'warning')
+            return redirect(url_for('admin.detalhe_usuario', usuario_id=usuario.id))
+
+        usuario.email = email
+
+    if hasattr(usuario, 'telefone'):
+        usuario.telefone = telefone or None
+
+    try:
+        bancodedados.session.commit()
+        flash('Dados atualizados com sucesso.', 'success')
+    except Exception:
+        bancodedados.session.rollback()
+        flash('Erro ao atualizar dados.', 'danger')
+
+    return redirect(url_for('admin.detalhe_usuario', usuario_id=usuario.id))
+
+
+@admin_bp.route('/usuarios/<int:usuario_id>/ativacao', methods=['POST'])
+@login_required
+@somente_admin
+def ativacao_usuario(usuario_id):
+    """
+    Ativa ou desativa um usuário.
+    Protege contra desativar o próprio admin.
+    """
+
+    usuario = Usuario.query.get_or_404(usuario_id)
+
+    # Impede que o admin se desative
+    if usuario.id == current_user.id:
+        flash('Você não pode desativar sua própria conta.', 'danger')
         return redirect(url_for('admin.listar_usuarios'))
 
-    # 3) GET → preencher campos
-    if request.method == 'GET':
-        form.email.data = usuario.email
-        if hasattr(usuario, 'telefone'):
-            form.telefone.data = usuario.telefone
+    usuario.ativo = not usuario.ativo
+    bancodedados.session.commit()
 
-        # Campos por tipo
-        if tipo == 'cpf':
-            form.nome.data = usuario.nome
-            form.sobrenome.data = usuario.sobrenome
-        elif tipo == 'cnpj':
-            form.razao_social.data = usuario.razao_social
-            form.cnpj.data = usuario.cnpj
-        elif tipo == 'prestador':
-            form.nome_empresa.data = usuario.nome
-            form.descricao.data = getattr(usuario, 'descricao', None)
-            form.cnpj.data = usuario.cnpj
-        elif tipo == 'fornecedor':
-            form.razao_social.data = usuario.razao_social
-            form.nome_fantasia.data = usuario.nome_fantasia
-            form.cnpj.data = usuario.cnpj
+    flash('Status do usuário atualizado com sucesso.', 'success')
+    return redirect(url_for(
+        'admin.listar_usuarios',
+        tipo=usuario.tipo,
+        user_id=usuario.id
+    ))
 
-    # AÇÃO: Alternar ativo/inativo
-    if request.form.get('acao') == 'toggle_ativo':
-        usuario.ativo = not bool(usuario.ativo)
-        try:
-            bancodedados.session.commit()
-            flash(f"Conta {'ativada' if usuario.ativo else 'desativada'}.", "alert-success")
-        except Exception:
-            bancodedados.session.rollback()
-            flash("Erro ao alterar status da conta.", "alert-danger")
 
-        return redirect(url_for('admin.usuario_detalhe', usuario_id=usuario.id))
-    
-    # AÇÃO: Salvar edição (editar_perfil_admin)
-    if request.form.get('acao') == 'salvar_edicao' and form.validate_on_submit():
+# --== PROMOVER / REMOVER ADMINISTRADOR ==--
+@admin_bp.route('/usuario/<int:usuario_id>/admin', methods=['POST'])
+@login_required
+@somente_admin
+def alternar_admin_usuario(usuario_id):
+    """
+    Alterna o status de administrador do usuário.
+    """
 
-        # ----- Email -----
-        novo_email = (form.email.data or "").strip().lower()
-        if novo_email != (usuario.email or "").strip().lower():
-            # validar duplicidade
-            existente = Usuario.query.filter(
-                Usuario.email == novo_email,
-                Usuario.id != usuario.id
-            ).first()
-            if existente:
-                flash("Este e-mail já está em uso por outro usuário.", "alert-warning")
-                return render_template('admin/usuario_detalhe.html', usuario=usuario, form=form)
-            usuario.email = novo_email
+    usuario = Usuario.query.get_or_404(usuario_id)
 
-        # ----- Telefone -----
-        if hasattr(usuario, 'telefone'):
-            usuario.telefone = form.telefone.data or None
+    # Impede que o admin remova o próprio privilégio
+    if usuario.id == current_user.id:
+        flash('Você não pode remover seu próprio privilégio de administrador.', 'danger')
+        return redirect(url_for(
+            'admin.listar_usuarios',
+            tipo=usuario.tipo,
+            user_id=usuario.id
+        ))
 
-        # ----- Campos por tipo -----
-        if tipo == 'cpf':
-            usuario.nome = form.nome.data or usuario.nome
-            usuario.sobrenome = form.sobrenome.data or usuario.sobrenome
-            # CPF não deve ser alterado
+    usuario.is_admin = not usuario.is_admin
 
-        elif tipo == 'cnpj':
-            usuario.razao_social = form.razao_social.data
-            # CNPJ não deve ser alterado
+    try:
+        bancodedados.session.commit()
+        flash('Permissão de administrador atualizada com sucesso.', 'success')
+    except Exception:
+        bancodedados.session.rollback()
+        flash('Erro ao alterar permissão de administrador.', 'danger')
 
-        elif tipo == 'prestador':
-            usuario.nome = form.nome_empresa.data or usuario.nome
-            usuario.descricao = form.descricao.data or usuario.descricao
-            # CNPJ não deve ser alterado
+    return redirect(url_for(
+        'admin.listar_usuarios',
+        tipo=usuario.tipo,
+        user_id=usuario.id
+    ))
 
-        elif tipo == 'fornecedor':
-            usuario.razao_social = form.razao_social.data
-            usuario.nome_fantasia = form.nome_fantasia.data
-            # CNPJ não deve ser alterado
 
-        # AÇÃO: Excluir Perfil
-        # ----- Alterar senha (admin PODE trocar sem pedir senha atual) -----
-        if getattr(form, 'senha_nova', None) and form.senha_nova.data:
-            novo_hash = bcrypt.generate_password_hash(form.senha_nova.data).decode('utf-8')
-            usuario.senha_hash = novo_hash
+@admin_bp.route('/usuario/<int:usuario_id>/excluir', methods=['POST'])
+@login_required
+@somente_admin
+@verifica_inatividade
+def excluir_usuario(usuario_id):
+    """
+    Exclui usuário do sistema.
 
-        # Salvar tudo
-        try:
-            bancodedados.session.commit()
-            flash("Dados atualizados com sucesso.", "alert-success")
-            return redirect(url_for('admin.usuario_detalhe', usuario_id=usuario.id))
-        except Exception:
-            bancodedados.session.rollback()
-            flash("Erro ao salvar alterações.", "alert-danger")
+    Regras:
+    - Admin NÃO pode excluir outro admin
+    - Soft delete é o padrão (desativa usuário)
+    - Hard delete é opcional
+    """
 
-    # AÇÃO: Excluir perfil (soft delete ou hard delete)
-    if request.form.get('acao') == 'excluir_perfil':
-        metodo = request.form.get('metodo', 'soft')
+    usuario = Usuario.query.get_or_404(usuario_id)
+    metodo = request.form.get('metodo', 'soft')
 
-        # remoção permanente
+    # ------------------------------------------------------
+    # REGRA DE SEGURANÇA: ADMIN NÃO EXCLUI ADMIN
+    # ------------------------------------------------------
+    if usuario.is_admin:
+        flash(
+            'Administradores não podem ser excluídos. '
+            'Utilize a desativação da conta.',
+            'warning'
+        )
+        return redirect(url_for(
+            'admin.listar_usuarios',
+            tipo=usuario.tipo,
+            user_id=usuario.id
+        ))
+
+    try:
+        # --------------------------------------------------
+        # HARD DELETE (remoção definitiva)
+        # --------------------------------------------------
         if metodo == 'hard':
-            try:
-                bancodedados.session.delete(usuario)
-                bancodedados.session.commit()
-                flash("Usuário excluído permanentemente.", "alert-success")
-            except Exception:
-                bancodedados.session.rollback()
-                flash("Erro ao excluir usuário.", "alert-danger")
-            return redirect(url_for('admin.listar_usuarios'))
+            bancodedados.session.delete(usuario)
+            flash('Usuário excluído permanentemente.', 'success')
 
-        # soft delete
-        usuario.ativo = False
-        if hasattr(usuario, 'excluido'):
-            usuario.excluido = True
-        try:
-            bancodedados.session.commit()
-            flash("Usuário marcado como excluído (soft delete).", "alert-warning")
-        except Exception:
-            bancodedados.session.rollback()
-            flash("Erro ao executar soft delete.", "alert-danger")
+        # --------------------------------------------------
+        # SOFT DELETE (desativação)
+        # --------------------------------------------------
+        else:
+            usuario.ativo = False
 
-        return redirect(url_for('admin.listar_usuarios')) # URL TA CERTA?
+            if hasattr(usuario, 'excluido'):
+                usuario.excluido = True
 
-    return render_template('admin/usuario_detalhe.html', usuario=usuario, form=form)
+            flash('Usuário desativado com sucesso.', 'warning')
+
+        bancodedados.session.commit()
+
+    except Exception:
+        bancodedados.session.rollback()
+        flash('Erro ao excluir usuário.', 'danger')
+
+    return redirect(url_for('admin.listar_usuarios'))
 
 
-# ROTA: /admin/criar_usuario  (botão +Usuário abre modal/form)
+# RESETAR SENHAS - Suporte real
+@admin_bp.route('/usuarios/<int:usuario_id>/resetar_senha', methods=['POST'])
+@login_required
+@somente_admin
+def resetar_senha_usuario(usuario_id):
+    """
+    Reseta a senha do usuário para uma senha temporária.
+    """
+
+    usuario = Usuario.query.get_or_404(usuario_id)
+
+    # Senha temporária simples (ajustável depois)
+    senha_temporaria = 'Senha@123'
+
+    usuario.senha_hash = gerar_senha_hash(senha_temporaria)
+    bancodedados.session.commit()
+
+    flash(
+        f'Senha redefinida com sucesso. Senha temporária: {senha_temporaria}',
+        'warning'
+    )
+
+    return redirect(url_for(
+        'admin.listar_usuarios',
+        tipo=usuario.tipo,
+        user_id=usuario.id
+    ))
+
+
+# CRIAR USUÁRIO - Útil para testes
 @admin_bp.route('/criar_usuario', methods=['GET', 'POST'])
 @login_required
 @somente_admin
@@ -290,38 +357,18 @@ def criar_usuario():
     return render_template('admin/criar_usuario.html', tipos=tipos)
 
 
-# ROTA: /admin/alterar_senha (botão fixo canto inferior direito)
-@admin_bp.route('/alterar_senha', methods=['GET', 'POST'])
+'''# ROTA: /admin/avaliacoes  (placeholder)
+@admin_bp.route('/avaliacoes', methods=['GET'])
 @login_required
 @somente_admin
 @verifica_inatividade
-def alterar_senha_admin():
-    """
-    Alterar a própria senha do admin.
-    Requer: senha_atual, nova_senha, confirma.
-    Usa função gerar_senha_hash/verificar_senha_hash do seu projeto.
-    """
-    if request.method == 'POST':
-        senha_atual = request.form.get('senha_atual', '')
-        nova_senha = request.form.get('nova_senha', '')
-        confirma = request.form.get('confirma', '')
-        if not senha_atual or not nova_senha or not confirma:
-            flash('Preencha todos os campos.', 'erro')
-            return redirect(url_for('admin.alterar_senha_admin'))
-        if nova_senha != confirma:
-            flash('Confirmação diferente.', 'erro')
-            return redirect(url_for('admin.alterar_senha_admin'))
-        if not verificar_senha_hash(senha_atual, current_user.senha_hash):
-            flash('Senha atual incorreta.', 'erro')
-            return redirect(url_for('admin.alterar_senha_admin'))
-        current_user.senha_hash = gerar_senha_hash(nova_senha)
-        bancodedados.session.commit()
-        flash('Senha alterada com sucesso.', 'sucesso')
-        return redirect(url_for('admin.admin'))
-    return render_template('admin/alterar_senha.html')
+def avaliacoes_admin():
+    # Modificar futuramente
+    flash('Área de avaliações em implementação.', 'info')
+    return render_template('admin/avaliacoes.html')
+'''
 
-
-# ROTA: /admin/logs
+'''# ROTA: /admin/logs
 @admin_bp.route('/logs', methods=['GET', 'POST'])
 @login_required
 @somente_admin
@@ -356,14 +403,4 @@ def visualizar_logs():
         conteudo = 'Arquivo de log não encontrado.'
 
     return render_template('admin/logs.html', logs=conteudo)
-
-
-# ROTA: /admin/avaliacoes  (placeholder)
-@admin_bp.route('/avaliacoes', methods=['GET'])
-@login_required
-@somente_admin
-@verifica_inatividade
-def avaliacoes_admin():
-    # Modificar futuramente
-    flash('Área de avaliações em implementação.', 'info')
-    return render_template('admin/avaliacoes.html')
+'''

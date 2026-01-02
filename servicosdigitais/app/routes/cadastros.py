@@ -208,7 +208,6 @@ def cadastrar_cnpj():
     )
 
 
-
 # Cadastro Prestador (versão padronizada, similar ao cadastro CNPJ)
 @cadastros_bp.route('/cadastrar_prestador', methods=['GET', 'POST'])
 def cadastrar_prestador():

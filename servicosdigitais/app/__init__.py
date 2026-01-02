@@ -44,6 +44,8 @@ def criar_app():
     # ===========================
     registrar_user_loader()
 
+    registrar_contexto_global(app)
+
     # ===========================
     # Registrar blueprints
     # ===========================
@@ -59,6 +61,15 @@ def criar_app():
     app.register_blueprint(admin_bp)
 
     return app
+
+def registrar_contexto_global(app):
+    from servicosdigitais.app.forms.autenticacao_forms import FormLogout
+
+    @app.context_processor
+    def injetar_forms_globais():
+        return {
+            'form_logout': FormLogout()
+        }
 
 
 def registrar_user_loader():

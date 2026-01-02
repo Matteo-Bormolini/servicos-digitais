@@ -47,9 +47,12 @@
     </div>
 
     <!-- Conteúdo principal das páginas -->
-    <div class="container mt-4 position-relative">
-        {% block body %}{% endblock %}
-    </div>
+    <main class="main-conteudo">
+        <div class="container mt-4 position-relative">
+            {% block body %}{% endblock %}
+        </div>
+    </main>
+
 
     <!-- Rodapé padrão -->
     {% include 'estrutura/rodape.html' %}

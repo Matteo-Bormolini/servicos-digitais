@@ -2,7 +2,7 @@
     <!-- Container principal da barra -->
     <div class="container">
 
-        <!-- Logo e link para a página inicial -->
+        <!-- Logo -->
         <a class="navbar-brand" href="{{ url_for('servicos.home') }}">
             <img src="{{ url_for('static', filename='logo.png') }}" 
                  alt="Serviços Digitais"
@@ -18,6 +18,7 @@
 
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
 
+            <!-- LADO ESQUERDO -->
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
 
                 <li class="nav-item">
@@ -27,11 +28,11 @@
                 </li>
 
                 {% if current_user.is_authenticated and current_user.is_admin %}
-                    <li class="nav-item">
-                        <a class="nav-link nav-item-block" href="{{ url_for('listar_usuarios') }}">
-                            Usuários
-                        </a>
-                    </li>
+                <li class="nav-item">
+                    <a class="nav-link nav-item-block" href="{{ url_for('admin.listar_usuarios') }}">
+                        Usuários
+                    </a>
+                </li>
                 {% endif %}
 
                 {% if not current_user.is_authenticated or current_user.is_admin or current_user.tipo != 'prestador' %}
@@ -44,8 +45,8 @@
 
                 {% if current_user.is_authenticated and (current_user.tipo not in ['cpf', 'cnpj'] or current_user.is_admin) %}
                 <li class="nav-item">
-                    <a class="nav-link nav-item-block" href="{{ url_for('listar_clientes') }}">
-                        Clientes
+                    <a class="nav-link nav-item-block" href="{{ url_for('servicos.home') }}">
+                        Clientes(WOP)
                     </a>
                 </li>
                 {% endif %}
@@ -57,67 +58,47 @@
                 </li>
             </ul>
 
-            <!-- Perfil, Logout, Login, Criar Conta... -->
-            <ul class="navbar-nav d-flex">
+            <!-- LADO DIREITO -->
+            <ul class="navbar-nav d-flex align-items-lg-center">
 
                 {% if current_user.is_authenticated %}
 
-                    <li class="nav-item">
-                        <a class="nav-link nav-item-block" href="{{ url_for('criar_post') }}">
-                            Criar Post
-                        </a>
-                    </li>
+                <li class="nav-item">
+                    <a class="nav-link nav-item-block" href="{{ url_for('servicos.home') }}">
+                        Criar Post
+                    </a>
+                </li>
 
-                    <li class="nav-item">
-                        <a class="nav-link nav-item-block" href="{{ url_for('perfil') }}">
-                            Perfil
-                        </a>
-                    </li>
+                <!-- PERFIL PADRONIZADO -->
+                <li class="nav-item">
+                    <a class="nav-link nav-item-block" href="{{ url_for('perfil.meu_perfil') }}">
+                        Meu Perfil
+                    </a>
+                </li>
 
-                    <!-- Botão de logout que abre a modal -->
-                    <div class="modal fade" id="confirmLogoutModal" tabindex="-1">
-                        <div class="modal-dialog">
-                          <div class="modal-content">
-                            
-                            <div class="modal-header">
-                              <h5 class="modal-title">Confirmar saída</h5>
-                              <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                            </div>
-                      
-                            <div class="modal-body">
-                              Tem certeza que deseja sair?
-                            </div>
-                      
-                            <div class="modal-footer">
-                              <button class="btn btn-secondary" data-bs-dismiss="modal">
-                                Cancelar
-                              </button>
-                      
-                              <form action="{{ url_for('autenticacao.logout') }}" method="POST">
-                                <button type="submit" class="btn btn-danger">
-                                  Sair
-                                </button>
-                              </form>
-                      
-                            </div>
-                      
-                          </div>
-                        </div>
-                      </div>
+                <!-- BOTÃO SAIR (ABRE MODAL) -->
+                <li class="nav-item">
+                    <a class="nav-link nav-item-block text-danger"
+                       href="#"
+                       data-bs-toggle="modal"
+                       data-bs-target="#confirmLogoutModal">
+                        Sair
+                    </a>
+                </li>
 
                 {% else %}
 
-                    <li class="nav-item">
-                        <a class="nav-link nav-item-block" href="{{ url_for('autenticacao.login') }}">
-                            Login
-                        </a>
-                    </li>
+                <li class="nav-item">
+                    <a class="nav-link nav-item-block" href="{{ url_for('autenticacao.login') }}">
+                        Login
+                    </a>
+                </li>
 
-                    <li class="nav-item">
-                        <a class="nav-link nav-item-block" href="{{ url_for('cadastros.criar_conta') }}">
-                            Criar Conta
-                        </a>
-                    </li>
+                <li class="nav-item">
+                    <a class="nav-link nav-item-block" href="{{ url_for('cadastros.criar_conta') }}">
+                        Criar Conta
+                    </a>
+                </li>
 
                 {% endif %}
             </ul>
@@ -125,3 +106,38 @@
         </div>
     </div>
 </nav>
+
+<!-- MODAL DE CONFIRMAÇÃO DE LOGOUT (FORA DO UL) -->
+<div class="modal fade" id="confirmLogoutModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">Confirmar saída</h5>
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+                Tem certeza que deseja sair?
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-secondary"
+                        data-bs-dismiss="modal">
+                    Cancelar
+                </button>
+
+                <form action="{{ url_for('autenticacao.logout') }}" method="POST" class="nav-item d-inline">
+                    {{ form_logout.hidden_tag() }}
+                        <button type="submit" class="nav-link nav-item-block btn btn-link text-danger">
+                            Sair
+                        </button>
+                 </form>
+
+            </div>
+
+        </div>
+    </div>
+</div>

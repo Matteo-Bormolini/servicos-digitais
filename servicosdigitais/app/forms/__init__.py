@@ -8,10 +8,10 @@ Organiza os formulários de:
 - suporte e contato
 """
 from .login_forms import *
+from .autenticacao_forms import *
 from .cadastro_forms import *
 from .perfil_forms import *
 from .suporte_forms import *
-
 
 # Validadores Comuns
 # DataRequired - O campo de usuário não pode estar vazio;

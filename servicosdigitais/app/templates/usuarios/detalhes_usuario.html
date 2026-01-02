@@ -1,51 +1,82 @@
-<!-- Página Detalhes-dos-Usuários -->
-{% extends "estrutura/base.html" %}
-
-{% block body %}
+<!-- ==========================================================
+DETALHES DO USUÁRIO
+========================================================== -->
 
 <!-- ==========================================================
-     BOTÃO VOLTAR (padrão universal do sistema)
-     - Fica no canto superior direito
-     - Usa o estilo btn-voltar já presente no CSS
+BOTÃO VOLTAR
 ========================================================== -->
 <div class="d-flex justify-content-end mb-3">
-    <a href="{{ url_for('listar_usuarios') }}" class="btn btn-voltar">
+    <a href="{{ url_for('admin.listar_usuarios', tipo=tipo_selecionado) }}"
+       class="btn btn-voltar">
         Voltar
     </a>
 </div>
 
 <!-- ==========================================================
-     TÍTULO DA PÁGINA
+TÍTULO
 ========================================================== -->
-<h2 class="mb-3">Detalhes do Usuário</h2>
+<h4 class="mb-4">Detalhes do Usuário</h4>
 
-<!-- ==========================================================
-     INFORMAÇÕES DO USUÁRIO
-========================================================== -->
-<p><strong>Nome:</strong> {{ usuario.nome }}</p>
+<div class="card-cinza d-flex justify-content-between align-items-start gap-4">
 
-<p><strong>Email:</strong> {{ usuario.email }}</p>
+    <!-- ======================================================
+    INFORMAÇÕES DO USUÁRIO
+    ======================================================= -->
+    <div class="usuario-info">
 
-<p><strong>Tipo:</strong> {{ usuario.tipo }}</p>
+        <p><strong>Nome:</strong> {{ usuario_detalhe.nome }}</p>
+        <p><strong>Email:</strong> {{ usuario_detalhe.email }}</p>
+        <p><strong>Tipo:</strong> {{ usuario_detalhe.tipo }}</p>
 
-<p>
-    <strong>Status:</strong>
-    <span class="{{ 'status-ativo' if usuario.ativo else 'status-inativo' }}">
-        {{ 'Ativo' if usuario.ativo else 'Inativo' }}
-    </span>
-</p>
+        <div class="linha-info">
+            <strong>Status:</strong>
+        
+            <span class="badge-status {{ 'status-ativo' if usuario_detalhe.ativo else 'status-inativo' }}">
+                {{ 'Ativo' if usuario_detalhe.ativo else 'Inativo' }}
+            </span>
+        
+            <form method="post"
+                  action="{{ url_for('admin.ativacao_usuario', usuario_id=usuario_detalhe.id) }}">
+                <button type="submit" class="btn btn-acao-admin btn-sm">
+                    {{ 'Desativar' if usuario_detalhe.ativo else 'Ativar' }}
+                </button>
+            </form>
+        </div>
 
-<p><strong>Data de criação:</strong> {{ usuario.created_at }}</p>
+        <div class="linha-info">
+            <strong>Administrador:</strong>
+        
+            <span class="badge-admin">
+                {{ 'Sim' if usuario_detalhe.is_admin else 'Não' }}
+            </span>
+        
+            {% if usuario_detalhe.is_admin %}
+            <form method="post"
+                  action="{{ url_for('admin.alternar_admin_usuario', usuario_id=usuario_detalhe.id) }}">
+                <button type="submit" class="btn btn-acao-admin btn-sm">
+                    Remover Admin
+                </button>
+            </form>
+            {% endif %}
+        </div>
 
-<!-- ==========================================================
-     FOTO DE PERFIL (se existir)
-========================================================== -->
-{% if usuario.foto_perfil %}
-    <p><strong>Foto de perfil:</strong></p>
-    <img src="{{ url_for('static', filename='fotos_perfil/' ~ usuario.foto_perfil) }}"
-     width="180"
-     class="rounded shadow-sm">
 
-{% endif %}
+        <!-- ==================================================
+        AÇÕES ADMINISTRATIVAS
+        =================================================== -->
+        {% include "usuarios/crud_usuarios.html" %}
 
-{% endblock %}
+    </div>
+
+    <!-- ======================================================
+    FOTO DE PERFIL (SUSPENSA À DIREITA)
+    ====================================================== -->
+    {% if usuario_detalhe.foto_perfil %}
+    <div class="usuario-foto">
+        <img src="{{ url_for('static', filename='fotos_perfil/' ~ usuario_detalhe.foto_perfil) }}"
+             width="160"
+             class="rounded shadow-sm foto-borda-fina">
+    </div>
+    {% endif %}
+
+</div>

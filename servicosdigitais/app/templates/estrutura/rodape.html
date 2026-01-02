@@ -28,7 +28,9 @@ RODAPÉ DO SISTEMA
        <ul class="rodape-lista">
            <li><a href="{{ url_for('servicos.home') }}">Home</a></li>
            <li><a href="{{ url_for('suporte.suporte') }}">Suporte</a></li>
-           <li><a href="{{ url_for('autenticacao.login') }}">Login</a></li>
+           {% if not current_user.is_authenticated %}
+                <li><a href="{{ url_for('autenticacao.login') }}">Login</a></li>
+            {% endif %}
        </ul>
    </div>
 
@@ -37,8 +39,8 @@ RODAPÉ DO SISTEMA
        <h4 class="rodape-titulo">Contato</h4>
        <ul class="rodape-lista">
            <li>📧 contato@servicosdigitais.com</li>
-           <li>📞 (11) 99999-9999</li>
-           <li>📍 São Paulo - SP</li>
+           <li>📞 (19) 98265-6051</li>
+           <li>📍 Indaiatuba - SP</li>
        </ul>
    </div>
 
