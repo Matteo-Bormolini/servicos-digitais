@@ -20,12 +20,10 @@
 
 <body>
 
-    <!-- Navbar padrão -->
     {% include 'estrutura/navbar.html' %}
 
-    <!-- Mensagens de alerta -->
+    <!-- Alertas -->
     <div class="container mt-3" aria-live="polite">
-
         {% macro exibir_alertas() %}
             {% with messages = get_flashed_messages(with_categories=true) %}
                 {% if messages %}
@@ -42,118 +40,24 @@
                 {% endif %}
             {% endwith %}
         {% endmacro %}
-
         {{ exibir_alertas() }}
     </div>
 
-    <!-- Conteúdo principal das páginas -->
     <main class="main-conteudo">
-        <div class="container mt-4 position-relative">
+        <div class="container mt-4">
             {% block body %}{% endblock %}
         </div>
     </main>
 
-
-    <!-- Rodapé padrão -->
     {% include 'estrutura/rodape.html' %}
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
 
-    <!-- JavaScript do projeto -->
+    <!-- JS do projeto -->
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 
     {% block scripts %}{% endblock %}
-
-    <!-- Modal de confirmação de logout -->
-    <div class="modal fade" id="confirmLogoutModal" tabindex="-1"
-         aria-labelledby="confirmLogoutLabel" aria-hidden="true">
-
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-
-                <div class="modal-header">
-                    <h5 class="modal-title" id="confirmLogoutLabel">
-                        Confirmar saída
-                    </h5>
-                    <button type="button"
-                            class="btn-close"
-                            data-bs-dismiss="modal"
-                            aria-label="Fechar"></button>
-                </div>
-
-                <div class="modal-body">
-                    Tem certeza que deseja encerrar a sessão?
-                </div>
-
-                <div class="modal-footer">
-                    <button type="button"
-                            class="btn btn-secondary"
-                            data-bs-dismiss="modal">
-                        Cancelar
-                    </button>
-
-                    <form action="{{ url_for('autenticacao.logout') }}"
-                          method="post"
-                          class="d-inline">
-                        <button type="submit" class="btn btn-danger">
-                            Sim — sair
-                        </button>
-                    </form>
-                </div>
-
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal para completar perfil -->
-    <div class="modal fade" id="completeProfileModal" tabindex="-1"
-         aria-labelledby="completeProfileLabel" aria-hidden="true">
-
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-
-                <div class="modal-header">
-                    <h5 class="modal-title" id="completeProfileLabel">
-                        Conta criada — Quase lá!
-                    </h5>
-                    <button type="button"
-                            class="btn-close"
-                            data-bs-dismiss="modal"
-                            aria-label="Fechar"></button>
-                </div>
-
-                <div class="modal-body">
-                    Sua conta foi criada com sucesso.
-                    Complete seu perfil para facilitar contatos.
-                </div>
-
-                <div class="modal-footer">
-                    <a class="btn btn-primary"
-                       href="{{ url_for('perfil.editar_perfil') }}">
-                        Editar Perfil Agora
-                    </a>
-                    <button type="button"
-                            class="btn btn-secondary"
-                            data-bs-dismiss="modal">
-                        Depois
-                    </button>
-                </div>
-
-            </div>
-        </div>
-    </div>
-
-    {% if request.args.get('show_edit_prompt') %}
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const modal = new bootstrap.Modal(
-                document.getElementById('completeProfileModal')
-            );
-            modal.show();
-        });
-    </script>
-    {% endif %}
 
 </body>
 </html>
