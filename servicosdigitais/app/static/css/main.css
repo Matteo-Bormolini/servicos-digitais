@@ -866,7 +866,6 @@ SELETOR DE TIPO DE CADASTRO
     color: #e0e0e0;
     margin: 0;
 }
-
 /* ==========================================================
    USUÁRIOS — LAYOUT PRINCIPAL
    Proporção: 10% | 20% | 70%
@@ -879,7 +878,7 @@ SELETOR DE TIPO DE CADASTRO
 }
 
 .usuarios-coluna {
-    background: #f8f9fa;
+    background-color: #f8f9fa;
     padding: 12px;
     border-radius: 6px;
 }
@@ -898,6 +897,11 @@ SELETOR DE TIPO DE CADASTRO
     width: 70%;
 }
 
+
+/* ==========================================================
+   TIPOS DE USUÁRIO (CPF / CNPJ / PRESTADOR)
+========================================================== */
+
 .usuarios-tipo-link {
     display: block;
     padding: 6px 8px;
@@ -905,77 +909,88 @@ SELETOR DE TIPO DE CADASTRO
     text-decoration: none;
     color: #333;
     border-radius: 4px;
+    background-color: #f1f1f1;
+    transition: background-color 0.2s ease, color 0.2s ease;
 }
 
+.usuarios-tipo-link:hover,
 .usuarios-tipo-link.ativo {
-    background-color: #0d6efd;
-    color: #fff;
-}
-
-.usuarios-item {
-    display: block;
-    padding: 6px 8px;
-    margin-bottom: 6px;
-    text-decoration: none;
-    color: #000;
-    border-radius: 4px;
-}
-
-.usuarios-item:hover {
-    background-color: #e9ecef;
-}
-
-
-.usuario-selecionado {
     background-color: #7b1e26;
     color: #fff;
-    border-radius: 4px;
 }
 
-/* === FOTO SUSPENSA === */
-.usuario-info {
-    flex: 1;
-}
-
-.usuario-foto img {
-    object-fit: cover;
-}
 
 /* ==========================================================
-   ÁREA ADMIN — USUÁRIOS
-   Escopo exclusivo das páginas de gerenciamento
+   LISTA DE USUÁRIOS — ADMIN
 ========================================================== */
 
-/* Card principal */
+.lista-usuarios-admin .list-group {
+    margin: 0;
+    padding: 0;
+}
+
+.lista-usuarios-admin .list-group-item {
+    background-color: #f1f1f1;
+    border: none;
+    border-bottom: 1px solid #ddd;
+    padding: 8px 12px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.lista-usuarios-admin .list-group-item:last-child {
+    border-bottom: none;
+}
+
+.lista-usuarios-admin .list-group-item a {
+    display: block;
+    width: 100%;
+    color: #333;
+    text-decoration: none;
+}
+
+.lista-usuarios-admin .list-group-item:hover,
+.lista-usuarios-admin .usuario-selecionado {
+    background-color: #7b1e26;
+}
+
+.lista-usuarios-admin .list-group-item:hover a,
+.lista-usuarios-admin .usuario-selecionado a {
+    color: #fff;
+    font-weight: 500;
+}
+
+
+/* ==========================================================
+   ÁREA ADMIN — DETALHES DO USUÁRIO
+========================================================== */
+
 .card-cinza {
     background-color: #f8f9fa;
     border-radius: 8px;
     padding: 20px;
 }
 
-/* Bloco de informações */
 .usuario-info {
     flex: 1;
     min-width: 300px;
 }
 
-/* Foto suspensa à direita */
 .usuario-foto {
     flex-shrink: 0;
     display: flex;
     align-items: flex-start;
 }
 
-/* Ajuste visual dos botões CRUD */
-.usuario-info form {
-    margin-bottom: 0;
+.usuario-foto img {
+    object-fit: cover;
 }
 
-.usuario-info .btn {
-    min-width: 120px;
-}
 
-/* Status visual */
+/* ==========================================================
+   STATUS DO USUÁRIO
+========================================================== */
+
 .status-ativo {
     color: #198754;
     font-weight: 600;
@@ -986,53 +1001,33 @@ SELETOR DE TIPO DE CADASTRO
     font-weight: 600;
 }
 
-/* ===============================
-   BOTÕES ADMINISTRATIVOS
-================================= */
 
-.btn-acao-admin,
-.btn-voltar {
+/* ==========================================================
+   BOTÕES ADMINISTRATIVOS (PADRÃO ÚNICO)
+========================================================== */
+
+.btn-voltar,
+.btn-acao-admin {
     background-color: #6c757d;
-    /* cinza padrão */
     color: #fff;
     border: none;
+    min-width: 120px;
     transition: background-color 0.2s ease;
 }
 
-.btn-acao-admin:hover,
 .btn-voltar:hover,
-.btn-acao-admin:active,
-.btn-voltar:active {
+.btn-voltar:active,
+.btn-acao-admin:hover,
+.btn-acao-admin:active {
     background-color: #7b1e26;
-    /* vermelho vinho */
     color: #fff;
 }
 
-.aviso-admin {
-    padding: 6px 10px;
-    /* rente ao texto */
-    margin: 0;
-    border: none;
-    /* remove borda grossa */
-    border-radius: 4px;
-    font-size: 0.9rem;
-    line-height: 1.4;
-    width: fit-content;
-    /* fundo acompanha o texto */
-    max-width: 100%;
-}
 
-.foto-borda-fina {
-    border: 1px solid #222;
-    border-radius: 6px;
-    background-color: #fff;
-    padding: 2px;
-    /* efeito moldura */
-}
+/* ==========================================================
+   LINHAS DE INFORMAÇÃO COM AÇÃO
+========================================================== */
 
-/* =========================
-LINHAS DE INFO COM AÇÃO
-========================= */
 .linha-info {
     display: flex;
     align-items: center;
@@ -1040,55 +1035,29 @@ LINHAS DE INFO COM AÇÃO
     margin-bottom: 10px;
 }
 
-/* Botão padrão administrativo */
-.btn-acao-admin {
-    background-color: #6c757d;
-    /* cinza igual Voltar */
-    color: #fff;
-    border: none;
+
+/* ==========================================================
+   AVISO ADMINISTRATIVO
+========================================================== */
+
+.aviso-admin {
+    padding: 6px 10px;
+    margin: 0;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    width: fit-content;
+    max-width: 100%;
 }
 
-.btn-acao-admin:hover,
-.btn-acao-admin:active {
-    background-color: #7a1f2b;
-    /* vermelho vinho */
-    color: #fff;
-}
 
-/* ==========================
-LISTA DE USUÁRIOS — ADMIN
-========================= */
+/* ==========================================================
+   FOTO — BORDA FINA (MOLDURA)
+========================================================== */
 
-.lista-usuarios-admin .list-group-item {
-    background-color: #f1f1f1;
-    border: none;
-    border-bottom: 1px solid #ddd;
-    padding: 8px 12px;
-    transition: background-color 0.2s ease;
-}
-
-.lista-usuarios-admin .list-group-item a {
-    color: #333;
-    text-decoration: none;
-    display: block;
-    width: 100%;
-}
-
-/* Hover */
-.lista-usuarios-admin .list-group-item:hover {
-    background-color: #7b1e1e;
-}
-
-.lista-usuarios-admin .list-group-item:hover a {
-    color: #fff;
-}
-
-/* Selecionado */
-.lista-usuarios-admin .usuario-selecionado {
-    background-color: #7b1e1e !important;
-}
-
-.lista-usuarios-admin .usuario-selecionado a {
-    color: #fff;
-    font-weight: 500;
+.foto-borda-fina {
+    border: 1px solid #222;
+    border-radius: 6px;
+    background-color: #fff;
+    padding: 2px;
 }

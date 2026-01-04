@@ -1,21 +1,22 @@
 <!-- ==LISTAGEM DE USUÁRIOS== -->
 
-<!-- ==BOTÃO VOLTAR AO MENU (APENAS UM)== -->
+<!-- BOTÃO VOLTAR AO MENU (APENAS UM) -->
 <div class="d-flex justify-content-end mb-3">
     <a href="{{ url_for('servicos.home') }}" class="btn btn-voltar">
         Voltar
     </a>
 </div>
 
-<!-- ==USUÁRIOS DO TIPO SELECIONADO== -->
+<!-- USUÁRIOS DO TIPO SELECIONADO -->
 <h4 class="mb-3">Usuários</h4>
 
 {% if lista_nomes|length == 0 %}
-<p class="text-muted">Nenhum usuário encontrado.</p>
+    <p class="text-muted">Nenhum usuário encontrado.</p>
 {% else %}
 
 <div class="lista-usuarios-admin">
     <ul class="list-group">
+
         {% for u in lista_nomes %}
         <li class="list-group-item
             {% if usuario_detalhe and usuario_detalhe.id == u.id %}
@@ -32,6 +33,7 @@
 
         </li>
         {% endfor %}
+
     </ul>
 </div>
 
