@@ -1,13 +1,12 @@
 # ======================================================
 # Routes - Perfil do Usuário
 # ======================================================
-'''  Responsável por:
+''' Responsável por:
     - Exibir perfil público
     - Exibir perfil do usuário logado
     - Alternar ocultação de dados sensíveis
     - Editar dados do perfil
 '''
-
 
 from flask import (
     Blueprint, render_template, redirect,
@@ -22,54 +21,39 @@ from servicosdigitais.app.forms.perfil_forms import (
 )
 from servicosdigitais.app.utilidades.upload_imagem import trocar_imagem_usuario
 from servicosdigitais.app.utilidades.validadores import email_existe
+from servicosdigitais.app.utilidades.normalizadores import obter_documento_exibicao
 
 
+# ======================================================
 # Blueprint do perfil
+# ======================================================
 perfil_bp = Blueprint(
     "perfil",
     __name__,
     template_folder="templates"
 )
 
+
 # ======================================================
 # ALTERNAR OCULTAÇÃO DE DADOS
 # ======================================================
-@perfil_bp.route('/perfil/<int:user_id>/toggle_ocultar', methods=['POST'])
+@perfil_bp.route('/toggle-ocultar/<int:user_id>', methods=['POST'])
 @login_required
 def toggle_ocultar(user_id):
-    ''' Permite ao dono do perfil ativar/desativar
-    a ocultação de dados sensíveis
-    '''
-    # Busca usuário alvo
-    usuario = Usuario.query.get_or_404(user_id)
 
-    # Apenas o dono pode alterar
-    if current_user.id != usuario.id:
-        flash("Ação não permitida.", "danger")
-        return redirect(
-            url_for(
-                'perfil.perfil_publico',
-                user_id=user_id
-            )
-        )
+    if current_user.id != user_id:
+        flash('Ação não permitida.', 'danger')
+        return redirect(url_for('perfil.meu_perfil'))
 
-    # Inverte estado da ocultação
-    usuario.ocultar_dados = not usuario.ocultar_dados
+    current_user.ocultar_dados = not current_user.ocultar_dados
+    bancodedados.session.commit()
 
-    try:
-        bancodedados.session.commit()
-        flash("Preferência atualizada.", "success")
-    except Exception:
-        bancodedados.session.rollback()
-        current_app.logger.exception("Erro ao alternar ocultar dados")
-        flash("Erro ao salvar alteração.", "danger")
+    if current_user.ocultar_dados:
+        flash('Seus dados agora estão ocultos.', 'warning')
+    else:
+        flash('Seus dados agora estão visíveis.', 'success')
 
-    return redirect(
-        url_for(
-            'perfil.perfil_publico',
-            user_id=user_id
-        )
-    )
+    return redirect(url_for('perfil.meu_perfil'))
 
 
 # ======================================================
@@ -100,23 +84,25 @@ def perfil_publico(user_id):
     Aplica regras de visibilidade para dados sensíveis.
     """
 
-    # Busca usuário ou retorna 404
+    # ============================
+    # USUÁRIO BASE
+    # ============================
     usuario = Usuario.query.get_or_404(user_id)
 
-    # Contexto de quem visualiza
+    # ============================
+    # CONTEXTO DE VISUALIZAÇÃO
+    # ============================
     eh_logado = current_user.is_authenticated
     eh_dono = eh_logado and current_user.id == usuario.id
     eh_admin = eh_logado and getattr(current_user, 'is_admin', False)
 
-    # Regra clara de blur
-    if eh_dono or eh_admin:
-        usar_blur = False
-    else:
-        usar_blur = usuario.ocultar_dados
-
-    # Nome completo (evita None)
-    nome_completo = " ".join(
-        parte for parte in [usuario.nome, usuario.sobrenome] if parte
+    # ============================
+    # REGRA GLOBAL DE BLUR
+    # ============================
+    usar_blur = (
+        usuario.ocultar_dados
+        and not eh_dono
+        and not eh_admin
     )
 
     # ============================
@@ -130,44 +116,73 @@ def perfil_publico(user_id):
     # ============================
     # DOCUMENTO (CPF / CNPJ)
     # ============================
-    documento = None
-
-    if usuario.tipo == 'cpf' and hasattr(usuario, 'cliente_cpf'):
-        documento = usuario.cliente_cpf.cpf
-
-    elif usuario.tipo == 'cnpj' and hasattr(usuario, 'cliente_cnpj'):
-        documento = usuario.cliente_cnpj.cnpj
-
-    documento_display = (
-        'Informação protegida'
-        if usar_blur else (documento or '—')
-    )
-
+    documento_tipo, documento_raw = obter_documento_exibicao(usuario)
+    if documento_raw:
+        documento_display = 'Informação protegida' if usar_blur else documento_raw
+    else:
+        documento_display = 'Documento não disponível'
+        documento_tipo = 'Documento'
 
     # ============================
-    # EMAIL E TELEFONE
+    # EMAIL (OPCIONAL)
     # ============================
-    email_display = (
-        'Informação protegida'
-        if usar_blur else usuario.email
-    )
+    if usuario.email:
+        email_display = 'Informação protegida' if usar_blur else usuario.email
+    else:
+        email_display = None
 
-    telefone_display = (
-        'Informação protegida'
-        if usar_blur else (usuario.telefone or '—')
-    )
+    # ============================
+    # TELEFONE (OPCIONAL)
+    # ============================
+    if usuario.telefone:
+        telefone_display = 'Informação protegida' if usar_blur else usuario.telefone
+    else:
+        telefone_display = 'Informação protegida' if usar_blur else 'Nenhum telefone cadastrado'
+
+    # ============================
+    # FORMULÁRIO POR TIPO DE USUÁRIO
+    # ============================
+    tipo_usuario = usuario.tipo if eh_dono else None
+    form = None
+
+    if eh_dono:
+        if tipo_usuario == 'cpf':
+            form = FormEditarCPF()
+        elif tipo_usuario == 'cnpj':
+            form = FormEditarCNPJ()
+        else:
+            form = FormEditarPrestador()
+
+        # preenchimento inicial do form
+        if form:
+            form.email.data = usuario.email
+            if hasattr(form, 'telefone'):
+                form.telefone.data = usuario.telefone
+            if hasattr(form, 'nome'):
+                form.nome.data = getattr(usuario, 'nome', '')
+            if hasattr(form, 'sobrenome'):
+                form.sobrenome.data = getattr(usuario, 'sobrenome', '')
+            if hasattr(form, 'username'):
+                form.username.data = getattr(usuario, 'username', '')
+            if hasattr(form, 'nome_empresa'):
+                form.nome_empresa.data = getattr(usuario, 'nome_empresa', '')
+            if hasattr(form, 'razao_social'):
+                form.razao_social.data = getattr(usuario, 'razao_social', '')
+            if hasattr(form, 'descricao'):
+                form.descricao.data = getattr(usuario, 'descricao', '')
 
     return render_template(
         'perfil.html',
         usuario=usuario,
-        nome_completo=nome_completo,
+        foto_url=foto_url,
+        documento_label=documento_tipo,
+        documento_display=documento_display,
         email_display=email_display,
         telefone_display=telefone_display,
-        documento_display=documento_display,
-        foto_url=foto_url,
         usar_blur=usar_blur,
         eh_dono=eh_dono,
-        eh_admin=eh_admin
+        eh_admin=eh_admin,
+        form=form
     )
 
 
@@ -177,12 +192,6 @@ def perfil_publico(user_id):
 @perfil_bp.route('/perfil/editar', methods=['GET', 'POST'])
 @login_required
 def editar_perfil():
-    """
-    Permite ao usuário editar seus dados pessoais,
-    trocar senha e alterar foto de perfil.
-    """
-
-    # Define formulário conforme o tipo de usuário
     tipo_usuario = current_user.tipo
 
     if tipo_usuario == 'cpf':
@@ -192,69 +201,57 @@ def editar_perfil():
     else:
         form = FormEditarPrestador()
 
-    # Preenchimento inicial
+    # preenchimento inicial
     if request.method == 'GET':
         form.email.data = current_user.email
-
         if hasattr(form, 'telefone'):
             form.telefone.data = current_user.telefone
+        if hasattr(form, 'nome'):
+            form.nome.data = getattr(current_user, 'nome', '')
+        if hasattr(form, 'sobrenome'):
+            form.sobrenome.data = getattr(current_user, 'sobrenome', '')
+        if hasattr(form, 'username'):
+            form.username.data = getattr(current_user, 'username', '')
+        if hasattr(form, 'nome_empresa'):
+            form.nome_empresa.data = getattr(current_user, 'nome_empresa', '')
+        if hasattr(form, 'razao_social'):
+            form.razao_social.data = getattr(current_user, 'razao_social', '')
+        if hasattr(form, 'descricao'):
+            form.descricao.data = getattr(current_user, 'descricao', '')
 
-    # Processamento
+    # processamento do formulário
     if form.validate_on_submit():
-
-        # ---------- EMAIL ----------
+        # EMAIL
         if form.email.data != current_user.email:
-            if email_existe(
-                form.email.data,
-                exclude_user_id=current_user.id
-            ):
+            if email_existe(form.email.data, exclude_user_id=current_user.id):
                 flash("E-mail já em uso.", "warning")
-                return render_template(
-                    'editar_perfil.html',
-                    form=form
-                )
+                return redirect(url_for('perfil.editar_perfil'))
             current_user.email = form.email.data
 
-        # ---------- TELEFONE ----------
+        # TELEFONE
         if hasattr(form, 'telefone'):
             current_user.telefone = form.telefone.data
 
-        # ---------- SENHA ----------
+        # SENHA
         if form.senha_nova.data:
-            if not bcrypt.check_password_hash(
-                current_user.senha_hash,
-                form.senha_atual.data
-            ):
+            if not bcrypt.check_password_hash(current_user.senha_hash, form.senha_atual.data):
                 flash("Senha atual incorreta.", "danger")
-                return render_template(
-                    'editar_perfil.html',
-                    form=form
-                )
+                return redirect(url_for('perfil.editar_perfil'))
+            current_user.senha_hash = bcrypt.generate_password_hash(form.senha_nova.data).decode('utf-8')
 
-            current_user.senha_hash = bcrypt.generate_password_hash(
-                form.senha_nova.data
-            ).decode('utf-8')
-
-        # ---------- FOTO ----------
+        # FOTO
         if form.foto_perfil.data:
-            trocar_imagem_usuario(
-                current_user,
-                form.foto_perfil.data
-            )
+            trocar_imagem_usuario(current_user, form.foto_perfil.data)
 
-        # ---------- SALVAR ----------
+        # SALVAR
         try:
             bancodedados.session.commit()
             flash("Perfil atualizado.", "success")
-            return redirect(
-                url_for('perfil.meu_perfil')
-            )
         except Exception:
             bancodedados.session.rollback()
             current_app.logger.exception("Erro ao salvar perfil")
             flash("Erro ao salvar alterações.", "danger")
 
-    return render_template(
-        'editar_perfil.html',
-        form=form
-    )
+        return redirect(url_for('perfil.meu_perfil'))
+
+    return render_template('editarperfil.html', usuario=current_user, form=form)

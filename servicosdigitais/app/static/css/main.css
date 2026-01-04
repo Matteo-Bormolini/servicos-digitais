@@ -1061,3 +1061,28 @@ SELETOR DE TIPO DE CADASTRO
     background-color: #fff;
     padding: 2px;
 }
+
+/* ================================
+   TOPO DO PERFIL (AVISO + BOTÃO)
+   ================================ */
+.perfil-topo-controles {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+}
+
+/* ================================
+   AVISO DE OCULTAÇÃO DE DADOS
+   ================================ */
+.aviso-ocultacao {
+    font-size: 0.75rem;
+    background-color: #fff3cd;
+    color: #664d03;
+    padding: 4px 8px;
+    border-radius: 4px;
+    line-height: 1.2;
+    white-space: nowrap;
+}

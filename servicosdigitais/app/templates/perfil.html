@@ -6,87 +6,91 @@
     <div class="card perfil-card position-relative">
         <div class="card-body">
 
-            <!-- BOTÃO OCULTAR DADOS (TOPO DIREITO) -->
+            <!-- AVISO FIXO NO CANTO SUPERIOR DIREITO -->
             {% if eh_dono %}
-                <form method="post"
-                      action="{{ url_for('perfil.toggle_ocultar', user_id=usuario.id) }}"
-                      class="position-absolute top-0 end-0 m-3">
-                    <button type="submit"
-                            class="btn btn-sm btn-outline-secondary">
+            <div class="perfil-topo-controles">
+                {% if usuario.ocultar_dados %}
+                    <div class="aviso-ocultacao">
+                        Seus dados mais sensíveis estão ocultos para os visitantes.
+                    </div>
+                {% endif %}
+                <form method="post" action="{{ url_for('perfil.toggle_ocultar', user_id=usuario.id) }}">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <button type="submit" class="btn btn-sm btn-outline-secondary">
                         {% if usuario.ocultar_dados %}
-                            Mostrar dados
+                            Mostrar Dados
                         {% else %}
-                            Ocultar dados
+                            Ocultar Dados
                         {% endif %}
                     </button>
                 </form>
+            </div>
             {% endif %}
 
-            <!-- FOTO + DADOS -->
+            <!-- FOTO + NOME -->
             <div class="d-flex gap-3 align-items-start">
-
-                <img src="{{ foto_url }}"
-                     alt="Foto de perfil"
-                     class="perfil-foto rounded-3">
-
+                <img src="{{ foto_url }}" alt="Foto de perfil" class="perfil-foto rounded-3">
                 <div class="flex-grow-1">
-
-                    <h5 class="mb-2">{{ nome_completo }}</h5>
-
-                    <p class="mb-1">
-                        <strong>E-mail:</strong><br>
+                    <div class="d-flex align-items-center gap-2 mb-2">
+                        <h5 class="mb-0">{{ usuario.nome }}</h5>
+                        {% if usuario.sobrenome %}
+                            <h5 class="mb-0 text-muted">{{ usuario.sobrenome }}</h5>
+                        {% endif %}
+                    </div>
+                    {% if email_display %}
+                    <p class="mb-1"><strong>E-mail:</strong><br>
                         {% if usar_blur %}
-                            <span class="borrado-inline sensitive-field">
-                                {{ email_display }}
-                            </span>
+                            <span class="borrado-inline sensitive-field">{{ email_display }}</span>
                         {% else %}
                             {{ email_display }}
                         {% endif %}
                     </p>
-
-                    <p class="mb-1">
-                        <strong>Documento:</strong><br>
-                        {% if usar_blur %}
-                            <span class="borrado-inline sensitive-field">
-                                {{ documento_display }}
-                            </span>
+                    {% endif %}
+                    <div class="mb-3">
+                        <strong>Documento</strong><br>
+                        {% if documento_display %}
+                            {% if tipo_documento == 'CPF' %}
+                                {% if usar_blur %}
+                                    <span class="borrado-inline sensitive-field">CPF: {{ documento_display }}</span>
+                                {% else %}
+                                    CPF: {{ documento_display }}
+                                {% endif %}
+                            {% elif tipo_documento == 'CNPJ' %}
+                                {% if usar_blur %}
+                                    <span class="borrado-inline sensitive-field">CNPJ: {{ documento_display }}</span>
+                                {% else %}
+                                    CNPJ: {{ documento_display }}
+                                {% endif %}
+                            {% endif %}
                         {% else %}
-                            {{ documento_display }}
+                            <span class="text-muted">Documento não disponível</span>
                         {% endif %}
-                    </p>
-
-                    <p class="mb-1">
-                        <strong>Telefone:</strong><br>
+                    </div>
+                    <p class="mb-1"><strong>Telefone:</strong><br>
                         {% if usar_blur %}
-                            <span class="borrado-inline sensitive-field">
-                                {{ telefone_display }}
-                            </span>
+                            <span class="borrado-inline sensitive-field">{{ telefone_display }}</span>
                         {% else %}
                             {{ telefone_display }}
                         {% endif %}
                     </p>
-
                 </div>
             </div>
 
             <hr>
 
-            <!-- SERVIÇOS EXTRAS -->
-            <div>
-                <strong>Serviços extras</strong>
-                <p class="mb-0">
-                    {{ usuario.descricao or 'Nenhuma informação adicional.' }}
-                </p>
-            </div>
-
             {% if eh_dono %}
-                <hr>
-                <div class="d-grid">
-                    <a href="{{ url_for('perfil.editar_perfil') }}"
-                       class="btn btn-primary">
-                        Editar perfil
-                    </a>
-                </div>
+            <!-- BOTÃO PARA EDITAR -->
+            <div class="d-grid mb-3">
+                <button id="btn-editar-perfil" type="button" class="btn btn-primary" aria-expanded="false" aria-controls="form-editar-perfil">
+                    Editar perfil
+                </button>
+            </div>
+            
+            <!-- FORMULÁRIO OCULTO -->
+            <div id="form-editar-perfil" class="d-none" aria-hidden="true">
+                {% block form_editar_perfil %}{% endblock %}
+            </div>
+            
             {% endif %}
 
         </div>
@@ -96,5 +100,5 @@
 {% endblock %}
 
 {% block scripts %}
-{% include 'estrutura/perfil_blur.html' %}
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
 {% endblock %}

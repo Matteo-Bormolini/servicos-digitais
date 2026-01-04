@@ -62,3 +62,29 @@ def esta_ativo(valor): # TALVEZ mudar
         return True
     # tratar booleans
     return bool(valor)
+
+
+def obter_documento_exibicao(usuario):
+    """
+    Retorna o tipo de documento (CPF ou CNPJ) e o valor formatado
+    para exibição no perfil.
+    """
+
+    # ============================
+    # CPF
+    # ============================
+    if hasattr(usuario, 'cliente_cpf') and usuario.cliente_cpf:
+        if usuario.cliente_cpf.cpf:
+            return 'CPF', usuario.cliente_cpf.cpf
+
+    # ============================
+    # CNPJ
+    # ============================
+    if hasattr(usuario, 'cliente_cnpj') and usuario.cliente_cnpj:
+        if usuario.cliente_cnpj.cnpj:
+            return 'CNPJ', usuario.cliente_cnpj.cnpj
+
+    # ============================
+    # AUSÊNCIA DE DOCUMENTO
+    # ============================
+    return None, None
