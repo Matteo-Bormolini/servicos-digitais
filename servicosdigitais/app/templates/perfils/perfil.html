@@ -1,0 +1,79 @@
+{% extends 'estrutura/base.html' %}
+
+{% block body %}
+<section class="perfil-container mx-auto">
+
+    <!-- ================= CARD: VISUALIZAÇÃO DO PERFIL ================= -->
+    <div class="card perfil-card position-relative">
+        <div class="card-body">
+
+            {% if eh_dono %}
+            <div class="perfil-topo-controles">
+                {% if usuario.ocultar_dados %}
+                    <div class="aviso-ocultacao">
+                        Seus dados mais sensíveis estão ocultos para os visitantes.
+                    </div>
+                {% endif %}
+
+                <form method="post" action="{{ url_for('perfil.toggle_ocultar', user_id=usuario.id) }}">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <button type="submit" class="btn btn-sm btn-outline-secondary">
+                        {% if usuario.ocultar_dados %}
+                            Mostrar Dados
+                        {% else %}
+                            Ocultar Dados
+                        {% endif %}
+                    </button>
+                </form>
+            </div>
+            {% endif %}
+
+            <!-- FOTO + DADOS -->
+            <div class="d-flex gap-3 align-items-start">
+                <img src="{{ foto_url }}" alt="Foto de perfil" class="perfil-foto rounded-3">
+
+                <div class="flex-grow-1">
+                    <h5 class="mb-1">
+                        {{ usuario.nome }}
+                        {% if usuario.sobrenome %}
+                            {{ usuario.sobrenome }}
+                        {% endif %}
+                    </h5>
+
+
+                    <p class="mb-1"><strong>E-mail:</strong><br>{{ email_display }}</p>
+                    <p class="mb-1"><strong>Telefone:</strong><br>{{ telefone_display }}</p>
+                </div>
+            </div>
+
+            <br>
+
+            {% if eh_dono %}
+            <div class="d-grid">
+                <button
+                    id="btn-editar-perfil"
+                    type="button"
+                    class="btn btn-primary"
+                    aria-expanded="false"
+                    aria-controls="form-editar-perfil">
+                    Editar perfil
+                </button>
+            </div>
+            {% endif %}
+
+        </div> <!-- fecha card-body -->
+    </div> <!-- fecha card -->
+
+    <!-- ================= FORMULÁRIO: EDIÇÃO DO PERFIL ================= -->
+    {% if eh_dono %}
+    <div id="form-editar-perfil" class="d-none mt-4" aria-hidden="true">
+        {% include 'perfils/editar_perfil.html' %}
+    </div>
+    {% endif %}
+
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/perfil.js') }}"></script>
+{% endblock %}

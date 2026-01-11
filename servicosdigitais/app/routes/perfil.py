@@ -8,21 +8,26 @@
     - Editar dados do perfil
 '''
 
+from wtforms import PasswordField
+from wtforms.validators import EqualTo, Optional, Length
+
 from flask import (
     Blueprint, render_template, redirect,
     url_for, flash, request, current_app
 )
 from flask_login import login_required, current_user
 
+from servicosdigitais.app.utilidades.upload_imagem import trocar_imagem_usuario
+from servicosdigitais.app.utilidades.validadores import email_existe
+from servicosdigitais.app.utilidades.normalizadores import obter_documento_exibicao
 from servicosdigitais.app import bancodedados, bcrypt
 from servicosdigitais.app.models.usuario import Usuario
 from servicosdigitais.app.forms.perfil_forms import (
     FormEditarCPF, FormEditarCNPJ, FormEditarPrestador
 )
-from servicosdigitais.app.utilidades.upload_imagem import trocar_imagem_usuario
-from servicosdigitais.app.utilidades.validadores import email_existe
-from servicosdigitais.app.utilidades.normalizadores import obter_documento_exibicao
-
+from servicosdigitais.app.utilidades.seguranca import (
+    gerar_senha_hash, verificar_senha_hash
+)
 
 # ======================================================
 # Blueprint do perfil
@@ -172,7 +177,7 @@ def perfil_publico(user_id):
                 form.descricao.data = getattr(usuario, 'descricao', '')
 
     return render_template(
-        'perfil.html',
+        'perfils/perfil.html',
         usuario=usuario,
         foto_url=foto_url,
         documento_label=documento_tipo,
@@ -189,69 +194,111 @@ def perfil_publico(user_id):
 # ======================================================
 # EDITAR PERFIL
 # ======================================================
-@perfil_bp.route('/perfil/editar', methods=['GET', 'POST'])
+@perfil_bp.route('/perfil/editar', methods=['POST'])
 @login_required
 def editar_perfil():
+    """
+    Edita dados do perfil do usuário logado.
+    Permite alterar dados básicos e senha (opcional),
+    sem exigir senha atual.
+    """
+
     tipo_usuario = current_user.tipo
 
+    # ==========================================================
+    # SELEÇÃO DO FORMULÁRIO CORRETO
+    # ==========================================================
     if tipo_usuario == 'cpf':
-        form = FormEditarCPF()
+        form = FormEditarCPF(obj=current_user)
     elif tipo_usuario == 'cnpj':
-        form = FormEditarCNPJ()
+        form = FormEditarCNPJ(obj=current_user)
+    elif tipo_usuario == 'prestador':
+        form = FormEditarPrestador(obj=current_user)
     else:
-        form = FormEditarPrestador()
+        # Admin ou fallback
+        form = FormEditarCPF(obj=current_user)
 
-    # preenchimento inicial
-    if request.method == 'GET':
-        form.email.data = current_user.email
-        if hasattr(form, 'telefone'):
-            form.telefone.data = current_user.telefone
-        if hasattr(form, 'nome'):
-            form.nome.data = getattr(current_user, 'nome', '')
-        if hasattr(form, 'sobrenome'):
-            form.sobrenome.data = getattr(current_user, 'sobrenome', '')
-        if hasattr(form, 'username'):
-            form.username.data = getattr(current_user, 'username', '')
-        if hasattr(form, 'nome_empresa'):
-            form.nome_empresa.data = getattr(current_user, 'nome_empresa', '')
-        if hasattr(form, 'razao_social'):
-            form.razao_social.data = getattr(current_user, 'razao_social', '')
-        if hasattr(form, 'descricao'):
-            form.descricao.data = getattr(current_user, 'descricao', '')
-
-    # processamento do formulário
-    if form.validate_on_submit():
-        # EMAIL
-        if form.email.data != current_user.email:
-            if email_existe(form.email.data, exclude_user_id=current_user.id):
-                flash("E-mail já em uso.", "warning")
-                return redirect(url_for('perfil.editar_perfil'))
-            current_user.email = form.email.data
-
-        # TELEFONE
-        if hasattr(form, 'telefone'):
-            current_user.telefone = form.telefone.data
-
-        # SENHA
-        if form.senha_nova.data:
-            if not bcrypt.check_password_hash(current_user.senha_hash, form.senha_atual.data):
-                flash("Senha atual incorreta.", "danger")
-                return redirect(url_for('perfil.editar_perfil'))
-            current_user.senha_hash = bcrypt.generate_password_hash(form.senha_nova.data).decode('utf-8')
-
-        # FOTO
-        if form.foto_perfil.data:
-            trocar_imagem_usuario(current_user, form.foto_perfil.data)
-
-        # SALVAR
-        try:
-            bancodedados.session.commit()
-            flash("Perfil atualizado.", "success")
-        except Exception:
-            bancodedados.session.rollback()
-            current_app.logger.exception("Erro ao salvar perfil")
-            flash("Erro ao salvar alterações.", "danger")
-
+    # ==========================================================
+    # VALIDAÇÃO DO FORMULÁRIO
+    # ==========================================================
+    if not form.validate_on_submit():
+        flash("Erro ao validar o formulário.", "danger")
         return redirect(url_for('perfil.meu_perfil'))
 
-    return render_template('editarperfil.html', usuario=current_user, form=form)
+    alterou_algo = False
+
+    # ==========================================================
+    # NOME
+    # ==========================================================
+    if hasattr(form, 'nome'):
+        nome_novo = (form.nome.data or '').strip()
+        nome_atual = (current_user.nome or '').strip()
+
+        if nome_novo != nome_atual:
+            current_user.nome = nome_novo if nome_novo else None
+            alterou_algo = True
+
+    # ==========================================================
+    # SOBRENOME
+    # ==========================================================
+    if hasattr(form, 'sobrenome'):
+        sobrenome_novo = (form.sobrenome.data or '').strip()
+        sobrenome_atual = (current_user.sobrenome or '').strip()
+
+        if sobrenome_novo != sobrenome_atual:
+            current_user.sobrenome = sobrenome_novo if sobrenome_novo else None
+            alterou_algo = True
+
+    # ==========================================================
+    # EMAIL
+    # ==========================================================
+    if hasattr(form, 'email'):
+        email_novo = form.email.data.strip()
+
+        if email_novo != current_user.email:
+            if email_existe(email_novo, exclude_user_id=current_user.id):
+                flash("E-mail já está em uso.", "warning")
+                return redirect(url_for('perfil.meu_perfil'))
+
+            current_user.email = email_novo
+            alterou_algo = True
+
+    # ==========================================================
+    # TELEFONE
+    # ==========================================================
+    if hasattr(form, 'telefone'):
+        telefone_novo = (form.telefone.data or '').strip()
+        telefone_atual = (current_user.telefone or '').strip()
+
+        if telefone_novo != telefone_atual:
+            current_user.telefone = telefone_novo if telefone_novo else None
+            alterou_algo = True
+
+    # ==========================================================
+    # ALTERAÇÃO DE SENHA (SEM SENHA ATUAL)
+    # ==========================================================
+    if form.nova_senha.data:
+        current_user.senha = gerar_senha_hash(form.nova_senha.data)
+        alterou_algo = True
+
+    # ==========================================================
+    # FOTO DE PERFIL
+    # ==========================================================
+    if hasattr(form, 'foto_perfil') and form.foto_perfil.data:
+        trocar_imagem_usuario(current_user, form.foto_perfil.data)
+        alterou_algo = True
+
+    # ==========================================================
+    # SALVAR ALTERAÇÕES
+    # ==========================================================
+    if alterou_algo:
+        try:
+            bancodedados.session.commit()
+            flash("Perfil atualizado com sucesso.", "success")
+        except Exception:
+            bancodedados.session.rollback()
+            flash("Erro ao salvar alterações.", "danger")
+    else:
+        flash("Nenhuma alteração foi detectada.", "info")
+
+    return redirect(url_for('perfil.meu_perfil'))

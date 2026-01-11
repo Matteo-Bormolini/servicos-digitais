@@ -1,0 +1,111 @@
+<section class="container mt-4" id="container-editar-perfil">
+
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-11 col-xl-10">
+
+            <form
+                method="POST"
+                action="{{ url_for('perfil.editar_perfil') }}"
+                enctype="multipart/form-data"
+                class="border rounded p-4 shadow-sm bg-white"
+            >
+
+                {{ form.csrf_token }}
+
+                <h3 class="mb-3">Editar Perfil</h3>
+
+                <p class="small text-muted mb-3">
+                    Preenchimento opcional.<br>
+                    Alterações só ocorrem se algum campo for modificado.
+                </p>
+
+                <fieldset>
+
+    {# ================= FOTO DE PERFIL (PRIMEIRO ITEM) ================= #}
+                    {% if form.foto_perfil is defined %}
+                        <div class="mb-4">
+                            {{ form.foto_perfil.label(class="form-label") }}
+                            {{ form.foto_perfil(class="form-control") }}
+                        </div>
+                    {% endif %}
+
+    {# ================= NOME DO PERFIL (SEGUNDO ITEM) ================= #}
+                    {% if form.nome is defined %}
+                        <div class="mb-3">
+                            {{ form.nome.label(class="form-label") }}
+                            {{ form.nome(
+                                class="form-control",
+                                placeholder="Nome ainda não preenchido" if not form.nome.data else ""
+                            ) }}
+                        </div>
+                    {% endif %}
+
+
+    {# ================ SOBRENOME DO PERFIL (TERCEIRO ITEM) ================ #}
+                    {% if form.sobrenome is defined %}
+                        <div class="mb-3">
+                            {{ form.sobrenome.label(class="form-label") }}
+                            {{ form.sobrenome(
+                                class="form-control",
+                                placeholder="Sobrenome ainda não preenchido" if not form.sobrenome.data else ""
+                            ) }}
+                        </div>
+                    {% endif %}
+
+
+    {# ================= TELEFONE DO PERFIL (QUARTO ITEM) ================= #}
+                    {% if form.telefone is defined %}
+                        <div class="mb-3">
+                            {{ form.telefone.label(class="form-label") }}
+                            {{ form.telefone(
+                                class="form-control",
+                                placeholder="Telefone ainda não preenchido" if not form.telefone.data else ""
+                            ) }}
+                        </div>
+                    {% endif %}
+
+    {# ================= EMAIL DO PERFIL (QUINTO ITEM) ================= #}
+                    {% if form.email is defined %}
+                        <div class="mb-3">
+                            {{ form.email.label(class="form-label") }}
+                            {{ form.email(
+                                class="form-control",
+                                placeholder="E-mail ainda não preenchido" if not form.email.data else ""
+                            ) }}
+                        </div>
+                    {% endif %}
+
+            {# ================= MUDAR SENHA (SEXTO ITEM) ================= #}
+                    {% if form.nova_senha is defined %}
+                        <div class="mb-3">
+                            {{ form.nova_senha.label(class="form-label") }}
+                            {{ form.nova_senha(
+                                class="form-control",
+                                placeholder="Digite uma nova senha"
+                            ) }}
+                        </div>
+                    {% endif %}
+        
+
+    {# ================ CONFIRMAR MUDAR SENHA (SETIMO ITEM) ================ #}
+                    {% if form.confirmacao_senha is defined %}
+                        <div class="mb-3">
+                            {{ form.confirmacao_senha.label(class="form-label") }}
+                            {{ form.confirmacao_senha(
+                                class="form-control",
+                                placeholder="Confirme a nova senha"
+                            ) }}
+                        </div>
+                    {% endif %}
+
+                </fieldset>
+
+                <button type="submit" class="btn btn-primary w-100">
+                    Salvar alterações
+                </button>
+
+            </form>
+
+        </div>
+    </div>
+</section>
