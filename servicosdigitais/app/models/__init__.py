@@ -5,13 +5,19 @@ Este módulo centraliza os models para facilitar importações
 e manter a organização do sistema.
 """
 
+from servicosdigitais.app.extensoes import bancodedados
+# usuário base
 from .usuario import Usuario
+# clientes
 from .clientes import ClienteCPF, ClienteCNPJ
+# prestadores
 from .prestador import PrestadorServico, ServicoPrestado
-from .midia import FotoPerfil
+# conteúdo do site
 from .conteudo import TextosEntrada, ImagensSite
+# mídia
+from .midia import FotoPerfil
+# suporte
 from .suporte import SupportTicket
-
 
 
 ''' Não irei usar ainda no banco de dados:  
