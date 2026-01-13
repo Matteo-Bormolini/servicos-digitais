@@ -10,6 +10,8 @@ AÇÕES ADMINISTRATIVAS — USUÁRIO
           class="d-inline"
           onsubmit="return confirm('Deseja realmente resetar a senha deste usuário?')">
 
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
         <button type="submit" class="btn btn-sm btn-acao-admin">
             Resetar Senha
         </button>
@@ -23,25 +25,13 @@ AÇÕES ADMINISTRATIVAS — USUÁRIO
 
         <form method="post"
               action="{{ url_for('admin.excluir_usuario', usuario_id=usuario_detalhe.id) }}"
-              class="d-inline"
-              onsubmit="return confirm('Deseja desativar este usuário?')">
-
-            <input type="hidden" name="metodo" value="soft">
-
-            <button type="submit" class="btn btn-sm btn-acao-admin">
-                Desativar Conta
-            </button>
-        </form>
-
-        <form method="post"
-              action="{{ url_for('admin.excluir_usuario', usuario_id=usuario_detalhe.id) }}"
               class="d-inline ms-2"
               onsubmit="return confirm('ATENÇÃO: esta ação é permanente. Deseja continuar?')">
 
             <input type="hidden" name="metodo" value="hard">
 
             <button type="submit" class="btn btn-sm btn-acao-admin">
-                Excluir Permanentemente
+                Excluir Permanente
             </button>
         </form>
 

@@ -16,10 +16,14 @@ from flask import (
     )
 
 from servicosdigitais.app.utilidades.seguranca import (
-    gerar_senha_hash, verificar_senha_hash
+    gerar_senha_hash, verificar_senha_hash, gerar_senha_temp,
     )
 
 from servicosdigitais.app.utilidades.autenticacao import verifica_inatividade, get_caminho_log
+
+from servicosdigitais.app.utilidades.comunicacao.email_padrao import email_reset_senha
+from servicosdigitais.app.utilidades.comunicacao.servicos_email import enviar_email
+
 from servicosdigitais.app.utilidades.autorizacao import somente_admin
 from servicosdigitais.app.utilidades.validadores import apenas_numeros
 from servicosdigitais.app.extensoes import bancodedados, bcrypt
@@ -282,29 +286,44 @@ def excluir_usuario(usuario_id):
 @somente_admin
 def resetar_senha_usuario(usuario_id):
     """
-    Reseta a senha do usuário para uma senha temporária.
+    Reset administrativo de senha.
     """
 
     usuario = Usuario.query.get_or_404(usuario_id)
 
-    # Senha temporária simples (ajustável depois)
-    senha_temporaria = 'Senha@123'
+    if usuario.id == current_user.id:
+        flash('Você não pode resetar sua própria senha.', 'danger')
+        return redirect(url_for(
+            'admin.listar_usuarios',
+            tipo=usuario.tipo,
+            user_id=usuario.id
+        ))
 
-    usuario.senha_hash = gerar_senha_hash(senha_temporaria)
-    bancodedados.session.commit()
+    nova_senha = gerar_senha_temp()
 
-    flash(
-        f'Senha redefinida com sucesso. Senha temporária: {senha_temporaria}',
-        'warning'
-    )
+    usuario.set_senha(nova_senha)
+    usuario.senha_temp = True
+
+    try:
+        bancodedados.session.commit()
+
+        assunto, corpo = email_reset_senha(usuario.nome, nova_senha)
+        enviar_email(usuario.email, assunto, corpo)
+
+        flash(
+            'Senha redefinida com sucesso. O usuário receberá a nova senha por e-mail.',
+            'success'
+        )
+
+    except Exception:
+        bancodedados.session.rollback()
+        flash('Erro ao resetar a senha do usuário.', 'danger')
 
     return redirect(url_for(
         'admin.listar_usuarios',
         tipo=usuario.tipo,
         user_id=usuario.id
     ))
-
-
 # CRIAR USUÁRIO - Útil para testes
 @admin_bp.route('/criar_usuario', methods=['GET', 'POST'])
 @login_required

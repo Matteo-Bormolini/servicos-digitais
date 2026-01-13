@@ -5,7 +5,8 @@ from servicosdigitais.app.extensoes import (
     bancodedados,
     bcrypt,
     login_manager,
-    csrf
+    csrf,
+    migrate
 )
 
 
@@ -35,9 +36,11 @@ def criar_app():
     # Inicializar extensões
     # ===========================
     bancodedados.init_app(app)
+    migrate.init_app(app, bancodedados)
     bcrypt.init_app(app)
     login_manager.init_app(app)
     csrf.init_app(app)
+
 
     # ===========================
     # Registrar user_loader

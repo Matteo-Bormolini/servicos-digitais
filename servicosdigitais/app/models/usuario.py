@@ -27,16 +27,22 @@ class Usuario(bancodedados.Model, UserMixin):
     # ====== SEGURANÇA ======
 
     ocultar_dados = bancodedados.Column(bancodedados.Boolean, default=False, nullable=False)
+
     # contador de tentativas de senha falhas
     tentativas_falhas = bancodedados.Column(bancodedados.Integer, default=0, nullable=False)
     # timestamp da última tentativa falha
     ultima_falha = bancodedados.Column(bancodedados.DateTime(timezone=True), nullable=True)
     # se definido e > agora => conta bloqueada até esse horário
     bloqueado_ate = bancodedados.Column(bancodedados.DateTime(timezone=True), nullable=True)
+
     # 1=ativo, 0=desativado
     ativo = bancodedados.Column(bancodedados.Boolean, default=True, nullable=False)
     # Se o usuário é administrador
     is_admin = bancodedados.Column(bancodedados.Boolean, default=False, nullable=False)
+
+    # Indica que a senha atual foi gerada pelo sistema (reset)
+    senha_temp = bancodedados.Column(bancodedados.Boolean, default=False, nullable=False)
+
 # Criação da conta
     created_at = bancodedados.Column(
         bancodedados.DateTime(timezone=True),

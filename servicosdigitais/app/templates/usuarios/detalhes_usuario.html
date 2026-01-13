@@ -37,9 +37,12 @@ TÍTULO
         
             <form method="post"
                   action="{{ url_for('admin.ativacao_usuario', usuario_id=usuario_detalhe.id) }}">
+
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
                 <button type="submit" class="btn btn-acao-admin btn-sm">
                     {{ 'Desativar' if usuario_detalhe.ativo else 'Ativar' }}
-                </button>
+                    </button>
             </form>
         </div>
 
@@ -53,6 +56,9 @@ TÍTULO
             {% if usuario_detalhe.is_admin %}
             <form method="post"
                   action="{{ url_for('admin.alternar_admin_usuario', usuario_id=usuario_detalhe.id) }}">
+
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
                 <button type="submit" class="btn btn-acao-admin btn-sm">
                     Remover Admin
                 </button>

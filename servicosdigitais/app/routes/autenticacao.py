@@ -1,16 +1,17 @@
 # ========================
-# Routes - Login/ Logout e sessão
+# Routes - Login / Logout e Sessão
 # ========================
 
-''' O que tem dentro da página de autenticação (login/logout)
-    - Rota de login
-    - Rota de logout
+'''
+Conteúdo deste arquivo:
+- Rota de login
+- Rota de logout
 '''
 
 from flask import (
-    render_template, redirect, url_for, flash, request, Blueprint, session
-    )
-from flask_login import current_user, login_required, login_user
+    render_template, redirect, url_for, flash, request, Blueprint
+)
+from flask_login import login_required, login_user
 
 from sqlalchemy.exc import SQLAlchemyError
 
@@ -25,11 +26,14 @@ from servicosdigitais.app.forms.login_forms import FormLogin
 from servicosdigitais.app.utilidades.normalizadores import esta_ativo
 from servicosdigitais.app.utilidades.validadores import (
     parece_email, apenas_numeros, detectar_tipo_por_numeros
-    )
+)
 from servicosdigitais.app.utilidades.autenticacao import (
     verificar_bloqueio, registrar_sucesso, registrar_falha, logout_user
-    )
+)
 
+# ========================
+# Blueprint de autenticação
+# ========================
 
 autenticacao_bp = Blueprint(
     "autenticacao",
@@ -38,9 +42,9 @@ autenticacao_bp = Blueprint(
     url_prefix="/auth"
 )
 
-# -------------------------
-# Autenticação: login / logout
-# -------------------------
+# ======================================================
+# LOGIN
+# ======================================================
 @autenticacao_bp.route('/login', methods=['GET', 'POST'])
 def login():
     """
@@ -65,27 +69,25 @@ def login():
         # BUSCA DO USUÁRIO
         # ==========================
         try:
-            # --- LOGIN POR EMAIL ---
+            # --- LOGIN POR E-MAIL ---
             if parece_email(identificador):
                 usuario = Usuario.query.filter_by(email=identificador).first()
 
             # --- LOGIN POR CPF / CNPJ ---
             else:
                 numeros = apenas_numeros(identificador)
-                tipo = detectar_tipo_por_numeros(numeros)
+                tipo_documento = detectar_tipo_por_numeros(numeros)
 
-                # CPF
-                if tipo == 'cpf':
+                if tipo_documento == 'cpf':
                     usuario = ClienteCPF.query.filter_by(cpf=numeros).first()
 
-                # CNPJ
-                elif tipo == 'cnpj':
+                elif tipo_documento == 'cnpj':
                     cliente = ClienteCNPJ.query.filter_by(cnpj=numeros).first()
                     prestador = PrestadorServico.query.filter_by(cnpj=numeros).first()
                     usuario = cliente or prestador
 
         except SQLAlchemyError:
-            flash("Erro interno ao processar login.", "alert-danger")
+            flash("Erro interno ao processar o login.", "alert-danger")
             return render_template('login.html', form=form)
 
         # ==========================
@@ -113,7 +115,10 @@ def login():
         # CONTA ATIVA?
         # ==========================
         if hasattr(usuario, 'ativo') and not esta_ativo(usuario.ativo):
-            flash("Conta desativada ou pendente de ativação.", "alert-warning")
+            flash(
+                "Conta desativada ou pendente de ativação.",
+                "alert-warning"
+            )
             return redirect(url_for('servicos.home'))
 
         # ==========================
@@ -121,25 +126,46 @@ def login():
         # ==========================
         registrar_sucesso(usuario)
 
+        # ==================================================
+        # SENHA TEMPORÁRIA → TROCA OBRIGATÓRIA
+        # ==================================================
+        if hasattr(usuario, 'senha_temp') and usuario.senha_temp:
+            login_user(usuario, remember=False)
+
+            flash(
+                "Por segurança, você deve alterar sua senha antes de continuar.",
+                "alert-warning"
+            )
+
+            return redirect(
+                url_for('perfil.alterar_senha_obrigatoria')
+            )
+
+        # ==========================
+        # LOGIN NORMAL
+        # ==========================
         lembrar = bool(form.lembrar_dados.data)
         login_user(usuario, remember=lembrar)
 
         flash("Login realizado com sucesso.", "alert-success")
 
         destino = request.args.get('next')
-        return redirect(destino) if destino else redirect(url_for('servicos.home'))
+        return redirect(destino) if destino else redirect(
+            url_for('servicos.home')
+        )
 
     # ==========================
-    # GET → RENDERIZA LOGIN
+    # GET → TELA DE LOGIN
     # ==========================
     return render_template('login.html', form=form)
 
 
+# ======================================================
+# LOGOUT
+# ======================================================
 @autenticacao_bp.route('/logout', methods=['POST'])
 @login_required
 def logout():
     logout_user()
     flash("Você foi desconectado com sucesso.", "alert-info")
     return redirect(url_for('servicos.home'))
-
-# Falta: Recuperar senha
