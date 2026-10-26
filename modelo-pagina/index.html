@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="pt-BR" data-tema="claro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Título da página — S.D Serviços Digitais</title>
+<!-- MODELO: copie esta pasta, renomeie (ex.: sobre/) e troque título, data-pagina e conteúdo. -->
+<!-- Padrão do site (mesma ordem em todas as páginas) -->
+<link rel="stylesheet" href="../configuracoes/base.css">
+<link rel="stylesheet" href="../navbar/navbar.css">
+<link rel="stylesheet" href="../rodape/rodape.css">
+<!-- <link rel="stylesheet" href="NOME-DA-PAGINA.css"> -->
+<script src="../seguranca/acesso.js" defer></script>
+<script src="../configuracoes/config.js" defer></script>
+<script src="../navbar/navbar.js" defer></script>
+<script src="../rodape/rodape.js" defer></script>
+<!-- <script src="NOME-DA-PAGINA.js" defer></script> -->
+</head>
+<!-- data-pagina: inicio, servicos, clientes, prestador, sobre, politicas, suporte, perfil
+     data-logado: o SERVIDOR preenche "sim" quando a pessoa está logada ("nao" = visitante)
+     data-tipo:   cliente-cpf | cliente-cnpj | prestador | adm (define a página de "Meu perfil")
+     Componentes prontos (opcional): ../componentes/<nome>/ — ver README.md
+     data-raiz:   caminho até a pasta SDOnline ("../" para páginas em uma pasta) -->
+<body data-pagina="" data-logado="nao" data-tipo="" data-raiz="../">
+<header id="sd-navbar"></header>
+<main id="conteudo" class="pagina">
+  <h1>Título da página</h1>
+  <p>Conteúdo da página aqui.</p>
+  <p><a class="btn" href="../home/index.html">Botão padrão</a> <a class="link" href="../home/index.html">Link padrão</a></p>
+  <p class="mensagem info">Exemplo de mensagem informativa.</p>
+  <span class="selo-demo">Dados de demonstração</span>
+</main>
+<footer id="sd-rodape"></footer>
+</body>
+</html>
