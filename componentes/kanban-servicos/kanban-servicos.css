@@ -1,0 +1,166 @@
+/* =====================================================================
+   S.D — QUADRO DE SERVIÇOS DO PRESTADOR (componentes/kanban-servicos/kanban-servicos.css)
+   Usado com kanban-servicos.js + componentes/carrossel.
+   Cores e formas vêm dos tokens --cor-* do configuracoes/base.css.
+   Cada etapa tem um marcador com FORMA própria (não depende só da cor).
+   O título/contador do painel (.servicos-topo) fica no perfil-base.css.
+   ===================================================================== */
+
+/* ---------- 1. RESUMO EM NÚMEROS ---------- */
+.kanban-resumo {
+  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .75rem;
+  margin: 0 0 1.25rem;
+}
+.kanban-resumo div {
+  padding: .75rem 1rem;
+  background: var(--cor-superficie-2);
+  border: 1px solid var(--cor-divisoria); border-radius: 10px;
+}
+.kanban-resumo dt { font-size: .75rem; color: var(--cor-texto-secundario); text-transform: uppercase; letter-spacing: .03em; font-weight: 600; }
+.kanban-resumo dd { margin: .125rem 0 0; font-size: 1.25rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+
+/* ---------- 2. QUADRO: 4 COLUNAS ---------- */
+.kanban {
+  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .875rem;
+  align-items: start;
+}
+.kanban-coluna {
+  min-width: 0;
+  padding: .75rem;
+  background: var(--cor-superficie-2);
+  border: 1px solid var(--cor-divisoria); border-radius: var(--raio-cartao);
+  transition: border-color .15s ease, background-color .15s ease;
+}
+.kanban.arrastando-ativo .kanban-coluna { border-style: dashed; }
+.kanban-coluna.alvo-soltar { border: 2px solid var(--cor-vinho); background: var(--cor-superficie); }
+
+.kanban-coluna-topo { padding: 0 .25rem .625rem; border-bottom: 1px solid var(--cor-divisoria); margin-bottom: .75rem; }
+.kanban-coluna-topo h3 { display: flex; align-items: center; gap: .5rem; margin: 0; font-size: 1rem; font-weight: 700; }
+.kanban-qtd { font-weight: 600; color: var(--cor-texto-secundario); font-size: .875rem; }
+.kanban-coluna-dica { margin: .125rem 0 0; font-size: .75rem; color: var(--cor-texto-secundario); }
+.kanban-coluna-soma { margin: .25rem 0 0; font-size: .875rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+.kanban-coluna-soma:empty { display: none; }
+
+/* Marcador da etapa: forma + cor (acessível para daltônicos) */
+.kanban-marcador { width: .75rem; height: .75rem; flex: none; border: 2px solid var(--cor-texto-secundario); }
+[data-etapa="orcando"]  .kanban-marcador { border-radius: 50%; border-style: dashed; }               /* círculo tracejado */
+[data-etapa="aceito"]   .kanban-marcador { border-radius: 50%; border-color: var(--cor-info); }       /* círculo */
+[data-etapa="realizar"] .kanban-marcador { border-radius: 2px; border-color: var(--cor-atencao); background: var(--cor-atencao-fundo); } /* quadrado */
+[data-etapa="prestado"] .kanban-marcador { border-radius: 50%; border-color: var(--cor-sucesso); background: var(--cor-sucesso); }       /* círculo cheio */
+
+.kanban-lista { list-style: none; margin: 0; padding: 0; display: grid; gap: .625rem; }
+.kanban-vazio {
+  margin: 0; padding: 1rem .5rem; text-align: center;
+  font-size: .8125rem; color: var(--cor-texto-secundario);
+  border: 1px dashed var(--cor-divisoria); border-radius: 10px;
+}
+
+/* ---------- 3. CARTÃO ---------- */
+.kanban-card {
+  position: relative;
+  background: var(--cor-superficie);
+  border: 1px solid var(--cor-divisoria); border-radius: 10px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, .05);
+  transition: border-color .15s ease, box-shadow .15s ease;
+}
+.kanban-card:hover { border-color: var(--cor-vinho); }
+.kanban-card.expandido { border-color: var(--cor-vinho); box-shadow: 0 4px 14px rgba(0, 0, 0, .08); }
+.kanban-card.arrastando { opacity: .5; }
+.kanban-card.recem-movido { animation: kanban-destaque 1.2s ease-out; }
+@keyframes kanban-destaque {
+  0%   { box-shadow: 0 0 0 3px var(--cor-vinho); }
+  100% { box-shadow: 0 1px 2px rgba(0, 0, 0, .05); }
+}
+
+/* Alça de arrasto (só faz sentido com mouse) */
+.kanban-alca {
+  position: absolute; top: .375rem; right: .25rem;
+  width: 1.25rem; height: 1.5rem;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--cor-texto-secundario); cursor: grab; opacity: .7;
+}
+.kanban-alca svg { width: 1rem; height: 1rem; }
+@media (hover: none) { .kanban-alca { display: none; } }
+
+.kanban-card-topo {
+  display: grid; grid-template-columns: 2.5rem minmax(0, 1fr) 1rem; gap: .25rem .625rem;
+  align-items: center;
+  width: 100%; padding: .75rem 1.5rem .75rem .75rem;
+  font: inherit; color: var(--cor-texto); text-align: left;
+  background: transparent; border: 0; border-radius: 10px; cursor: pointer;
+}
+.kanban-card-topo:focus-visible { outline: 3px solid var(--cor-vinho); outline-offset: -3px; }
+.kanban-foto {
+  width: 2.5rem; height: 2.5rem; border-radius: 50%; overflow: hidden;
+  border: 1px solid var(--cor-divisoria); background: var(--cor-superficie-2);
+}
+.kanban-foto img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.kanban-card-textos { min-width: 0; display: flex; flex-direction: column; }
+.kanban-card-titulo { font-size: .875rem; font-weight: 700; line-height: 1.3; overflow-wrap: anywhere; }
+.kanban-card-cliente { font-size: .75rem; color: var(--cor-texto-secundario); overflow-wrap: anywhere; }
+.kanban-seta { grid-column: 3; grid-row: 1; width: 1rem; height: 1rem; color: var(--cor-texto-secundario); transition: transform .2s ease; }
+.kanban-card-topo[aria-expanded="true"] .kanban-seta { transform: rotate(180deg); }
+.kanban-card-info {
+  grid-column: 1 / -1;
+  display: flex; flex-wrap: wrap; align-items: center; gap: .25rem .75rem;
+  font-size: .75rem; color: var(--cor-texto-secundario);
+}
+.kanban-card-valor { font-size: .875rem; font-weight: 700; color: var(--cor-texto); font-variant-numeric: tabular-nums; }
+.kanban-card-fotos { display: inline-flex; align-items: center; gap: .25rem; margin-left: auto; }
+.kanban-card-fotos svg { width: .9rem; height: .9rem; }
+
+/* ---------- 4. DETALHES DO CARTÃO ---------- */
+.kanban-detalhes { padding: 0 .75rem .75rem; display: grid; gap: .75rem; cursor: auto; }
+.kanban-detalhes:not([hidden]) { animation: kanban-abrir .2s ease-out; }
+@keyframes kanban-abrir { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
+
+.kanban-detalhes .tabela-servico {
+  width: 100%;
+  border-collapse: separate; border-spacing: 0;
+  border: 1px solid var(--cor-divisoria); border-radius: 8px; overflow: hidden;
+  font-size: .8125rem;
+}
+.kanban-detalhes .tabela-servico th, .kanban-detalhes .tabela-servico td {
+  padding: .375rem .5rem; text-align: left; vertical-align: top;
+  border-bottom: 1px solid var(--cor-divisoria);
+}
+.kanban-detalhes .tabela-servico tr:last-child th, .kanban-detalhes .tabela-servico tr:last-child td { border-bottom: 0; }
+.kanban-detalhes .tabela-servico th {
+  width: 40%; font-size: .6875rem; font-weight: 600; text-transform: uppercase; letter-spacing: .03em;
+  color: var(--cor-texto-secundario); background: var(--cor-superficie-2);
+}
+.kanban-detalhes td { overflow-wrap: anywhere; }
+.kanban-detalhes .valor-dinheiro { font-weight: 700; font-variant-numeric: tabular-nums; }
+.kanban-detalhes .estrelas { color: var(--cor-vinho); gap: .375rem; }
+.kanban-detalhes .estrelas svg { width: .9rem; height: .9rem; }
+.kanban-detalhes .link { font-weight: 600; }
+.kanban-bloqueado, .kanban-detalhes .sem-avaliacao { font-style: italic; color: var(--cor-texto-secundario); }
+
+.kanban-descricao strong { font-size: .75rem; text-transform: uppercase; letter-spacing: .03em; color: var(--cor-texto-secundario); }
+.kanban-descricao p { margin: .25rem 0 0; font-size: .875rem; }
+.kanban-fotos { --carrossel-proporcao: 4 / 3; }
+
+.kanban-acoes { display: flex; flex-wrap: wrap; gap: .5rem; }
+.kanban-acoes .btn { flex: 1 1 auto; }
+.kanban-acoes .btn svg { width: 1rem; height: 1rem; }
+
+/* ---------- 5. TEMA ESCURO ---------- */
+[data-tema="escuro"] .kanban-card:hover,
+[data-tema="escuro"] .kanban-card.expandido,
+[data-tema="escuro"] .kanban-coluna.alvo-soltar { border-color: var(--cor-texto-secundario); }
+[data-tema="escuro"] .kanban-detalhes .estrelas { color: var(--cor-atencao); }
+[data-tema="escuro"] .kanban-card-topo:focus-visible { outline-color: var(--cor-texto); }
+
+/* ---------- 6. RESPONSIVIDADE ---------- */
+@media (max-width: 75rem) { .kanban { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 47.99rem) {
+  .kanban { grid-template-columns: 1fr; }
+  .kanban-resumo { grid-template-columns: 1fr; }
+  .kanban-acoes .btn { flex-basis: 100%; }
+}
+@media (min-width: 120rem) { .kanban-card-titulo { font-size: .9375rem; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .kanban-detalhes:not([hidden]), .kanban-card.recem-movido { animation: none; }
+  .kanban-card, .kanban-coluna, .kanban-seta { transition: none; }
+}

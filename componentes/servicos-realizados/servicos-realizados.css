@@ -1,0 +1,114 @@
+/* =====================================================================
+   S.D — SERVIÇOS REALIZADOS (componentes/servicos-realizados/servicos-realizados.css)
+   Lista do histórico de serviços (perfis Cliente CPF e CNPJ) com item
+   expansível que mostra o carrossel de fotos do serviço.
+   Usado com servicos-realizados.js + componentes/carrossel.
+   O título/contador do painel (.servicos-topo) fica no perfil-base.css.
+   ===================================================================== */
+
+/* ---------- 1. LISTA: UM ITEM POR SERVIÇO ---------- */
+.lista-servicos { list-style: none; margin: 0; padding: 0; display: grid; gap: 1rem; }
+
+.servico-item {
+  position: relative;                       /* referência para a data no canto */
+  display: grid;
+  grid-template-columns: 4.5rem minmax(0, 1fr);
+  gap: 1rem; align-items: center;
+  padding: 1.75rem 1rem 1rem;               /* espaço em cima para a data */
+  background: var(--cor-superficie-2);
+  border: 1px solid var(--cor-divisoria);
+  border-radius: var(--raio-cartao);
+  cursor: pointer;                          /* o item inteiro abre as fotos */
+  transition: border-color .15s ease, box-shadow .15s ease;
+}
+.servico-item:hover { border-color: var(--cor-vinho); }
+.servico-item.expandido { border-color: var(--cor-vinho); box-shadow: 0 4px 14px rgba(0, 0, 0, .08); }
+.servico-fotos { cursor: auto; }            /* dentro das fotos o clique não fecha o item */
+
+/* Data bem pequena no canto superior direito */
+.servico-data {
+  position: absolute; top: .5rem; right: .875rem;
+  font-size: .75rem; color: var(--cor-texto-secundario);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Foto circular da empresa/prestador */
+.servico-foto {
+  width: 4.5rem; aspect-ratio: 1 / 1; border-radius: 50%; overflow: hidden;
+  background: var(--cor-superficie); border: 1px solid var(--cor-divisoria);
+  box-shadow: var(--sombra-imagem);
+}
+.servico-foto img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+/* ---------- 2. TABELA DO RESUMO (cantos arredondados) ---------- */
+.tabela-servico {
+  width: 100%;
+  border-collapse: separate; border-spacing: 0;
+  border: 1px solid var(--cor-divisoria); border-radius: 10px;
+  overflow: hidden;
+  background: var(--cor-superficie);
+  font-size: .9375rem;
+}
+.tabela-servico th, .tabela-servico td {
+  padding: .5rem .875rem; text-align: left; vertical-align: middle;
+  border-bottom: 1px solid var(--cor-divisoria);
+}
+.tabela-servico tr:last-child th, .tabela-servico tr:last-child td { border-bottom: 0; }
+.tabela-servico th {
+  width: 8.5rem; font-size: .75rem; font-weight: 600;
+  color: var(--cor-texto-secundario); background: var(--cor-superficie-2);
+  text-transform: uppercase; letter-spacing: .03em;
+}
+.tabela-servico .valor-dinheiro { font-weight: 600; font-variant-numeric: tabular-nums; }
+.tabela-servico .estrelas { color: var(--cor-vinho); }
+.tabela-servico .estrelas-texto { color: var(--cor-texto); font-size: .875rem; }
+.sem-avaliacao { font-size: .875rem; color: var(--cor-texto-secundario); font-style: italic; }
+
+/* ---------- 3. BOTÃO "VER FOTOS DO SERVIÇO" ---------- */
+.servico-expandir {
+  grid-column: 1 / -1; justify-self: end;
+  display: inline-flex; align-items: center; gap: .375rem;
+  min-height: 2.25rem; margin-top: -.25rem; padding: .25rem .5rem;
+  font: inherit; font-size: .8125rem; font-weight: 600;
+  color: var(--cor-vinho); background: transparent;
+  border: 0; border-radius: 6px; cursor: pointer;
+  text-decoration: underline; text-underline-offset: .2em;
+}
+.servico-expandir:hover { text-decoration-thickness: 2px; }
+.servico-expandir:focus-visible { outline: 3px solid var(--cor-vinho); outline-offset: 1px; }
+.servico-seta { width: 1rem; height: 1rem; transition: transform .2s ease; }
+.servico-expandir[aria-expanded="true"] .servico-seta { transform: rotate(180deg); }
+
+/* Área expandida com o carrossel do serviço */
+.servico-fotos { grid-column: 1 / -1; --carrossel-proporcao: 4 / 3; max-width: 40rem; width: 100%; justify-self: center; }
+.servico-fotos:not([hidden]) { animation: servico-abrir .22s ease-out; }
+@keyframes servico-abrir {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: none; }
+}
+
+.servicos-vazio {
+  margin: 0; padding: 2rem 1rem; text-align: center;
+  color: var(--cor-texto-secundario); font-size: .9375rem;
+  border: 1px dashed var(--cor-divisoria); border-radius: var(--raio-cartao);
+}
+
+/* ---------- 4. TEMA ESCURO: vinho sem contraste → estrelas na cor de atenção ---------- */
+[data-tema="escuro"] .tabela-servico .estrelas { color: var(--cor-atencao); }
+[data-tema="escuro"] .servico-expandir { color: var(--cor-texto); }
+[data-tema="escuro"] .servico-expandir:focus-visible { outline-color: var(--cor-texto); }
+[data-tema="escuro"] .servico-item:hover,
+[data-tema="escuro"] .servico-item.expandido { border-color: var(--cor-texto-secundario); }
+
+/* ---------- 5. RESPONSIVIDADE ---------- */
+@media (max-width: 47.99rem) {
+  .servico-item { grid-template-columns: 1fr; justify-items: start; gap: .75rem; }
+  .servico-foto { width: 3.5rem; }
+  .tabela-servico th { width: 6.5rem; }
+  .servico-expandir { justify-self: stretch; justify-content: center; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .servico-fotos:not([hidden]) { animation: none; }
+  .servico-seta, .servico-item { transition: none; }
+}

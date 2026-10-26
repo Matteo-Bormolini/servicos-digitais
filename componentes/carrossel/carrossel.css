@@ -1,0 +1,96 @@
+/* =====================================================================
+   S.D — CARROSSEL DE FOTOS (componentes/carrossel/carrossel.css)
+   Usado com componentes/carrossel/carrossel.js. Cores e formas vêm dos
+   tokens do configuracoes/base.css.
+   Proporção das fotos ajustável por página:  .meu-bloco { --carrossel-proporcao: 4 / 3; }
+   ===================================================================== */
+
+.carrossel { --carrossel-proporcao: 16 / 10; width: 100%; min-width: 0; }
+
+/* ---------- 1. JANELA COM AS FOTOS ---------- */
+.carrossel-janela {
+  position: relative;
+  border: 1px solid var(--cor-divisoria); border-radius: 10px; overflow: hidden;
+  background: var(--cor-superficie-2);
+  box-shadow: var(--sombra-imagem);
+}
+
+/* Trilho: rolagem lateral com encaixe (deslize nativo no celular/trackpad) */
+.carrossel-trilho {
+  display: flex; margin: 0; padding: 0; list-style: none;
+  overflow-x: auto; overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  overscroll-behavior-x: contain;          /* não "vaza" o deslize para as abas do perfil */
+  scrollbar-width: none;
+  cursor: grab;
+}
+.carrossel-trilho::-webkit-scrollbar { display: none; }
+.carrossel-trilho.arrastando { scroll-snap-type: none; cursor: grabbing; }
+.carrossel-trilho:focus-visible { outline: 3px solid var(--cor-vinho); outline-offset: -3px; }
+
+.carrossel-slide { flex: 0 0 100%; min-width: 0; scroll-snap-align: start; scroll-snap-stop: always; }
+.carrossel-slide figure { position: relative; margin: 0; }
+.carrossel-slide img {
+  display: block; width: 100%; height: auto;
+  aspect-ratio: var(--carrossel-proporcao); object-fit: cover;
+  background: var(--cor-superficie-2);
+  user-select: none; -webkit-user-select: none; -webkit-user-drag: none;
+}
+/* Legenda sobre a foto: faixa escura sólida garante contraste do texto branco */
+.carrossel-slide figcaption {
+  position: absolute; left: 0; right: 0; bottom: 0;
+  padding: .375rem .75rem;
+  font-size: .8125rem; font-weight: 600; color: #FFFFFF;
+  background: rgba(20, 16, 14, .78);
+}
+
+/* ---------- 2. SETAS (padrão global .btn-seta: botão branco, seta vinho) ---------- */
+.carrossel-ant, .carrossel-prox {
+  position: absolute; top: 50%; transform: translateY(-50%);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, .25);
+}
+.carrossel-ant  { left: .5rem; }
+.carrossel-prox { right: .5rem; }
+
+/* ---------- 3. RODAPÉ: PONTOS + CONTADOR ---------- */
+.carrossel-rodape {
+  display: flex; align-items: center; justify-content: space-between; gap: .75rem;
+  margin-top: .5rem;
+}
+.carrossel-pontos { display: flex; flex-wrap: wrap; gap: .125rem; }
+.carrossel-ponto {
+  width: 1.5rem; height: 1.5rem; padding: 0;      /* área de toque mínima de 24px */
+  display: inline-flex; align-items: center; justify-content: center;
+  background: transparent; border: 0; border-radius: 50%; cursor: pointer;
+}
+.carrossel-ponto::before {
+  content: ""; width: .5rem; height: .5rem; border-radius: 50%;
+  border: 1.5px solid var(--cor-vinho); background: transparent;
+}
+.carrossel-ponto[aria-current="true"]::before { width: .625rem; height: .625rem; background: var(--cor-vinho); }
+.carrossel-ponto:hover::before { background: var(--cor-vinho); }
+.carrossel-ponto:focus-visible { outline: 2px solid var(--cor-vinho); outline-offset: 0; }
+.carrossel-contador {
+  margin-left: auto;
+  font-size: .75rem; color: var(--cor-texto-secundario); font-variant-numeric: tabular-nums;
+}
+
+.carrossel-vazio {
+  margin: 0; padding: 1.5rem 1rem; text-align: center;
+  font-size: .875rem; color: var(--cor-texto-secundario);
+  border: 1px dashed var(--cor-divisoria); border-radius: 10px;
+}
+
+/* ---------- 4. TEMA ESCURO: vinho sem contraste no fundo escuro → pontos na cor do texto ---------- */
+[data-tema="escuro"] .carrossel-ponto::before { border-color: var(--cor-texto); }
+[data-tema="escuro"] .carrossel-ponto[aria-current="true"]::before,
+[data-tema="escuro"] .carrossel-ponto:hover::before { background: var(--cor-texto); }
+[data-tema="escuro"] .carrossel-trilho:focus-visible,
+[data-tema="escuro"] .carrossel-ponto:focus-visible { outline-color: var(--cor-texto); }
+
+/* ---------- 5. CELULAR: setas menores ---------- */
+@media (max-width: 47.99rem) {
+  .carrossel-ant, .carrossel-prox { width: 2.25rem; min-height: 2.25rem; }
+  .carrossel-ant  { left: .375rem; }
+  .carrossel-prox { right: .375rem; }
+}

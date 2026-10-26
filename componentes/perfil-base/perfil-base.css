@@ -1,0 +1,271 @@
+/* =====================================================================
+   S.D — BASE DOS PERFIS (componentes/perfil-base/perfil-base.css)
+   Visual comum aos 4 perfis (Administrador, Cliente CPF, Cliente CNPJ e
+   Prestador): cartão, abas, tabela de dados, telefones, localização,
+   sanfona de edição, foto, bloco de fotos com carrossel,
+   painel de serviços e pop-up. Depende de configuracoes/base.css e
+   componentes/formulario/formulario.css (campos).
+   O que é exclusivo de cada perfil fica na pasta de cada perfil (perfil-<tipo>.css).
+   ===================================================================== */
+
+/* ---------- 1. ESTRUTURA DA PÁGINA ---------- */
+.pagina-perfil {
+  max-width: 75rem;
+  margin: 2.5rem auto 3.5rem;     /* vão entre a NavBar e o cartão */
+  padding: 0 1rem;
+  color: var(--cor-texto);
+}
+.perfil-cabecalho { margin-bottom: 1rem; }
+.perfil-cabecalho h1 { font-size: 1.75rem; font-weight: 700; margin: 0 0 .25rem; }
+.perfil-cabecalho p  { margin: 0; color: var(--cor-texto-secundario); font-size: .875rem; }
+
+/* Cartão externo (branco, contorno fino preto, cantos arredondados) */
+.perfil-cartao {
+  background: var(--cor-superficie);
+  border: 1px solid var(--cor-contorno);
+  border-radius: var(--raio-cartao);
+  overflow: hidden;
+  transition: background-color .2s ease, border-color .2s ease;
+}
+
+/* ---------- 2. ABAS ---------- */
+.perfil-abas {
+  display: flex; align-items: center; justify-content: space-between; gap: .75rem; flex-wrap: wrap;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--cor-divisoria);
+}
+.abas-lista { display: flex; gap: .5rem; flex-wrap: wrap; }
+/* Aba ativa: vinho + sublinhado (não depende só da cor) */
+.aba[aria-selected="true"] {
+  background: var(--cor-vinho); color: #FFFFFF;
+  text-decoration: underline; text-underline-offset: .3em;
+}
+
+/* Trilho com rolagem lateral entre os painéis */
+.perfil-trilho {
+  cursor: grab;                          /* indica que dá para arrastar */
+  display: flex; align-items: flex-start;
+  overflow-x: auto; overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  scrollbar-width: none;                 /* esconde a barra (o deslize continua) */
+  transition: height .25s ease;
+}
+.perfil-trilho::-webkit-scrollbar { display: none; }
+.painel { flex: 0 0 100%; min-width: 0; scroll-snap-align: start; }
+
+/* Painel Perfil: dados à esquerda, foto à direita (blocos extras embaixo) */
+.painel-perfil {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 17.5rem;
+  grid-template-areas: "dados foto";
+  gap: 2rem;
+  padding: 1.5rem;
+}
+.perfil-dados { grid-area: dados; min-width: 0; }
+.perfil-foto  { grid-area: foto; }
+
+/* ---------- 3. TABELA DE DADOS ---------- */
+.tabela-dados {
+  width: 100%;
+  border-collapse: separate; border-spacing: 0;
+  border: 1px solid var(--cor-divisoria); border-radius: 10px;
+  overflow: hidden;
+  font-size: .9375rem;
+}
+.tabela-dados caption { text-align: left; font-size: 1.125rem; font-weight: 600; padding-bottom: .75rem; }
+.tabela-dados th, .tabela-dados td {
+  padding: .875rem 1rem; text-align: left; vertical-align: middle;
+  border-bottom: 1px solid var(--cor-divisoria);
+}
+.tabela-dados tr:last-child th, .tabela-dados tr:last-child td { border-bottom: 0; }
+.tabela-dados th {
+  width: 11rem; font-size: .8125rem; font-weight: 600;
+  color: var(--cor-texto-secundario); background: var(--cor-superficie-2);
+  text-transform: uppercase; letter-spacing: .03em;
+}
+.valor { overflow-wrap: anywhere; }
+.valor-forte { font-weight: 600; }
+
+/* Etiqueta pequena ("Inalterável", "Opcional") */
+.etiqueta {
+  display: inline-flex; align-items: center; gap: .25rem;
+  margin-left: .5rem; padding: .125rem .5rem;
+  font-size: .75rem; font-weight: 600; color: var(--cor-texto-secundario);
+  border: 1px solid var(--cor-divisoria); border-radius: 999px; vertical-align: middle;
+}
+.etiqueta svg { width: .8rem; height: .8rem; }
+
+/* Linha com valor + ação à direita */
+.linha-acao { display: flex; align-items: center; justify-content: space-between; gap: .75rem; flex-wrap: wrap; }
+
+/* Telefones */
+.lista-telefones { list-style: none; margin: 0; padding: 0; display: grid; gap: .375rem; }
+.lista-telefones li { display: flex; align-items: center; gap: .5rem; flex-wrap: wrap; }
+.tipo-tel { font-size: .75rem; color: var(--cor-texto-secundario); }
+.btn-remover {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 1.75rem; height: 1.75rem; padding: 0;
+  font: inherit; color: var(--cor-texto-secundario); background: transparent;
+  border: 1px solid transparent; border-radius: 6px; cursor: pointer;
+}
+.btn-remover:hover { color: var(--cor-erro); border-color: currentColor; }
+.btn-remover:focus-visible { outline: 3px solid var(--cor-vinho); outline-offset: 1px; }
+.btn-remover svg { width: .9rem; height: .9rem; }
+.add-telefone { display: flex; gap: .5rem; flex-wrap: wrap; align-items: flex-end; margin-top: .625rem; }
+.add-telefone .campo { flex: 1 1 12rem; margin: 0; }
+
+/* Localização: separada em células */
+.grade-local {
+  display: grid; grid-template-columns: repeat(6, minmax(0, 1fr));
+  border: 1px solid var(--cor-divisoria); border-radius: 8px; overflow: hidden;
+}
+.celula { padding: .5rem .75rem; border-right: 1px solid var(--cor-divisoria); border-bottom: 1px solid var(--cor-divisoria); min-width: 0; }
+.celula-rotulo { display: block; font-size: .75rem; color: var(--cor-texto-secundario); margin-bottom: .125rem; }
+.cel-endereco    { grid-column: span 4; }
+.cel-numero      { grid-column: span 2; border-right: 0; }
+.cel-complemento { grid-column: span 2; border-bottom: 0; }
+.cel-bairro      { grid-column: span 2; border-bottom: 0; }
+.cel-cep         { grid-column: span 2; border-bottom: 0; border-right: 0; }
+
+/* Estrelas de avaliação */
+.estrelas { display: inline-flex; align-items: center; gap: .5rem; }
+.estrelas svg { width: 1.125rem; height: 1.125rem; }
+.estrelas-icones { display: inline-flex; gap: .125rem; }
+/* Link "Avaliações" com estrelas: área de clique mínima de 24px (WCAG 2.5.8) */
+.link.estrelas { min-height: 1.5rem; }
+
+/* Linha "Senha" (só ••••••••; a senha real nunca aparece) */
+.senha-linha { display: flex; align-items: center; gap: .5rem; }
+.senha-mascara { letter-spacing: .2em; font-weight: 700; }
+.btn-olho.btn-olho-linha { position: static; transform: none; color: var(--cor-texto-secundario); }
+.btn-olho-linha svg { width: 1.25rem; height: 1.25rem; }
+.nota { font-size: .8125rem; color: var(--cor-texto-secundario); margin: .25rem 0 0; }
+
+/* Botões Editar / Excluir */
+.perfil-acoes { display: flex; gap: .75rem; flex-wrap: wrap; margin-top: 1.25rem; }
+.seta-sanfona { transition: transform .2s ease; }
+[aria-expanded="true"] .seta-sanfona { transform: rotate(180deg); }
+
+/* ---------- 4. SANFONA: FORMULÁRIO DE EDIÇÃO ---------- */
+.sanfona {
+  margin-top: 1rem;
+  border: 1px solid var(--cor-divisoria); border-radius: 10px;
+  background: var(--cor-superficie-2);
+  padding: 1.25rem;
+}
+.sanfona h2 { font-size: 1.0625rem; font-weight: 600; margin: 0 0 .25rem; }
+.grade-local-form { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: .75rem; }
+.grade-local-form .f-endereco { grid-column: span 4; }
+.grade-local-form .f-numero   { grid-column: span 2; }
+.grade-local-form .f-compl, .grade-local-form .f-bairro, .grade-local-form .f-cep { grid-column: span 2; }
+
+/* Campos, senha e caixas de seleção: componentes/formulario/formulario.css */
+
+.form-rodape { display: flex; justify-content: center; margin-top: 1.5rem; }
+#msg-form { justify-content: center; text-align: center; }
+
+/* ---------- 5. FOTO DE PERFIL ---------- */
+.perfil-foto { display: flex; flex-direction: column; align-items: center; gap: 1rem; }
+.foto-moldura {
+  width: 12.5rem; aspect-ratio: 1 / 1; border-radius: 50%; overflow: hidden;
+  background: var(--cor-superficie-2); box-shadow: var(--sombra-imagem);
+  border: 1px solid var(--cor-divisoria);
+}
+.foto-moldura img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.foto-botoes { display: flex; gap: .5rem; justify-content: center; flex-wrap: wrap; }
+.foto-nota { text-align: center; margin: -.5rem 0 0; }
+
+/* ---------- 6. BLOCO DE FOTOS COM CARROSSEL ----------
+   Usado em "Fotos do local" (CNPJ) e "Trabalhos e empresa" (Prestador):
+   carrossel à esquerda, controles da foto atual à direita. */
+.bloco-fotos { padding-top: 1.5rem; border-top: 1px solid var(--cor-divisoria); min-width: 0; }
+.bloco-topo { display: flex; align-items: baseline; justify-content: space-between; gap: .75rem; flex-wrap: wrap; }
+.bloco-topo h2 { font-size: 1.125rem; font-weight: 600; margin: 0; display: inline-flex; align-items: center; flex-wrap: wrap; gap: .25rem; }
+.bloco-topo .etiqueta { margin-left: .25rem; }
+.bloco-total { font-size: .8125rem; color: var(--cor-texto-secundario); font-variant-numeric: tabular-nums; }
+.bloco-texto { margin: .5rem 0 0; max-width: 62rem; font-size: .875rem; }
+.bloco-fotos-conteudo {
+  display: grid; grid-template-columns: minmax(0, 1fr) 16rem;
+  gap: 1.5rem; align-items: start; margin-top: 1rem;
+}
+.bloco-fotos-carrossel { --carrossel-proporcao: 16 / 9; min-width: 0; }
+.bloco-fotos-lateral { display: flex; flex-direction: column; gap: .75rem; }
+.bloco-fotos-lateral .nota { margin: 0; }
+.bloco-fotos-controles {
+  display: flex; flex-direction: column; gap: .75rem;
+  padding: 1rem;
+  border: 1px solid var(--cor-divisoria); border-radius: 10px;
+  background: var(--cor-superficie-2);
+}
+.bloco-fotos-controles label .nota { font-weight: 400; margin-left: .25rem; }
+
+/* ---------- 7. PAINEL DE SERVIÇOS (Serviços realizados / Meus serviços) ---------- */
+.painel-servicos { padding: 1.5rem; }
+.servicos-topo {
+  display: flex; align-items: baseline; justify-content: space-between; gap: .75rem; flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+.servicos-topo h2 { font-size: 1.125rem; font-weight: 600; margin: 0; }
+.servicos-total { font-size: .8125rem; color: var(--cor-texto-secundario); }
+.servicos-dica { margin: -.5rem 0 1rem; font-size: .8125rem; color: var(--cor-texto-secundario); }
+
+/* ---------- 8. POP-UP DE CONFIRMAÇÃO (dialog) ---------- */
+.modal {
+  width: min(28rem, calc(100vw - 2rem)); padding: 1.5rem;
+  color: var(--cor-texto); background: var(--cor-superficie);
+  border: 1px solid var(--cor-contorno); border-radius: var(--raio-cartao);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, .25);
+}
+.modal::backdrop { background: rgba(20, 16, 14, .55); }
+.modal-icone {
+  width: 2.5rem; height: 2.5rem; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--cor-erro); background: var(--cor-erro-fundo); margin-bottom: .75rem;
+}
+.modal-icone svg { width: 1.25rem; height: 1.25rem; }
+.modal h2 { font-size: 1rem; font-weight: 600; margin: 0 0 .5rem; }   /* título pequeno de pergunta */
+.modal p  { margin: 0; font-size: .9375rem; color: var(--cor-texto-secundario); }
+.modal-acoes { display: flex; justify-content: flex-end; gap: .75rem; flex-wrap: wrap; margin-top: 1.5rem; }
+
+/* ---------- 9. RESPONSIVIDADE ---------- */
+/* Tablet: foto um pouco menor */
+@media (max-width: 64rem) {
+  .painel-perfil { grid-template-columns: minmax(0, 1fr) 14rem; gap: 1.5rem; }
+  .foto-moldura { width: 10rem; }
+  .bloco-fotos-conteudo { grid-template-columns: minmax(0, 1fr) 14rem; gap: 1rem; }
+}
+
+/* Celular: foto em cima, dados embaixo; tabela vira lista */
+@media (max-width: 47.99rem) {
+  .pagina-perfil { margin-top: 1.5rem; }
+  .perfil-abas { padding: .75rem 1rem; }
+  .painel-perfil { grid-template-columns: 1fr; grid-template-areas: "foto" "dados"; padding: 1rem; }
+  .tabela-dados, .tabela-dados tbody, .tabela-dados tr, .tabela-dados th, .tabela-dados td { display: block; width: auto; }
+  .tabela-dados caption { display: block; padding: .875rem 1rem .25rem; }
+  .tabela-dados tr[hidden] { display: none; }
+  .cel-endereco { border-right: 0; }
+  .tabela-dados th { border-bottom: 0; padding-bottom: .25rem; background: transparent; }
+  .tabela-dados td { padding-top: 0; }
+  .grade-local, .grade-local-form { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .cel-endereco, .grade-local-form .f-endereco { grid-column: 1 / -1; }
+  .cel-numero, .cel-complemento, .cel-bairro, .cel-cep,
+  .grade-local-form .f-numero, .grade-local-form .f-compl, .grade-local-form .f-bairro, .grade-local-form .f-cep { grid-column: span 1; }
+  .cel-numero { border-right: 1px solid var(--cor-divisoria); }
+  .cel-complemento { border-right: 0; border-bottom: 1px solid var(--cor-divisoria); }
+  .cel-bairro { border-bottom: 0; }
+  .perfil-acoes .btn, .form-rodape .btn { flex: 1 1 100%; }
+  .modal-acoes .btn { flex: 1 1 100%; }
+  .bloco-fotos-conteudo { grid-template-columns: 1fr; }
+  .bloco-fotos-lateral .btn { width: 100%; }
+  .painel-servicos { padding: 1rem; }
+}
+
+/* Televisores / telas grandes: leitura à distância (rem escala com o html) */
+@media (min-width: 120rem) { .pagina-perfil { max-width: 90rem; } }
+
+/* Movimento reduzido */
+@media (prefers-reduced-motion: reduce) {
+  .perfil-trilho { scroll-behavior: auto; transition: none; }
+  .btn, .seta-sanfona, .perfil-cartao { transition: none; }
+}
