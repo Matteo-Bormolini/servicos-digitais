@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="pt-BR" data-tema="claro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Regras de acesso — S.D Serviços Digitais</title>
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="../configuracoes/base.css">
+<link rel="stylesheet" href="../navbar/navbar.css">
+<link rel="stylesheet" href="../rodape/rodape.css">
+<style>
+  /* Estilos só desta página de consulta (tabela gerada a partir de acesso.js) */
+  .tabela-rolagem { overflow-x: auto; border: 1px solid var(--cor-divisoria); border-radius: var(--raio-cartao); background: var(--cor-superficie); }
+  .tabela-acesso { width: 100%; min-width: 46rem; border-collapse: collapse; font-size: .9375rem; }
+  .tabela-acesso th, .tabela-acesso td { padding: .625rem .75rem; text-align: left; border-bottom: 1px solid var(--cor-divisoria); vertical-align: top; }
+  .tabela-acesso thead th { background: var(--cor-menu-fundo); color: #FFFFFF; font-size: .8125rem; }
+  .tabela-acesso code { font-size: .8125rem; color: var(--cor-texto-secundario); }
+  .sim, .nao { display: inline-block; min-width: 3.5rem; padding: .125rem .5rem; border-radius: 6px; font-weight: 600; text-align: center; }
+  .sim { color: var(--cor-sucesso); background: var(--cor-sucesso-fundo); }
+  .nao { color: var(--cor-erro); background: var(--cor-erro-fundo); }
+  .caixa { margin-top: 1.5rem; padding: 1rem 1.25rem; background: var(--cor-superficie); border: 1px solid var(--cor-divisoria); border-radius: var(--raio-cartao); }
+  .caixa h2 { margin: 0 0 .5rem; font-size: 1.125rem; }
+</style>
+<script src="acesso.js" defer></script>
+<script src="../configuracoes/config.js" defer></script>
+<script src="../navbar/navbar.js" defer></script>
+<script src="../rodape/rodape.js" defer></script>
+</head>
+<!-- Página de CONSULTA para a equipe (não aparece no menu). A tabela é montada a partir de acesso.js. -->
+<body data-pagina="" data-logado="nao" data-raiz="../">
+<header id="sd-navbar"></header>
+<main id="conteudo" class="pagina">
+  <h1>Regras de acesso</h1>
+  <p>Quem pode ver cada parte do site. Fonte única: <code>seguranca/acesso.js</code> (tela) e <code>seguranca/permissoes.json</code> (servidor).</p>
+
+  <div class="tabela-rolagem">
+    <table class="tabela-acesso" id="tabela-acesso">
+      <caption class="visualmente-oculto">Recursos e perfis com acesso</caption>
+    </table>
+  </div>
+
+  <section class="caixa">
+    <h2>Regras gerais</h2>
+    <ol>
+      <li>Negar por padrão: recurso sem regra fica bloqueado.</li>
+      <li>Prestador não acessa áreas exclusivas de cliente (CPF ou CNPJ).</li>
+      <li>Cliente CNPJ não acessa dados de Cliente CPF, e vice-versa.</li>
+      <li>CPF, telefone e endereço completo de Cliente CPF nunca são públicos.</li>
+      <li>Nada é exibido sem a autorização marcada no cadastro; a pessoa pode retirá-la quando quiser (LGPD).</li>
+      <li>O administrador vê dados sigilosos para suporte, mas nunca a senha (só o hash fica no servidor).</li>
+    </ol>
+  </section>
+
+  <section class="caixa">
+    <h2>A tela esconde, o servidor bloqueia</h2>
+    <p>Esconder um botão não protege o dado. Na plataforma real, cada página e cada consulta ao banco conferem no servidor o perfil de quem está logado e se o dado é dele, usando estas mesmas regras. Ao mudar uma regra, altere <code>acesso.js</code> <strong>e</strong> <code>permissoes.json</code>.</p>
+  </section>
+</main>
+<footer id="sd-rodape"></footer>
+<script>
+  // Monta a tabela a partir de window.SD_ACESSO (mesmos dados usados pela NavBar)
+  document.addEventListener("DOMContentLoaded", function () {
+    var A = window.SD_ACESSO, tabela = document.getElementById("tabela-acesso");
+    if (!A) return;
+    var perfis = Object.keys(A.PERFIS);
+    var cab = "<thead><tr><th scope=\"col\">Recurso</th>" + perfis.map(function (p) { return "<th scope=\"col\">" + A.PERFIS[p] + "</th>"; }).join("") + "</tr></thead>";
+    var linhas = Object.keys(A.REGRAS).map(function (r) {
+      return "<tr><th scope=\"row\"><code>" + r + "</code></th>" + perfis.map(function (p) {
+        return A.pode(p, r) ? "<td><span class=\"sim\">Sim</span></td>" : "<td><span class=\"nao\">Não</span></td>";
+      }).join("") + "</tr>";
+    }).join("");
+    tabela.insertAdjacentHTML("beforeend", cab + "<tbody>" + linhas + "</tbody>");
+  });
+</script>
+</body>
+</html>

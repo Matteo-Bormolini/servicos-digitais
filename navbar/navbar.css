@@ -1,0 +1,80 @@
+/* =====================================================================
+   S.D — NAVBAR (navbar/navbar.css)
+   Exceção do menu: fundo vinho #800000, textos brancos, hover #5C0000
+   com contorno branco. Menu compacto (3 riscos) abaixo de 1260px.
+   ===================================================================== */
+.navbar { position: sticky; top: 0; z-index: 50; background: var(--cor-menu-fundo); color: var(--cor-menu-texto); }
+.navbar-conteudo {
+  max-width: var(--largura-conteudo); margin: 0 auto; padding: .625rem 1rem;
+  display: flex; align-items: center; gap: 1rem;
+}
+
+/* Marca (logo + "Serviços / Digitais") — também usada no rodapé */
+.marca { display: flex; align-items: center; gap: .5rem; color: #FFFFFF; text-decoration: none; line-height: 1.05; flex: none; }
+.marca svg { width: 2.25rem; height: 2.25rem; }
+.marca-texto { font-weight: 700; font-size: .95rem; }
+.marca:focus-visible { outline: 3px solid #FFFFFF; outline-offset: 3px; border-radius: 6px; }
+
+/* Itens do menu */
+.menu { display: flex; align-items: center; gap: .125rem; list-style: none; margin: 0; padding: 0; flex: 1; }
+.menu a {
+  display: flex; align-items: center; gap: .3rem;
+  padding: .5rem .625rem; color: #FFFFFF; text-decoration: none;
+  border-radius: 6px; font-size: .9375rem; font-weight: 500; white-space: nowrap;
+}
+.menu a:hover { background: var(--cor-vinho-escuro); text-decoration: underline; }
+.menu a:focus-visible { background: var(--cor-vinho-escuro); outline: 2px solid #FFFFFF; outline-offset: -2px; }
+.menu a[aria-current="page"] { background: var(--cor-vinho-escuro); box-shadow: inset 0 -2px 0 #FFFFFF; }
+.menu .cadeado { width: .9rem; height: .9rem; opacity: .9; }
+
+/* Botões da direita (tema, conta, menu) */
+.nav-direita { display: flex; align-items: center; gap: .5rem; margin-left: auto; flex: none; }
+.nav-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: .375rem;
+  min-width: 2.5rem; min-height: 2.5rem; padding: .375rem .75rem;
+  font: inherit; font-size: .875rem; font-weight: 600; white-space: nowrap;
+  color: #FFFFFF; background: transparent;
+  border: 1px solid rgba(255, 255, 255, .7); border-radius: 8px;
+  cursor: pointer; text-decoration: none;
+}
+.nav-btn:hover { background: var(--cor-vinho-escuro); border-color: #FFFFFF; }
+.nav-btn:focus-visible { outline: 3px solid #FFFFFF; outline-offset: 2px; }
+.nav-btn[aria-current="page"] { background: var(--cor-vinho-escuro); border-color: #FFFFFF; }
+.nav-btn svg { width: 1.125rem; height: 1.125rem; flex: none; }
+.nav-btn-destaque { background: #FFFFFF; color: var(--cor-vinho); border-color: #FFFFFF; }
+.nav-btn-destaque:hover { background: var(--cor-vinho-escuro); color: #FFFFFF; }
+.btn-menu { display: none; }
+
+/* Menu compacto (3 riscos) abaixo de 1260px */
+@media (max-width: 78.74rem) {
+  .navbar-conteudo { position: relative; }
+  .btn-menu { display: inline-flex; }
+  .menu {
+    display: none; position: absolute; left: 0; right: 0; top: 100%;
+    flex-direction: column; align-items: stretch; gap: .125rem;
+    max-height: calc(100vh - 4rem); overflow-y: auto;
+    padding: .5rem 1rem 1rem; background: var(--cor-menu-fundo);
+    border-top: 1px solid rgba(255, 255, 255, .25);
+  }
+  .menu.aberto { display: flex; }
+  .menu a { padding: .75rem; }
+}
+/* Celular: textos longos viram só ícone (o nome continua no aria-label) */
+@media (max-width: 47.99rem) {
+  .rotulo-oculto-celular { display: none; }
+  .navbar-conteudo { gap: .5rem; padding-left: .75rem; padding-right: .75rem; }
+  .nav-direita { gap: .375rem; }
+  .nav-btn { padding: .375rem .5rem; }
+}
+/* Celulares comuns (até 399px): espaços menores para tudo caber em uma linha */
+@media (max-width: 24.99rem) {
+  .navbar-conteudo { gap: .375rem; padding-left: .5rem; padding-right: .5rem; }
+  .nav-direita { gap: .25rem; }
+  .marca { gap: .375rem; }
+  .marca svg { width: 2rem; height: 2rem; }
+  .marca-texto { font-size: .875rem; }
+}
+/* Celulares muito estreitos (até 359px): esconde o texto da marca, fica só a logo */
+@media (max-width: 22.49rem) {
+  .navbar .marca-texto { display: none; }
+}

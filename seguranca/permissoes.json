@@ -1,0 +1,52 @@
+{
+  "descricao": "Regras de acesso da S.D para o SERVIDOR. Manter igual a seguranca/acesso.js (versão da tela).",
+  "versao": 2,
+  "regra_padrao": "negar",
+  "perfis": ["visitante", "cliente-cpf", "cliente-cnpj", "prestador", "adm"],
+  "recursos": {
+    "inicio":              ["*"],
+    "servicos":            ["*"],
+    "sobre":               ["*"],
+    "politicas":           ["*"],
+    "suporte":             ["*"],
+    "clientes":            ["cliente-cpf", "cliente-cnpj", "adm"],
+    "prestador":           ["prestador", "adm"],
+    "login-cadastro":      ["visitante"],
+    "meu-perfil":          ["cliente-cpf", "cliente-cnpj", "prestador", "adm"],
+    "sair":                ["cliente-cpf", "cliente-cnpj", "prestador", "adm"],
+    "perfil-adm":          ["adm"],
+    "perfil-cliente-cpf":  ["cliente-cpf", "adm"],
+    "perfil-cliente-cnpj": ["cliente-cnpj", "adm"],
+    "perfil-prestador":    ["prestador", "adm"]
+  },
+  "dados": {
+    "cliente-cpf": {
+      "proprio": "todos os campos",
+      "cliente-cnpj": "nenhum",
+      "prestador": "primeiro nome e bairro, somente se autorizado e com pedido de serviço aberto",
+      "visitante": "nenhum",
+      "adm": "todos os campos, exceto a senha",
+      "nunca_publico": ["cpf", "telefone", "endereco_completo"]
+    },
+    "cliente-cnpj": {
+      "proprio": "todos os campos",
+      "cliente-cpf": "nenhum",
+      "prestador": "somente os campos autorizados no cadastro",
+      "visitante": "nenhum",
+      "adm": "todos os campos, exceto a senha"
+    },
+    "prestador": {
+      "proprio": "todos os campos",
+      "cliente-cpf": "perfil público, somente se autorizado",
+      "cliente-cnpj": "perfil público, somente se autorizado",
+      "prestador": "nenhum",
+      "visitante": "nenhum",
+      "adm": "todos os campos, exceto a senha"
+    },
+    "adm": {
+      "proprio": "todos os campos",
+      "outros": "nenhum"
+    }
+  },
+  "senha": "Nunca exibida para ninguém (nem para o adm). Guardar somente o hash no servidor."
+}
