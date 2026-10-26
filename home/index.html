@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="pt-BR" data-tema="claro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Início — S.D Serviços Digitais</title>
+<meta name="description" content="S.D Serviços Digitais: encontre prestadores de manutenção perto de você, compare orçamentos e negocie direto pelo WhatsApp ou telefone.">
+<!-- Padrão do site (mesma ordem em todas as páginas) -->
+<link rel="stylesheet" href="../configuracoes/base.css">
+<link rel="stylesheet" href="../navbar/navbar.css">
+<link rel="stylesheet" href="../rodape/rodape.css">
+<link rel="stylesheet" href="home.css">
+<script src="../seguranca/acesso.js" defer></script>
+<script src="../configuracoes/config.js" defer></script>
+<script src="../navbar/navbar.js" defer></script>
+<script src="../rodape/rodape.js" defer></script>
+<script src="home.js" defer></script>
+</head>
+<!-- data-logado: o SERVIDOR preenche "sim" quando a pessoa está logada.
+     Para testar sem servidor: troque para data-logado="sim" e recarregue. -->
+<body data-pagina="inicio" data-logado="nao" data-raiz="../">
+<header id="sd-navbar"></header>
+
+<main id="conteudo" class="home">
+
+  <!-- =============================================================
+       VISÃO DO VISITANTE (sem login)
+       Poucas informações, chamativas, com convite para entrar.
+       Quando a pessoa está logada, o home.js REMOVE este bloco.
+       ============================================================= -->
+  <div class="visao-visitante" data-visivel="visitante">
+
+    <!-- 1. Destaque principal -->
+    <section class="hero" aria-labelledby="hero-titulo">
+      <div class="hero-texto">
+        <p class="sobretitulo">Manutenção para casas, condomínios e empresas</p>
+        <h1 id="hero-titulo">Quebrou, vazou ou parou? <span class="destaque">A gente conecta você a quem resolve.</span></h1>
+        <p class="hero-sub">Descreva o problema, receba os primeiros orçamentos de prestadores da sua região e negocie direto pelo WhatsApp ou telefone.</p>
+        <div class="hero-acoes">
+          <a class="btn btn-grande" data-link="cadastro" href="../login-cadastro/index.html?acao=criar-conta">Criar conta grátis</a>
+          <a class="btn btn-grande" data-link="login" href="../login-cadastro/index.html">Já tenho conta</a>
+        </div>
+        <ul class="hero-garantias" aria-label="Vantagens">
+          <li>Prestadores por proximidade</li>
+          <li>Avaliações de quem já contratou</li>
+          <li>Destaques pagos sempre identificados</li>
+        </ul>
+      </div>
+
+      <!-- Prévia bloqueada: mostra que existe conteúdo, sem mostrar dados -->
+      <div class="previa-bloqueada" aria-hidden="true">
+        <div class="previa-cartoes">
+          <div class="previa-cartao"><span class="esq-circulo"></span><span class="esq-linha l1"></span><span class="esq-linha l2"></span><span class="esq-estrelas">★★★★★</span></div>
+          <div class="previa-cartao"><span class="esq-circulo"></span><span class="esq-linha l1"></span><span class="esq-linha l2"></span><span class="esq-estrelas">★★★★☆</span></div>
+          <div class="previa-cartao"><span class="esq-circulo"></span><span class="esq-linha l1"></span><span class="esq-linha l2"></span><span class="esq-estrelas">★★★★★</span></div>
+        </div>
+        <div class="previa-aviso">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+          <strong>Prestadores, avaliações e fotos de trabalhos</strong>
+          <span>Disponíveis depois de entrar na conta</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. Como funciona (fluxo do cliente aprovado) -->
+    <section class="secao" aria-labelledby="como-titulo">
+      <h2 id="como-titulo" class="secao-titulo">Como funciona</h2>
+      <ol class="passos">
+        <li class="passo">
+          <span class="passo-numero" aria-hidden="true">1</span>
+          <h3>Descreva o caso</h3>
+          <p>Diga o que precisa e se o prestador deve ir ao local. Você escolhe um dia útil ou indica o zelador responsável.</p>
+        </li>
+        <li class="passo">
+          <span class="passo-numero" aria-hidden="true">2</span>
+          <h3>Receba orçamentos</h3>
+          <p>Os 3 primeiros orçamentos chegam até você. Se nenhum servir, veja a lista completa.</p>
+        </li>
+        <li class="passo">
+          <span class="passo-numero" aria-hidden="true">3</span>
+          <h3>Escolha e negocie</h3>
+          <p>Compare avaliações, escolha o prestador e combine tudo pelo WhatsApp ou telefone.</p>
+        </li>
+      </ol>
+    </section>
+
+    <!-- 3. Serviços (só os nomes; detalhes, fotos e prestadores ficam para quem entra) -->
+    <section class="secao" id="servicos" aria-labelledby="servicos-titulo-visitante">
+      <h2 id="servicos-titulo-visitante" class="secao-titulo">O que você resolve aqui</h2>
+      <ul class="etiquetas" data-lista="categorias-visitante"></ul>
+      <p class="texto-apoio">Entre para ver os prestadores de cada serviço perto de você.</p>
+    </section>
+
+    <!-- 4. Propostas: cliente e prestador -->
+    <section class="secao" aria-labelledby="propostas-titulo">
+      <h2 id="propostas-titulo" class="visualmente-oculto">Faça parte da S.D</h2>
+      <div class="propostas">
+        <article class="proposta">
+          <p class="proposta-tag">Para clientes</p>
+          <h3>Casas, condomínios e empresas</h3>
+          <ul class="lista-check">
+            <li>Prestadores filtrados por região e avaliação</li>
+            <li>Orçamentos sem precisar ligar para vários lugares</li>
+            <li>Histórico dos serviços realizados com fotos</li>
+          </ul>
+          <a class="btn" data-link="cadastroCliente" href="../login-cadastro/index.html?acao=criar-conta&amp;perfil=cliente">Quero contratar</a>
+        </article>
+        <article class="proposta proposta-vinho">
+          <p class="proposta-tag">Para prestadores</p>
+          <h3>Mais clientes perto de você</h3>
+          <ul class="lista-check">
+            <li>Receba pedidos da sua região de atendimento</li>
+            <li>Mostre seus trabalhos, certificações e avaliações</li>
+            <li>Organize orçamentos e serviços em um só lugar</li>
+          </ul>
+          <a class="btn" data-link="cadastroPrestador" href="../login-cadastro/index.html?acao=criar-conta&amp;perfil=prestador">Quero ser prestador</a>
+        </article>
+      </div>
+    </section>
+
+    <!-- 5. Resultados (números vêm do servidor; por enquanto, demonstração) -->
+    <section class="secao" aria-labelledby="numeros-titulo">
+      <h2 id="numeros-titulo" class="secao-titulo">Resultados</h2>
+      <span class="selo-demo">Dados de demonstração</span>
+      <dl class="numeros" data-lista="numeros"></dl>
+    </section>
+
+    <!-- 6. Chamada final -->
+    <section class="cta-final" aria-labelledby="cta-titulo">
+      <h2 id="cta-titulo">Pronto para resolver?</h2>
+      <p>Crie sua conta em poucos minutos e veja os prestadores da sua região.</p>
+      <div class="hero-acoes">
+        <a class="btn btn-grande" data-link="cadastro" href="../login-cadastro/index.html?acao=criar-conta">Criar conta grátis</a>
+        <a class="btn btn-grande" data-link="login" href="../login-cadastro/index.html">Entrar</a>
+      </div>
+    </section>
+  </div>
+
+  <!-- =============================================================
+       VISÃO DE QUEM ESTÁ LOGADO
+       Montada pelo home.js SOMENTE quando data-logado="sim".
+       O visitante não recebe esse conteúdo na página.
+       ============================================================= -->
+  <div class="visao-logado" data-visivel="logado" id="home-logado" hidden></div>
+
+</main>
+
+<footer id="sd-rodape"></footer>
+</body>
+</html>

@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="pt-BR" data-tema="claro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Entrar ou criar conta — S.D Serviços Digitais</title>
+<meta name="description" content="S.D Serviços Digitais: entre na sua conta ou crie um login de Cliente CPF, Cliente CNPJ ou Prestador.">
+<!-- Padrão do site -->
+<link rel="stylesheet" href="../configuracoes/base.css">
+<link rel="stylesheet" href="../navbar/navbar.css">
+<link rel="stylesheet" href="../rodape/rodape.css">
+<link rel="stylesheet" href="../componentes/formulario/formulario.css">
+<link rel="stylesheet" href="login-cadastro.css">
+<script src="../seguranca/acesso.js" defer></script>
+<script src="../configuracoes/config.js" defer></script>
+<script src="../navbar/navbar.js" defer></script>
+<script src="../rodape/rodape.js" defer></script>
+<script src="../componentes/utilidades/utilidades.js" defer></script>
+<script src="login-cadastro.js" defer></script>
+</head>
+<!-- Endereços aceitos (usados pela Home e pela NavBar):
+       ?acao=criar-conta                       → abre só o "Criar login"
+       ?acao=criar-conta&perfil=cpf|cnpj|prestador → já abre o cadastro escolhido
+       ?destino=<id do menu>                   → avisa que é preciso entrar
+       ?sair=1                                 → confirma a saída da conta -->
+<body data-pagina="" data-logado="nao" data-raiz="../">
+<header id="sd-navbar"></header>
+<main id="conteudo" class="pagina pagina-login">
+
+  <header class="login-topo">
+    <h1>Acesse sua conta</h1>
+    <p>Encontre prestadores de serviço de forma rápida e confiável, por avaliações ou por localização próxima.</p>
+  </header>
+
+  <!-- Avisos gerais (sair, destino bloqueado, sucesso) -->
+  <div class="mensagem" id="aviso" role="status" aria-live="polite"></div>
+
+  <!-- Já conectado (sessão de demonstração ativa) -->
+  <section class="login-cartao login-conectado" id="ja-conectado" hidden aria-labelledby="titulo-conectado">
+    <h2 id="titulo-conectado">Você já está conectado</h2>
+    <p id="texto-conectado"></p>
+    <div class="login-acoes">
+      <a class="btn" id="btn-ir-inicio" href="../home/index.html">Ir para o início</a>
+      <a class="btn" id="btn-ir-perfil" href="../home/index.html">Meu perfil</a>
+      <a class="btn" id="btn-sair-conta" href="index.html?sair=1">Sair da conta</a>
+    </div>
+  </section>
+
+  <div class="login-colunas" id="login-colunas">
+
+    <!-- ===================== FAZER LOGIN ===================== -->
+    <section class="login-cartao" id="cartao-login" aria-labelledby="titulo-login">
+      <h2 id="titulo-login" class="login-cartao-titulo">
+        <button type="button" class="btn-cabecalho" id="btn-abrir-login" aria-expanded="true" aria-controls="form-login">
+          <span>Fazer login</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+        </button>
+      </h2>
+
+      <form id="form-login" class="login-corpo" novalidate>
+        <div class="campo">
+          <label for="login-id">E-mail, CPF/CNPJ ou telefone</label>
+          <input type="text" id="login-id" name="login" autocomplete="username" placeholder="seu@email.com ou 000.000.000-00" aria-describedby="e-login-id">
+          <span class="campo-erro" id="e-login-id"></span>
+        </div>
+
+        <div class="campo">
+          <label for="login-senha">Senha</label>
+          <div class="senha-caixa">
+            <input type="password" id="login-senha" name="senha" autocomplete="current-password" aria-describedby="e-login-senha">
+            <button type="button" class="btn-olho" data-alvo="login-senha" aria-label="Mostrar senha" aria-pressed="false"></button>
+          </div>
+          <span class="campo-erro" id="e-login-senha"></span>
+        </div>
+
+        <!-- Recuperação de acesso: depende do servidor (e-mail/SMS). Por enquanto só avisa. -->
+        <div class="login-links">
+          <button type="button" class="link-botao" data-recuperar="senha">Esqueceu a senha?</button>
+          <button type="button" class="link-botao" data-recuperar="login">Esqueceu o login?</button>
+        </div>
+
+        <div class="campo campo-check">
+          <input type="checkbox" id="login-manter" name="manter">
+          <label for="login-manter">Continuar conectado</label>
+        </div>
+
+        <!-- DEMONSTRAÇÃO: escolhe o tipo de conta do login de teste (sai quando houver servidor) -->
+        <div class="campo login-demo" id="bloco-demo">
+          <label for="login-demo-tipo">Entrar como <span class="selo-demo">Demonstração</span></label>
+          <select id="login-demo-tipo" name="tipoDemo">
+            <option value="cliente-cpf">Cliente CPF</option>
+            <option value="cliente-cnpj">Cliente CNPJ</option>
+            <option value="prestador">Prestador</option>
+            <option value="adm">Administrador</option>
+          </select>
+        </div>
+
+        <div class="mensagem" id="msg-login" role="alert"></div>
+        <button type="submit" class="btn btn-grande">Fazer login</button>
+      </form>
+    </section>
+
+    <!-- ===================== CRIAR LOGIN ===================== -->
+    <section class="login-cartao" id="cartao-criar" aria-labelledby="titulo-criar">
+      <h2 id="titulo-criar" class="login-cartao-titulo">
+        <button type="button" class="btn-cabecalho" id="btn-abrir-criar" aria-expanded="true" aria-controls="corpo-criar">
+          <span>Criar login</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+        </button>
+      </h2>
+
+      <div id="corpo-criar" class="login-corpo">
+        <p class="login-texto">Escolha o tipo de conta.</p>
+        <!-- Clicar abre o cadastro; clicar de novo recolhe; clicar em outro troca -->
+        <div class="login-tipos">
+          <button type="button" class="btn tipo-conta" data-tipo="cpf" aria-expanded="false" aria-controls="cadastro-cpf">Cliente CPF</button>
+          <button type="button" class="btn tipo-conta" data-tipo="cnpj" aria-expanded="false" aria-controls="cadastro-cnpj">Cliente CNPJ</button>
+          <button type="button" class="btn tipo-conta" data-tipo="prest" aria-expanded="false" aria-controls="cadastro-prest">Prestador</button>
+        </div>
+        <!-- Os 3 formulários são montados pelo login-cadastro.js (configuração TIPOS) -->
+        <div id="cadastros"></div>
+      </div>
+    </section>
+
+  </div>
+</main>
+<footer id="sd-rodape"></footer>
+</body>
+</html>

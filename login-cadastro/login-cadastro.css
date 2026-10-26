@@ -1,0 +1,105 @@
+/* =====================================================================
+   S.D — LOGIN E CADASTRO (login-cadastro/login-cadastro.css)
+   Só estilos desta página. Cores, botões, NavBar, Rodapé e campos vêm do
+   padrão (configuracoes/base.css + componentes/formulario/formulario.css).
+   ===================================================================== */
+
+/* ---------- 1. TOPO ---------- */
+.pagina-login { padding-top: 2.5rem; }
+.login-topo { max-width: 45rem; margin-bottom: 1.5rem; }
+.login-topo h1 { font-size: 1.75rem; font-weight: 700; margin: 0 0 .375rem; }
+.login-topo p { margin: 0; color: var(--cor-texto-secundario); }
+#aviso { margin: 0 0 1.25rem; }
+
+/* ---------- 2. DUAS COLUNAS: Fazer login | Criar login ---------- */
+.login-colunas { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr); gap: 1.5rem; align-items: start; }
+
+/* Cartão (branco, contorno fino, cantos arredondados — mesmo padrão dos perfis) */
+.login-cartao {
+  background: var(--cor-superficie);
+  border: 1px solid var(--cor-contorno);
+  border-radius: var(--raio-cartao);
+  padding: 1.25rem 1.5rem 1.5rem;
+}
+.login-cartao-titulo { margin: 0; font-size: 1.25rem; }
+
+/* Cabeçalho que abre/recolhe o cartão */
+.btn-cabecalho {
+  display: flex; align-items: center; justify-content: space-between; gap: .75rem;
+  width: 100%; min-height: 2.75rem; padding: .25rem 0;
+  font: inherit; font-size: 1.25rem; font-weight: 700; color: var(--cor-texto);
+  background: transparent; border: 0; border-radius: 6px; cursor: pointer; text-align: left;
+}
+.btn-cabecalho svg { width: 1.375rem; height: 1.375rem; color: var(--cor-vinho); transition: transform .2s ease; flex: none; }
+.btn-cabecalho[aria-expanded="true"] svg { transform: rotate(180deg); }
+.btn-cabecalho:hover span { text-decoration: underline; text-underline-offset: .2em; }
+.btn-cabecalho:focus-visible { outline: 3px solid var(--cor-vinho); outline-offset: 2px; }
+[data-tema="escuro"] .btn-cabecalho svg { color: var(--cor-texto); }
+[data-tema="escuro"] .btn-cabecalho:focus-visible { outline-color: var(--cor-texto); }
+
+.login-corpo { display: flex; flex-direction: column; gap: 1rem; margin-top: 1rem; }
+.login-texto { margin: 0; font-size: .9375rem; color: var(--cor-texto-secundario); }
+.nota { font-size: .8125rem; color: var(--cor-texto-secundario); margin: 0; }
+.btn-grande { width: 100%; min-height: 3.25rem; font-size: 1.0625rem; }
+.login-corpo .mensagem { margin-top: 0; }
+
+/* Links "Esqueceu a senha/login?" (botões com visual de link vinho) */
+.login-links { display: flex; flex-wrap: wrap; gap: .25rem 1.25rem; }
+.link-botao {
+  min-height: 1.5rem; padding: 0;                 /* área de toque mínima (WCAG 2.5.8) */
+  font: inherit; font-size: .9375rem; font-weight: 600;
+  color: var(--cor-vinho); background: transparent; border: 0; cursor: pointer;
+  text-decoration: underline; text-underline-offset: .2em;
+}
+.link-botao:hover { text-decoration-thickness: 2px; }
+.link-botao:focus-visible { outline: 3px solid var(--cor-vinho); outline-offset: 2px; border-radius: 4px; }
+[data-tema="escuro"] .link-botao { color: var(--cor-texto); }
+[data-tema="escuro"] .link-botao:focus-visible { outline-color: var(--cor-texto); }
+
+/* Bloco da demonstração (tipo de conta do login de teste) */
+.login-demo { padding: .75rem; border: 1px dashed var(--cor-atencao); border-radius: 8px; background: var(--cor-atencao-fundo); }
+.login-demo label { display: flex; align-items: center; gap: .5rem; flex-wrap: wrap; }
+.login-demo .selo-demo { margin-top: 0; }
+
+/* ---------- 3. CRIAR LOGIN: tipos de conta + cadastros ---------- */
+.login-tipos { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .75rem; }
+.tipo-conta { min-height: 3.25rem; }
+/* Tipo escolhido: vinho + sublinhado (não depende só da cor) */
+.tipo-conta[aria-expanded="true"] { background: var(--cor-vinho); color: #FFFFFF; text-decoration: underline; text-underline-offset: .3em; }
+
+.cadastro { border-top: 1px solid var(--cor-divisoria); padding-top: 1.25rem; display: flex; flex-direction: column; gap: .75rem; }
+.cadastro:not([hidden]) { animation: login-abrir .25s ease-out; }
+.cadastro h3 { margin: 0; font-size: 1.125rem; font-weight: 700; }
+.cadastro form { display: flex; flex-direction: column; gap: 1rem; }
+.cadastro .form-grade { margin-top: 0; }
+
+/* Autorização de privacidade (LGPD) */
+.privacidade {
+  display: flex; flex-direction: column; gap: .5rem;
+  padding: .875rem 1rem;
+  background: var(--cor-superficie-2);
+  border: 1px solid var(--cor-divisoria); border-radius: 10px;
+}
+.privacidade .campo-check { align-items: flex-start; }
+.privacidade .campo-check input { margin-top: .125rem; }
+
+/* Já conectado */
+.login-conectado { max-width: 45rem; }
+.login-conectado h2 { margin: 0 0 .5rem; font-size: 1.25rem; }
+.login-conectado p { margin: 0; }
+.login-acoes { display: flex; flex-wrap: wrap; gap: .75rem; margin-top: 1rem; }
+
+@keyframes login-abrir { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
+
+/* ---------- 4. RESPONSIVIDADE ---------- */
+@media (max-width: 61.99rem) { .login-colunas { grid-template-columns: 1fr; } }
+@media (max-width: 47.99rem) {
+  .pagina-login { padding-top: 1.5rem; }
+  .login-cartao { padding: 1rem; }
+  .login-tipos { grid-template-columns: 1fr; }
+  .login-acoes .btn { flex: 1 1 100%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cadastro:not([hidden]) { animation: none; }
+  .btn-cabecalho svg { transition: none; }
+}
