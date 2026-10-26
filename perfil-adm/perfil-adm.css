@@ -1,0 +1,25 @@
+/* =====================================================================
+   S.D — PERFIL DO ADMINISTRADOR (perfil-adm/perfil-adm.css)
+   Carregado DEPOIS de componentes/perfil-base/perfil-base.css.
+   Só o que é exclusivo do adm: galeria de fotos e painel "Administração".
+   ===================================================================== */
+
+/* ---------- 1. GALERIA (até 12 fotos secundárias) ---------- */
+.galeria { width: 100%; }
+.galeria h3 { font-size: .875rem; font-weight: 600; margin: 0 0 .5rem; color: var(--cor-texto-secundario); }
+.galeria-grade { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: .5rem; }
+.galeria-grade li { position: relative; aspect-ratio: 1 / 1; border-radius: 8px; overflow: hidden; box-shadow: var(--sombra-imagem); background: var(--cor-superficie-2); }
+.galeria-grade img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.galeria-grade .btn-remover {
+  position: absolute; top: .25rem; right: .25rem;
+  background: #FFFFFF; color: #1F1A17; border: 1px solid #000000;
+}
+.galeria-vazia { font-size: .8125rem; color: var(--cor-texto-secundario); margin: 0; }
+
+/* ---------- 2. PAINEL ADMINISTRAÇÃO (em desenvolvimento) ---------- */
+.painel-admin {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  text-align: center; min-height: 20rem; padding: 3rem 1.5rem;
+}
+.painel-admin h2 { font-size: 1.75rem; font-weight: 700; margin: 0; }
+.painel-admin p  { margin: .375rem 0 0; color: var(--cor-texto-secundario); font-size: 1rem; }

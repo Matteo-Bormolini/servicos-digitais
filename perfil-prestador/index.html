@@ -1,0 +1,464 @@
+<!doctype html>
+<html lang="pt-BR" data-tema="claro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Perfil do prestador — S.D Serviços Digitais</title>
+<meta name="robots" content="noindex">
+<!-- Padrão do site -->
+<link rel="stylesheet" href="../configuracoes/base.css">
+<link rel="stylesheet" href="../navbar/navbar.css">
+<link rel="stylesheet" href="../rodape/rodape.css">
+<!-- Base comum dos perfis + componentes (carrossel e quadro de serviços) + exclusivo do prestador -->
+<link rel="stylesheet" href="../componentes/formulario/formulario.css">
+<link rel="stylesheet" href="../componentes/perfil-base/perfil-base.css">
+<link rel="stylesheet" href="../componentes/carrossel/carrossel.css">
+<link rel="stylesheet" href="../componentes/kanban-servicos/kanban-servicos.css">
+<link rel="stylesheet" href="perfil-prestador.css">
+<script src="../seguranca/acesso.js" defer></script>
+<script src="../configuracoes/config.js" defer></script>
+<script src="../navbar/navbar.js" defer></script>
+<script src="../rodape/rodape.js" defer></script>
+<script src="../componentes/utilidades/utilidades.js" defer></script>
+<script src="../componentes/perfil-base/perfil-base.js" defer></script>
+<script src="../componentes/carrossel/carrossel.js" defer></script>
+<script src="../componentes/kanban-servicos/kanban-servicos.js" defer></script>
+<script src="perfil-prestador.js" defer></script>
+</head>
+<!-- data-visao: "dono" = o próprio prestador (edita) | "cliente" = como os clientes veem (só leitura).
+     Também abre direto pelo endereço: perfil-prestador/index.html?visao=cliente
+     data-logado/data-tipo: o SERVIDOR preenche. Aqui ficam fixos para demonstração. -->
+<body data-pagina="perfil" data-logado="sim" data-tipo="prestador" data-raiz="../" data-visao="dono">
+<header id="sd-navbar"></header>
+<main class="pagina-perfil" id="conteudo">
+
+  <header class="perfil-cabecalho">
+    <h1 id="titulo-pagina">Perfil do prestador</h1>
+    <p class="so-dono">Mantenha o perfil completo para transmitir confiança aos clientes e organize seus serviços na aba <strong>Meus serviços</strong>.</p>
+    <p class="so-cliente">Conheça a empresa, veja trabalhos já realizados e as avaliações de outros clientes.</p>
+    <span class="selo-demo" role="note">Dados de demonstração — ainda sem conexão com o servidor</span>
+  </header>
+
+  <!-- ALERTA: a logo (foto de perfil) é obrigatória para o prestador -->
+  <div class="alerta-logo so-dono" id="alerta-logo" role="alert" hidden>
+    <svg class="alerta-logo-icone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg>
+    <div class="alerta-logo-texto">
+      <strong>Urgente: adicione a logo da sua empresa.</strong>
+      <span>A foto de perfil (logo) é obrigatória para prestadores. Sem ela, seu perfil usa uma imagem padrão e os clientes tendem a não confiar — você pode perder orçamentos.</span>
+    </div>
+    <button type="button" class="btn btn-pequeno" id="btn-alerta-logo">Adicionar logo agora</button>
+  </div>
+
+  <!-- Aviso exibido quando o prestador está vendo o próprio perfil como cliente -->
+  <div class="aviso-visao so-cliente" id="aviso-visao" hidden>
+    <span>Você está vendo seu perfil <strong>como os clientes veem</strong>. Dados privados (login, senha, endereço completo e serviços) ficam ocultos.</span>
+    <button type="button" class="btn btn-pequeno" id="btn-voltar-edicao">Voltar à edição</button>
+  </div>
+
+  <section class="perfil-cartao" aria-label="Perfil do prestador de serviços">
+
+    <!-- ===== ABAS (também troca arrastando para os lados) ===== -->
+    <div class="perfil-abas">
+      <div class="abas-lista so-dono" role="tablist" aria-label="Seções do perfil">
+        <button type="button" class="btn aba" role="tab" id="aba-perfil" aria-controls="painel-perfil" aria-selected="true" tabindex="0">Perfil</button>
+        <button type="button" class="btn aba" role="tab" id="aba-servicos" aria-controls="painel-servicos" aria-selected="false" tabindex="-1">Meus serviços</button>
+      </div>
+      <button type="button" class="btn btn-pequeno so-dono" id="btn-ver-como-cliente">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg>
+        Ver como cliente
+      </button>
+    </div>
+
+    <div class="perfil-trilho" id="perfil-trilho">
+
+      <!-- ===================== PAINEL PERFIL ===================== -->
+      <div class="painel painel-perfil" role="tabpanel" id="painel-perfil" aria-labelledby="aba-perfil" tabindex="0">
+
+        <div class="perfil-dados">
+
+          <!-- Vitrine (estilo LinkedIn): nome, área, especialidades e números -->
+          <section class="vitrine" aria-labelledby="vitrine-nome">
+            <h2 class="vitrine-nome" id="vitrine-nome" data-campo="nomeExibicao">Empresa</h2>
+            <p class="vitrine-area"><span data-campo="areaAtuacao"></span> · <span data-campo="regiaoResumo"></span></p>
+            <ul class="chips" id="vitrine-especialidades" aria-label="Especialidades"></ul>
+            <dl class="vitrine-numeros">
+              <div><dt>Serviços concluídos</dt><dd id="num-concluidos"></dd></div>
+              <div><dt>Avaliação média</dt><dd id="num-avaliacao"></dd></div>
+              <div><dt>Anos de experiência</dt><dd id="num-experiencia"></dd></div>
+              <div><dt>Na S.D desde</dt><dd id="num-desde"></dd></div>
+            </dl>
+          </section>
+
+          <section class="sobre" aria-labelledby="titulo-sobre">
+            <h2 id="titulo-sobre">Sobre a empresa</h2>
+            <p class="sobre-texto" data-campo="sobre"></p>
+          </section>
+
+          <!-- Contato rápido (só na visão do cliente) -->
+          <div class="contato-cliente so-cliente">
+            <a class="btn" id="btn-whatsapp" href="#" target="_blank" rel="noopener noreferrer">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-12.4 7.4L3 21l2.1-5.4A8.4 8.4 0 1 1 21 11.5Z"/></svg>
+              Chamar no WhatsApp
+            </a>
+            <a class="btn" id="btn-ligar" href="#">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2Z"/></svg>
+              Ligar
+            </a>
+          </div>
+
+          <!-- Dados da empresa (preenchidos pelo perfil-prestador.js) -->
+          <table class="tabela-dados">
+            <caption>Dados da empresa</caption>
+            <tbody>
+              <tr class="so-dono"><th scope="row">Login</th><td class="valor valor-forte" data-campo="login"></td></tr>
+              <tr><th scope="row">Razão social</th><td class="valor" data-campo="razaoSocial"></td></tr>
+              <tr><th scope="row">Nome fantasia</th><td class="valor" data-campo="nomeFantasia"></td></tr>
+              <tr><th scope="row">Tipo de conta</th><td class="valor" data-campo="tipoConta"></td></tr>
+              <tr>
+                <th scope="row">CNPJ</th>
+                <td class="valor">
+                  <span data-campo="documento"></span>
+                  <span class="etiqueta so-dono" title="Documento único, não pode ser alterado">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+                    Inalterável
+                  </span>
+                </td>
+              </tr>
+              <tr><th scope="row">Área de atuação</th><td class="valor" data-campo="areaAtuacao"></td></tr>
+              <tr><th scope="row">Especialidades</th><td><ul class="chips" id="lista-especialidades" aria-label="Especialidades"></ul></td></tr>
+              <tr><th scope="row">Responsável técnico</th><td class="valor" data-campo="responsavel"></td></tr>
+              <tr>
+                <th scope="row">Registros e certificações</th>
+                <td>
+                  <ul class="chips chips-certificado" id="lista-certificacoes" aria-label="Registros e certificações"></ul>
+                  <p class="nota so-dono">Ex.: CREA/CFT, NR-10 (eletricidade), NR-35 (trabalho em altura). Na versão final, os documentos serão conferidos pela S.D.</p>
+                </td>
+              </tr>
+              <tr><th scope="row">E-mail</th><td class="valor" data-campo="email"></td></tr>
+              <tr>
+                <th scope="row">WhatsApp/Telefone</th>
+                <td>
+                  <div class="linha-acao">
+                    <ul class="lista-telefones" id="lista-telefones" aria-label="Telefones cadastrados"></ul>
+                    <button type="button" class="btn btn-pequeno btn-icone so-dono" id="btn-add-telefone" aria-label="Adicionar telefone secundário" aria-expanded="false" aria-controls="add-telefone" title="Adicionar telefone secundário">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+                    </button>
+                  </div>
+                  <div class="add-telefone so-dono" id="add-telefone" hidden>
+                    <div class="campo">
+                      <label for="novo-telefone">Telefone secundário</label>
+                      <input type="tel" id="novo-telefone" inputmode="numeric" autocomplete="tel" placeholder="(11) 91234-5678" aria-describedby="erro-novo-telefone">
+                      <span class="campo-erro" id="erro-novo-telefone"></span>
+                    </div>
+                    <button type="button" class="btn btn-pequeno" id="btn-salvar-telefone">Adicionar</button>
+                    <button type="button" class="btn btn-pequeno" id="btn-cancelar-telefone">Cancelar</button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <th scope="row">Região de atendimento</th>
+                <td>
+                  <span class="valor" data-campo="regiao"></span>
+                  <p class="nota so-dono">Usada na busca por proximidade: clientes dentro desta região encontram sua empresa.</p>
+                </td>
+              </tr>
+              <tr><th scope="row">Horário de atendimento</th><td class="valor" data-campo="horario"></td></tr>
+              <!-- Endereço completo: só o prestador vê. O cliente vê apenas o bairro (privacidade). -->
+              <tr class="so-dono">
+                <th scope="row">Localização</th>
+                <td>
+                  <div class="grade-local">
+                    <div class="celula cel-endereco"><span class="celula-rotulo">Endereço</span><span class="valor" data-campo="endereco"></span></div>
+                    <div class="celula cel-numero"><span class="celula-rotulo">Número</span><span class="valor" data-campo="numero"></span></div>
+                    <div class="celula cel-complemento"><span class="celula-rotulo">Complemento</span><span class="valor" data-campo="complemento"></span></div>
+                    <div class="celula cel-bairro"><span class="celula-rotulo">Bairro</span><span class="valor" data-campo="bairro"></span></div>
+                    <div class="celula cel-cep"><span class="celula-rotulo">CEP</span><span class="valor" data-campo="cep"></span></div>
+                  </div>
+                  <p class="nota">Os clientes veem somente o bairro.</p>
+                </td>
+              </tr>
+              <tr class="so-cliente"><th scope="row">Bairro</th><td class="valor" data-campo="bairro"></td></tr>
+              <tr>
+                <th scope="row">Avaliações</th>
+                <td><a class="link estrelas" id="link-avaliacoes" href="../avaliacoes/index.html">Ver avaliações</a></td>
+              </tr>
+              <tr class="so-dono">
+                <th scope="row">Senha</th>
+                <td>
+                  <div class="senha-linha">
+                    <span class="senha-mascara">••••••••</span>
+                    <button type="button" class="btn-olho btn-olho-linha" id="btn-ver-senha" aria-label="Visualizar senha" aria-pressed="false" aria-controls="aviso-senha"></button>
+                  </div>
+                  <p class="nota" id="aviso-senha" hidden>Por segurança, a senha é guardada criptografada e não pode ser exibida — nem para administradores. Para trocá-la, use <strong>Editar perfil</strong>.</p>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <!-- Botões de ação -->
+          <div class="perfil-acoes so-dono">
+            <button type="button" class="btn" id="btn-editar" aria-expanded="false" aria-controls="sanfona-editar">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+              Editar perfil
+              <svg class="seta-sanfona" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+            </button>
+            <button type="button" class="btn" id="btn-excluir">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6M10 11v6M14 11v6"/></svg>
+              Excluir perfil
+            </button>
+          </div>
+
+          <div class="mensagem" id="msg-geral" role="status" aria-live="polite"></div>
+
+          <!-- ===== SANFONA: formulário de edição (o texto digitado é mantido ao fechar) ===== -->
+          <div class="sanfona so-dono" id="sanfona-editar" hidden>
+            <h2>Editar perfil</h2>
+            <p class="nota">Preencha somente o que deseja alterar. Campos vazios mantêm o valor atual. O CNPJ não pode ser alterado.</p>
+
+            <form id="form-editar" novalidate>
+              <div class="form-grade">
+                <div class="campo">
+                  <label for="f-login">Login</label>
+                  <input type="text" id="f-login" name="login" data-mascara="login" autocomplete="username" aria-describedby="e-login" maxlength="30">
+                  <span class="campo-erro" id="e-login"></span>
+                </div>
+                <div class="campo">
+                  <label for="f-area">Área de atuação</label>
+                  <select id="f-area" name="areaAtuacao"></select>
+                </div>
+                <div class="campo">
+                  <label for="f-razao">Razão social</label>
+                  <input type="text" id="f-razao" name="razaoSocial" autocomplete="organization" aria-describedby="e-razao" maxlength="150">
+                  <span class="campo-erro" id="e-razao"></span>
+                </div>
+                <div class="campo">
+                  <label for="f-fantasia">Nome fantasia</label>
+                  <input type="text" id="f-fantasia" name="nomeFantasia" aria-describedby="e-fantasia" maxlength="120">
+                  <span class="campo-erro" id="e-fantasia"></span>
+                </div>
+
+                <div class="campo largura-total">
+                  <label for="f-sobre">Sobre a empresa</label>
+                  <textarea id="f-sobre" name="sobre" rows="4" maxlength="600" aria-describedby="d-sobre e-sobre"></textarea>
+                  <span class="nota" id="d-sobre">Conte o que a empresa faz, diferenciais e garantias. <span id="contador-sobre">0</span>/600 caracteres.</span>
+                  <span class="campo-erro" id="e-sobre"></span>
+                </div>
+
+                <div class="campo">
+                  <label for="f-especialidades">Especialidades</label>
+                  <input type="text" id="f-especialidades" name="especialidades" maxlength="300" aria-describedby="d-especialidades e-especialidades">
+                  <span class="nota" id="d-especialidades">Separe por vírgula. Máximo de 8.</span>
+                  <span class="campo-erro" id="e-especialidades"></span>
+                </div>
+                <div class="campo">
+                  <label for="f-certificacoes">Registros e certificações</label>
+                  <input type="text" id="f-certificacoes" name="certificacoes" maxlength="300" aria-describedby="d-certificacoes">
+                  <span class="nota" id="d-certificacoes">Separe por vírgula. Ex.: NR-10, NR-35, CREA-SP 000000.</span>
+                </div>
+
+                <fieldset class="grupo largura-total">
+                  <legend>Responsável técnico</legend>
+                  <div class="form-grade form-grade-interna">
+                    <div class="campo">
+                      <label for="f-resp-nome">Nome completo</label>
+                      <input type="text" id="f-resp-nome" name="responsavelNome" autocomplete="name" aria-describedby="e-resp-nome" maxlength="120">
+                      <span class="campo-erro" id="e-resp-nome"></span>
+                    </div>
+                    <div class="campo">
+                      <label for="f-resp-cargo">Cargo</label>
+                      <input type="text" id="f-resp-cargo" name="responsavelCargo" autocomplete="organization-title" aria-describedby="e-resp-cargo" maxlength="60">
+                      <span class="campo-erro" id="e-resp-cargo"></span>
+                    </div>
+                  </div>
+                </fieldset>
+
+                <div class="campo">
+                  <label for="f-inicio">Início das atividades (ano)</label>
+                  <input type="text" id="f-inicio" name="anoInicio" data-mascara="ano" inputmode="numeric" maxlength="4" aria-describedby="e-inicio">
+                  <span class="campo-erro" id="e-inicio"></span>
+                </div>
+                <div class="campo">
+                  <label for="f-email">E-mail</label>
+                  <input type="email" id="f-email" name="email" autocomplete="email" aria-describedby="e-email" maxlength="254">
+                  <span class="campo-erro" id="e-email"></span>
+                </div>
+                <div class="campo">
+                  <label for="f-telefone">WhatsApp/Telefone principal</label>
+                  <input type="tel" id="f-telefone" name="telefone" data-mascara="telefone" inputmode="numeric" autocomplete="tel" aria-describedby="e-telefone">
+                  <span class="campo-erro" id="e-telefone"></span>
+                </div>
+                <div class="campo">
+                  <label for="f-horario">Horário de atendimento</label>
+                  <input type="text" id="f-horario" name="horario" maxlength="80" aria-describedby="d-horario">
+                  <span class="nota" id="d-horario">Ex.: Segunda a sábado, 07:00 às 18:00.</span>
+                </div>
+
+                <fieldset class="grupo largura-total">
+                  <legend>Região de atendimento</legend>
+                  <div class="form-grade form-grade-interna">
+                    <div class="campo">
+                      <label for="f-raio">Distância máxima a partir do endereço</label>
+                      <select id="f-raio" name="raioKm"></select>
+                    </div>
+                    <div class="campo">
+                      <label for="f-bairros">Bairros/cidades atendidos (opcional)</label>
+                      <input type="text" id="f-bairros" name="bairrosAtendidos" maxlength="200" aria-describedby="d-bairros">
+                      <span class="nota" id="d-bairros">Separe por vírgula.</span>
+                    </div>
+                    <div class="campo largura-total campo-check">
+                      <input type="checkbox" id="f-emergencia" name="emergencia">
+                      <label for="f-emergencia">Atendo emergências fora do horário</label>
+                    </div>
+                  </div>
+                </fieldset>
+
+                <fieldset class="grupo largura-total">
+                  <legend>Localização (endereço da empresa)</legend>
+                  <div class="grade-local-form">
+                    <div class="campo f-endereco">
+                      <label for="f-endereco">Endereço</label>
+                      <input type="text" id="f-endereco" name="endereco" autocomplete="address-line1" maxlength="150">
+                    </div>
+                    <div class="campo f-numero">
+                      <label for="f-numero">Número</label>
+                      <input type="text" id="f-numero" name="numero" maxlength="10" aria-describedby="e-numero">
+                      <span class="campo-erro" id="e-numero"></span>
+                    </div>
+                    <div class="campo f-compl">
+                      <label for="f-complemento">Complemento</label>
+                      <input type="text" id="f-complemento" name="complemento" autocomplete="address-line2" maxlength="60">
+                    </div>
+                    <div class="campo f-bairro">
+                      <label for="f-bairro">Bairro</label>
+                      <input type="text" id="f-bairro" name="bairro" maxlength="80">
+                    </div>
+                    <div class="campo f-cep">
+                      <label for="f-cep">CEP</label>
+                      <input type="text" id="f-cep" name="cep" data-mascara="cep" inputmode="numeric" autocomplete="postal-code" aria-describedby="e-cep">
+                      <span class="campo-erro" id="e-cep"></span>
+                    </div>
+                  </div>
+                </fieldset>
+
+                <div class="campo">
+                  <label for="f-senha">Nova senha</label>
+                  <div class="senha-caixa">
+                    <input type="password" id="f-senha" name="senha" autocomplete="new-password" aria-describedby="d-senha e-senha">
+                    <button type="button" class="btn-olho" data-alvo="f-senha" aria-label="Mostrar senha" aria-pressed="false"></button>
+                  </div>
+                  <span class="nota" id="d-senha">Mínimo de 8 caracteres, com letras e números.</span>
+                  <span class="campo-erro" id="e-senha"></span>
+                </div>
+                <div class="campo">
+                  <label for="f-senha2">Confirmar nova senha</label>
+                  <div class="senha-caixa">
+                    <input type="password" id="f-senha2" name="senha2" autocomplete="new-password" aria-describedby="e-senha2">
+                    <button type="button" class="btn-olho" data-alvo="f-senha2" aria-label="Mostrar senha" aria-pressed="false"></button>
+                  </div>
+                  <span class="campo-erro" id="e-senha2"></span>
+                </div>
+              </div>
+
+              <div class="form-rodape">
+                <button type="submit" class="btn">Confirmar alteração</button>
+              </div>
+              <div class="mensagem" id="msg-form" role="status" aria-live="polite"></div>
+            </form>
+          </div>
+        </div>
+
+        <!-- ===== LOGO DA EMPRESA (OBRIGATÓRIA). Sem logo: foto padrão + alerta ===== -->
+        <aside class="perfil-foto" aria-label="Logo da empresa">
+          <div class="foto-moldura" id="foto-moldura">
+            <img id="foto-perfil" src="data:," alt="Logo da empresa" width="200" height="200">
+          </div>
+          <span class="selo-sem-logo so-dono" id="selo-sem-logo" hidden>Sem logo — obrigatório</span>
+          <div class="foto-botoes so-dono">
+            <button type="button" class="btn btn-pequeno" id="btn-foto">Adicionar logo</button>
+          </div>
+          <p class="nota foto-nota so-dono"><strong>Obrigatório:</strong> logo ou foto da empresa. Quadrada, mínimo 200 × 200 px. JPG, PNG ou WEBP até 5 MB.</p>
+          <input type="file" id="input-foto" accept="image/jpeg,image/png,image/webp" class="visualmente-oculto" tabindex="-1" aria-hidden="true">
+          <div class="mensagem" id="msg-foto" role="status" aria-live="polite"></div>
+        </aside>
+
+        <!-- ===== TRABALHOS E EMPRESA (carrossel) — OPCIONAL ===== -->
+        <section class="bloco-fotos fotos-trabalho" aria-labelledby="titulo-fotos-trabalho">
+          <div class="bloco-topo">
+            <h2 id="titulo-fotos-trabalho">Trabalhos e empresa <span class="etiqueta so-dono">Opcional</span></h2>
+            <span class="bloco-total so-dono" id="fotos-trabalho-total"></span>
+          </div>
+          <p class="nota bloco-texto so-dono">
+            <strong>Não é obrigatório, mas ajuda muito.</strong> Mostre serviços que você já fez (antes e depois), sua equipe uniformizada,
+            veículos e equipamentos. Perfis com fotos de trabalhos reais passam mais confiança.
+          </p>
+
+          <div class="bloco-fotos-conteudo">
+            <div class="bloco-fotos-carrossel" id="carrossel-trabalho"></div>
+
+            <div class="bloco-fotos-lateral so-dono">
+              <div class="bloco-fotos-controles" id="controles-foto-atual">
+                <div class="campo">
+                  <label for="legenda-foto">Legenda desta foto <span class="nota" id="legenda-foto-posicao"></span></label>
+                  <input type="text" id="legenda-foto" maxlength="80" placeholder="Ex.: Impermeabilização da laje — depois" aria-describedby="d-legenda">
+                  <span class="nota" id="d-legenda">Até 80 caracteres. Aplicada ao sair do campo ou com Enter.</span>
+                </div>
+                <button type="button" class="btn btn-pequeno" id="btn-remover-foto-trabalho">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg>
+                  Remover esta foto
+                </button>
+              </div>
+              <button type="button" class="btn" id="btn-add-fotos-trabalho">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+                Adicionar fotos
+              </button>
+              <p class="nota">Até <span id="max-fotos-trabalho">12</span> fotos · JPG, PNG ou WEBP até 5 MB cada.</p>
+              <p class="nota">Peça autorização ao cliente antes de publicar fotos do imóvel dele e evite mostrar pessoas, placas de veículos, documentos e endereços (LGPD).</p>
+            </div>
+          </div>
+          <input type="file" id="input-fotos-trabalho" accept="image/jpeg,image/png,image/webp" multiple class="visualmente-oculto" tabindex="-1" aria-hidden="true">
+          <div class="mensagem" id="msg-fotos-trabalho" role="status" aria-live="polite"></div>
+        </section>
+
+        <!-- ===== AVALIAÇÕES RECENTES (públicas) ===== -->
+        <section class="avaliacoes-recentes" aria-labelledby="titulo-avaliacoes">
+          <div class="bloco-topo">
+            <h2 id="titulo-avaliacoes">Avaliações recentes</h2>
+            <a class="link" id="link-todas-avaliacoes" href="../avaliacoes/index.html">Ver todas as avaliações</a>
+          </div>
+          <ul class="lista-avaliacoes" id="lista-avaliacoes"></ul>
+          <p class="nota" id="avaliacoes-vazio" hidden>Ainda não há avaliações.</p>
+        </section>
+      </div>
+
+      <!-- ===================== PAINEL MEUS SERVIÇOS (Kanban) — só o prestador ===================== -->
+      <div class="painel painel-servicos so-dono" role="tabpanel" id="painel-servicos" aria-labelledby="aba-servicos" tabindex="0">
+        <div class="servicos-topo">
+          <h2 id="titulo-servicos">Meus serviços</h2>
+          <span class="servicos-total" id="servicos-total"></span>
+        </div>
+        <p class="servicos-dica">Clique em um serviço para ver detalhes, fotos e valores. Para mudar a etapa, use os botões do serviço ou arraste o cartão com o mouse.</p>
+        <dl class="kanban-resumo" id="kanban-resumo"></dl>
+        <div class="kanban" id="kanban"></div>
+      </div>
+
+    </div>
+  </section>
+  <!-- Avisos do quadro para leitor de tela (fora do trilho: posição absoluta não pode vazar a largura) -->
+  <p class="visualmente-oculto" id="kanban-anuncio" aria-live="polite"></p>
+</main>
+
+<!-- ===== POP-UP DE CONFIRMAÇÃO DE EXCLUSÃO ===== -->
+<dialog class="modal" id="modal-excluir" aria-labelledby="modal-titulo" aria-describedby="modal-texto">
+  <div class="modal-icone" aria-hidden="true">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg>
+  </div>
+  <h2 id="modal-titulo">Certeza que deseja excluir seu perfil?</h2>
+  <p id="modal-texto">Esta alteração é irreversível. Os dados da empresa, a logo, as fotos de trabalhos, as avaliações recebidas e o histórico de serviços serão apagados permanentemente e não poderão ser recuperados.</p>
+  <div class="modal-acoes">
+    <button type="button" class="btn" id="modal-cancelar" autofocus>Cancelar</button>
+    <button type="button" class="btn" id="modal-confirmar">Sim, excluir perfil</button>
+  </div>
+</dialog>
+<footer id="sd-rodape"></footer>
+</body>
+</html>

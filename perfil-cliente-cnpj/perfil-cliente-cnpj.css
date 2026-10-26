@@ -1,0 +1,40 @@
+/* =====================================================================
+   S.D — PERFIL DO CLIENTE CNPJ (perfil-cliente-cnpj/perfil-cliente-cnpj.css)
+   Carregado DEPOIS de perfil-base.css, carrossel.css e servicos-realizados.css.
+   Só o que é exclusivo do CNPJ: posição do bloco "Fotos do local" e a
+   lista de áreas sugeridas. (O bloco de fotos em si é .bloco-fotos, da base.)
+   ===================================================================== */
+
+/* ---------- 1. PAINEL PERFIL: dados | foto  e, embaixo, as fotos do local ---------- */
+.painel-perfil { grid-template-areas: "dados foto" "local local"; }
+.fotos-local { grid-area: local; }
+
+/* ---------- 2. ÁREAS SUGERIDAS (abre/fecha) ---------- */
+.areas-sugeridas {
+  margin-top: .75rem;
+  border: 1px solid var(--cor-divisoria); border-radius: 10px;
+  background: var(--cor-superficie-2);
+}
+.areas-sugeridas summary {
+  padding: .625rem 1rem; cursor: pointer;
+  font-size: .875rem; font-weight: 600;
+  border-radius: 10px;
+}
+.areas-sugeridas summary:focus-visible { outline: 3px solid var(--cor-vinho); outline-offset: 1px; }
+.lista-areas {
+  list-style: none; margin: 0; padding: 0 1rem 1rem;
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr)); gap: .5rem;
+}
+.lista-areas li {
+  padding: .5rem .75rem;
+  background: var(--cor-superficie);
+  border: 1px solid var(--cor-divisoria); border-radius: 8px;
+  font-size: .875rem; font-weight: 600;
+}
+.lista-areas small { display: block; font-weight: 400; font-size: .75rem; color: var(--cor-texto-secundario); }
+
+/* ---------- 3. CELULAR ---------- */
+@media (max-width: 47.99rem) {
+  .painel-perfil { grid-template-areas: "foto" "dados" "local"; }
+  .lista-areas { grid-template-columns: 1fr; }
+}

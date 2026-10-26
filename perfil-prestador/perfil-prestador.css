@@ -1,0 +1,117 @@
+/* =====================================================================
+   S.D — PERFIL DO PRESTADOR (perfil-prestador/perfil-prestador.css)
+   Carregado DEPOIS de perfil-base.css, carrossel.css e kanban-servicos.css.
+   Só o que é exclusivo do Prestador: visão dono/cliente, alerta da logo,
+   vitrine (estilo LinkedIn), etiquetas, avaliações recentes.
+   (O bloco "Trabalhos e empresa" usa .bloco-fotos, da base.)
+   ===================================================================== */
+
+/* ---------- 1. VISÃO: dono (edita) x cliente (só leitura) ---------- */
+[data-visao="cliente"] .so-dono,
+[data-visao="dono"] .so-cliente { display: none !important; }
+
+/* ---------- 2. ALERTA: LOGO OBRIGATÓRIA ---------- */
+.alerta-logo {
+  display: flex; align-items: center; gap: .875rem; flex-wrap: wrap;
+  margin: 0 0 1rem; padding: .875rem 1rem;
+  color: var(--cor-erro); background: var(--cor-erro-fundo);
+  border: 2px solid currentColor; border-radius: var(--raio-cartao);
+}
+.alerta-logo-icone { width: 1.75rem; height: 1.75rem; flex: none; }
+.alerta-logo-texto { flex: 1 1 18rem; display: flex; flex-direction: column; gap: .125rem; font-size: .875rem; }
+.alerta-logo-texto strong { font-size: 1rem; }
+.alerta-logo-texto span { color: var(--cor-texto); }
+
+/* Aviso da visão do cliente */
+.aviso-visao {
+  display: flex; align-items: center; justify-content: space-between; gap: .75rem; flex-wrap: wrap;
+  margin: 0 0 1rem; padding: .75rem 1rem;
+  font-size: .875rem; color: var(--cor-info); background: var(--cor-info-fundo);
+  border: 1px solid currentColor; border-radius: var(--raio-cartao);
+}
+.aviso-visao span { color: var(--cor-texto); }
+
+/* ---------- 3. PAINEL PERFIL: dados | logo e, embaixo, trabalhos e avaliações ---------- */
+.painel-perfil { grid-template-areas: "dados foto" "trabalho trabalho" "avaliacoes avaliacoes"; }
+.fotos-trabalho { grid-area: trabalho; }
+.avaliacoes-recentes { grid-area: avaliacoes; min-width: 0; padding-top: 1.5rem; border-top: 1px solid var(--cor-divisoria); }
+[data-visao="cliente"] .bloco-fotos-conteudo { grid-template-columns: minmax(0, 1fr); max-width: 52rem; }
+
+/* ---------- 4. VITRINE (cabeçalho público) ---------- */
+.vitrine { margin-bottom: 1.25rem; }
+.vitrine-nome { margin: 0; font-size: 1.5rem; font-weight: 700; line-height: 1.25; overflow-wrap: anywhere; }
+.vitrine-area { margin: .25rem 0 .75rem; font-size: .9375rem; color: var(--cor-texto-secundario); }
+.vitrine-numeros {
+  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .5rem;
+  margin: 1rem 0 0;
+}
+.vitrine-numeros div {
+  padding: .625rem .75rem;
+  background: var(--cor-superficie-2);
+  border: 1px solid var(--cor-divisoria); border-radius: 10px;
+}
+.vitrine-numeros dt { font-size: .6875rem; font-weight: 600; text-transform: uppercase; letter-spacing: .03em; color: var(--cor-texto-secundario); }
+.vitrine-numeros dd { margin: .125rem 0 0; font-size: 1.25rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+
+/* Etiquetas (especialidades / certificações) */
+.chips { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: .375rem; }
+.chips li {
+  padding: .25rem .625rem;
+  font-size: .8125rem; font-weight: 600;
+  background: var(--cor-superficie-2);
+  border: 1px solid var(--cor-divisoria); border-radius: 999px;
+}
+.chips-certificado li { border-color: var(--cor-texto-secundario); }
+.chips .chip-vazio { font-weight: 400; font-style: italic; color: var(--cor-texto-secundario); border-style: dashed; }
+
+/* Sobre a empresa */
+.sobre { margin-bottom: 1.25rem; }
+.sobre h2 { font-size: 1.125rem; font-weight: 600; margin: 0 0 .375rem; }
+.sobre-texto { margin: 0; font-size: .9375rem; white-space: pre-line; max-width: 62rem; }
+
+/* Contato (visão do cliente) */
+.contato-cliente { display: flex; gap: .75rem; flex-wrap: wrap; margin-bottom: 1.25rem; }
+
+/* ---------- 5. LOGO (obrigatória) ---------- */
+.foto-moldura.sem-logo { border: 3px dashed var(--cor-erro); }
+.selo-sem-logo {
+  margin-top: -.5rem; padding: .125rem .625rem;
+  font-size: .75rem; font-weight: 700;
+  color: var(--cor-erro); background: var(--cor-erro-fundo);
+  border: 1px solid currentColor; border-radius: 999px;
+}
+
+/* ---------- 6. AVALIAÇÕES RECENTES ---------- */
+.lista-avaliacoes {
+  list-style: none; margin: 1rem 0 0; padding: 0;
+  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .75rem;
+}
+.avaliacao-item {
+  display: flex; flex-direction: column; gap: .375rem;
+  padding: .875rem 1rem;
+  background: var(--cor-superficie-2);
+  border: 1px solid var(--cor-divisoria); border-radius: 10px;
+}
+.avaliacao-topo { display: flex; justify-content: space-between; align-items: center; gap: .5rem; flex-wrap: wrap; }
+.avaliacao-item .estrelas { color: var(--cor-vinho); gap: .375rem; font-size: .8125rem; font-weight: 600; }
+.avaliacao-item .estrelas svg { width: 1rem; height: 1rem; }
+.avaliacao-item time { font-size: .75rem; color: var(--cor-texto-secundario); }
+.avaliacao-item p { margin: 0; font-size: .875rem; }
+.avaliacao-autor { font-size: .75rem; color: var(--cor-texto-secundario); }
+#link-avaliacoes { display: inline-flex; }
+
+/* Tema escuro: vinho sem contraste → estrelas na cor de atenção */
+[data-tema="escuro"] .avaliacao-item .estrelas { color: var(--cor-atencao); }
+
+/* ---------- 7. RESPONSIVIDADE ---------- */
+@media (max-width: 64rem) {
+  .vitrine-numeros { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .lista-avaliacoes { grid-template-columns: 1fr; }
+}
+@media (max-width: 47.99rem) {
+  .painel-perfil { grid-template-areas: "foto" "dados" "trabalho" "avaliacoes"; }
+  .contato-cliente .btn, .alerta-logo .btn, .aviso-visao .btn { width: 100%; }
+  .vitrine-nome { font-size: 1.25rem; text-align: center; }
+  .vitrine-area { text-align: center; }
+  .vitrine .chips { justify-content: center; }
+}
